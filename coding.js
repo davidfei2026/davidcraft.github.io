@@ -3,13 +3,24 @@ const WORKER_URL =
 
 const chatForm = document.querySelector("#chat-form");
 const messageInput = document.querySelector("#message-input");
-const messages = document.querySelector("#messages");
+const messagesElement = document.querySelector("#messages");
 const suggestionButtons =
   document.querySelectorAll(".suggestions button");
 
 let waitingForReply = false;
 
-function addMessage(text, sender) {
+let conversation = JSON.parse(
+  localStorage.getItem("davidcraft-coding-chat")
+) || [];
+
+function saveConversation() {
+  localStorage.setItem(
+    "davidcraft-coding-chat",
+    JSON.stringify(conversation)
+  );
+}
+
+function addMessage(text, sender, save = true) {
   const message = document.createElement("div");
   message.className = `message ${sender}`;
 
@@ -24,10 +35,36 @@ function addMessage(text, sender) {
   paragraph.textContent = text;
 
   message.append(name, paragraph);
-  messages.appendChild(message);
-  messages.scrollTop = messages.scrollHeight;
+  messagesElement.appendChild(message);
+  messagesElement.scrollTop = messagesElement.scrollHeight;
+
+  if (save) {
+    conversation.push({
+      role: sender === "assistant" ? "assistant" : "user",
+      content: text
+    });
+
+    conversation = conversation.slice(-20);
+    saveConversation();
+  }
 
   return message;
+}
+
+function restoreConversation() {
+  if (conversation.length === 0) {
+    return;
+  }
+
+  messagesElement.innerHTML = "";
+
+  conversation.forEach((item) => {
+    addMessage(
+      item.content,
+      item.role === "assistant" ? "assistant" : "user",
+      false
+    );
+  });
 }
 
 async function sendMessage(text) {
@@ -45,7 +82,8 @@ async function sendMessage(text) {
 
   const loadingMessage = addMessage(
     "Thinking…",
-    "assistant"
+    "assistant",
+    false
   );
 
   try {
@@ -55,7 +93,7 @@ async function sendMessage(text) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        message: cleanText
+        messages: conversation
       })
     });
 
@@ -67,8 +105,8 @@ async function sendMessage(text) {
       );
     }
 
-    loadingMessage.querySelector("p").textContent =
-      data.reply;
+    loadingMessage.remove();
+    addMessage(data.reply, "assistant");
   } catch (error) {
     console.error(error);
 
@@ -98,3 +136,5 @@ messageInput.addEventListener("keydown", (event) => {
     chatForm.requestSubmit();
   }
 });
+
+restoreConversation();
