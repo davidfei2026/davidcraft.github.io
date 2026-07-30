@@ -1,50 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DavidCraft</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body{
-            font-family: Arial, sans-serif;
-            background:#20242b;
-            color:white;
-            text-align:center;
-            margin-top:80px;
-        }
+  <title>DavidCraft AI</title>
 
-        h1{
-            font-size:48px;
-        }
-
-        p{
-            font-size:22px;
-        }
-
-        button{
-            padding:15px 30px;
-            font-size:18px;
-            border:none;
-            border-radius:8px;
-            cursor:pointer;
-        }
-    </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+  <header class="topbar">
+    <a class="logo" href="index.html">
+      DavidCraft <span>AI</span>
+    </a>
 
-<h1>Welcome to DavidCraft!</h1>
+    <button id="theme-button" aria-label="Change color theme">
+      ◐
+    </button>
+  </header>
 
-<p>This website is hosted on GitHub Pages.</p>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">YOUR PERSONAL AI WORKSPACE</p>
 
-<button onclick="hello()">Click Me</button>
+      <h1>What can I help you with?</h1>
 
-<script>
-function hello(){
-    alert("Congratulations! Your website is working!");
-}
-</script>
+      <p class="intro">
+        Choose an assistant to start working, learning, or creating.
+      </p>
+    </section>
 
+    <section class="assistant-grid">
+      <a class="assistant-card purple" href="coding.html">
+        <div class="icon">&lt;/&gt;</div>
+
+        <div>
+          <h2>Coding Assistant</h2>
+          <p>Get help with HTML, CSS, JavaScript, Python, and more.</p>
+        </div>
+
+        <span class="arrow">→</span>
+      </a>
+
+      <a class="assistant-card blue" href="writing.html">
+        <div class="icon">Aa</div>
+
+        <div>
+          <h2>Writing Assistant</h2>
+          <p>Improve writing, generate ideas, and rewrite text.</p>
+        </div>
+
+        <span class="arrow">→</span>
+      </a>
+
+      <a class="assistant-card green" href="math.html">
+        <div class="icon">π</div>
+
+        <div>
+          <h2>Math Helper</h2>
+          <p>Work through math questions and explanations.</p>
+        </div>
+
+        <span class="arrow">→</span>
+      </a>
+
+      <a class="assistant-card orange" href="study.html">
+        <div class="icon">✦</div>
+
+        <div>
+          <h2>Study Assistant</h2>
+          <p>Create notes, quizzes, summaries, and study plans.</p>
+        </div>
+
+        <span class="arrow">→</span>
+      </a>
+
+      <a class="assistant-card pink" href="ideas.html">
+        <div class="icon">☼</div>
+
+        <div>
+          <h2>Idea Generator</h2>
+          <p>Brainstorm projects, stories, businesses, and inventions.</p>
+        </div>
+
+        <span class="arrow">→</span>
+      </a>
+
+      <a class="assistant-card gray" href="chat.html">
+        <div class="icon">●</div>
+
+        <div>
+          <h2>General Chat</h2>
+          <p>Ask questions and have a general conversation.</p>
+        </div>
+
+        <span class="arrow">→</span>
+      </a>
+    </section>
+  </main>
+
+  <footer>
+    <p>DavidCraft AI</p>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
