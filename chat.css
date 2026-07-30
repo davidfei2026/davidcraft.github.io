@@ -258,3 +258,10 @@
 .math-avatar {
   background: linear-gradient(135deg, #14a873, #49cf99);
 }
+.general-avatar {
+  background: linear-gradient(
+    135deg,
+    #41495a,
+    #7b8498
+  );
+}
