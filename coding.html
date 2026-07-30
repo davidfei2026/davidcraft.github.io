@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Coding Assistant — DavidCraft AI</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="chat.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <a class="logo" href="index.html">
+      DavidCraft <span>AI</span>
+    </a>
+
+    <div class="topbar-actions">
+      <a class="back-link" href="index.html">← All assistants</a>
+      <button id="theme-button" aria-label="Change color theme">◐</button>
+    </div>
+  </header>
+
+  <main class="chat-page">
+    <section class="chat-shell">
+      <div class="chat-header">
+        <div class="chat-avatar">&lt;/&gt;</div>
+
+        <div>
+          <h1>Coding Assistant</h1>
+          <p>Ask about HTML, CSS, JavaScript, Python, GitHub, and more.</p>
+        </div>
+      </div>
+
+      <div class="suggestions">
+        <button type="button">Explain HTML links</button>
+        <button type="button">Help me fix CSS</button>
+        <button type="button">What is JavaScript?</button>
+        <button type="button">How does GitHub Pages work?</button>
+      </div>
+
+      <div id="messages" class="messages" aria-live="polite">
+        <div class="message assistant">
+          <div class="message-name">Coding Assistant</div>
+          <p>
+            Hi! I can help with basic coding questions. Try asking about HTML,
+            CSS, JavaScript, Python, or GitHub Pages.
+          </p>
+        </div>
+      </div>
+
+      <form id="chat-form" class="chat-form">
+        <label class="sr-only" for="message-input">Type your message</label>
+
+        <textarea
+          id="message-input"
+          rows="1"
+          placeholder="Ask a coding question..."
+          required
+        ></textarea>
+
+        <button type="submit">Send</button>
+      </form>
+
+      <p class="demo-note">
+        This first version is a local demo. It does not connect to a real AI service yet.
+      </p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+  <script src="coding.js"></script>
+</body>
+</html>
