@@ -1,15 +1,15 @@
-const API_URL =
+const WORKER_URL =
   "https://davidcraft-ai.feidavid81022.workers.dev";
 
 const STORAGE_KEY = "davidcraft-writing-chat";
 
-const chatForm = document.getElementById("chat-form");
-const messageInput = document.getElementById("message-input");
-const chatMessages = document.getElementById("chat-messages");
-const sendButton = document.getElementById("send-button");
-const themeButton = document.getElementById("theme-button");
-const promptButtons = document.querySelectorAll("[data-prompt]");
+const chatForm = document.querySelector("#chat-form");
+const messageInput = document.querySelector("#message-input");
+const messagesElement = document.querySelector("#messages");
+const suggestionButtons =
+  document.querySelectorAll(".suggestions button");
 
+let waitingForReply = false;
 let conversation = loadConversation();
 
 function loadConversation() {
@@ -20,14 +20,17 @@ function loadConversation() {
       return [];
     }
 
-    return saved.filter((message) => {
-      return (
-        message &&
-        (message.role === "user" || message.role === "assistant") &&
-        typeof message.content === "string"
-      );
-    });
-  } catch {
+    return saved
+      .filter((item) => {
+        return (
+          item &&
+          (item.role === "user" || item.role === "assistant") &&
+          typeof item.content === "string"
+        );
+      })
+      .slice(-20);
+  } catch (error) {
+    console.error("Could not load saved conversation:", error);
     return [];
   }
 }
@@ -39,57 +42,82 @@ function saveConversation() {
   );
 }
 
-function addMessage(role, content) {
-  const message = document.createElement("article");
+function addMessage(text, sender, save = true) {
+  const message = document.createElement("div");
+  message.className = `message ${sender}`;
 
-  message.className =
-    role === "user"
-      ? "message user-message"
-      : "message assistant-message";
-
-  const label = document.createElement("strong");
-  label.textContent =
-    role === "user" ? "You" : "Writing Assistant";
+  const name = document.createElement("div");
+  name.className = "message-name";
+  name.textContent =
+    sender === "assistant"
+      ? "Writing Assistant"
+      : "You";
 
   const paragraph = document.createElement("p");
-  paragraph.textContent = content;
+  paragraph.textContent = text;
 
-  message.append(label, paragraph);
-  chatMessages.appendChild(message);
+  message.append(name, paragraph);
+  messagesElement.appendChild(message);
 
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+  messagesElement.scrollTop = messagesElement.scrollHeight;
+
+  if (save) {
+    conversation.push({
+      role: sender === "assistant" ? "assistant" : "user",
+      content: text
+    });
+
+    conversation = conversation.slice(-20);
+    saveConversation();
+  }
 
   return message;
+}
+
+function restoreConversation() {
+  if (conversation.length === 0) {
+    return;
+  }
+
+  messagesElement.innerHTML = "";
+
+  conversation.forEach((item) => {
+    addMessage(
+      item.content,
+      item.role === "assistant" ? "assistant" : "user",
+      false
+    );
+  });
 }
 
 async function sendMessage(text) {
   const cleanText = text.trim();
 
-  if (!cleanText) {
+  if (!cleanText || waitingForReply) {
     return;
   }
 
-  addMessage("user", cleanText);
+  waitingForReply = true;
 
-  conversation.push({
-    role: "user",
-    content: cleanText
-  });
+  const submitButton = chatForm.querySelector(
+    'button[type="submit"]'
+  );
 
-  saveConversation();
+  messageInput.disabled = true;
+  submitButton.disabled = true;
+
+  addMessage(cleanText, "user");
 
   messageInput.value = "";
-  messageInput.disabled = true;
-  sendButton.disabled = true;
-  sendButton.textContent = "Writing...";
 
-  const temporaryMessage = addMessage(
+  const loadingMessage = addMessage(
+    "Thinking...",
     "assistant",
-    "Thinking..."
+    false
   );
 
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(WORKER_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -102,8 +130,6 @@ async function sendMessage(text) {
 
     const data = await response.json();
 
-    temporaryMessage.remove();
-
     if (!response.ok) {
       throw new Error(
         data.error || "The Writing Assistant could not respond."
@@ -111,31 +137,23 @@ async function sendMessage(text) {
     }
 
     const reply =
-      typeof data.reply === "string"
-        ? data.reply
+      typeof data.reply === "string" && data.reply.trim()
+        ? data.reply.trim()
         : "The Writing Assistant returned an empty response.";
 
-    addMessage("assistant", reply);
-
-    conversation.push({
-      role: "assistant",
-      content: reply
-    });
-
-    saveConversation();
+    loadingMessage.remove();
+    addMessage(reply, "assistant");
   } catch (error) {
-    temporaryMessage.remove();
-
-    addMessage(
-      "assistant",
-      `Connection error: ${error.message}`
-    );
-
     console.error(error);
+
+    const paragraph = loadingMessage.querySelector("p");
+
+    paragraph.textContent =
+      `Connection error: ${error.message}`;
   } finally {
+    waitingForReply = false;
     messageInput.disabled = false;
-    sendButton.disabled = false;
-    sendButton.textContent = "Send";
+    submitButton.disabled = false;
     messageInput.focus();
   }
 }
@@ -145,9 +163,9 @@ chatForm.addEventListener("submit", (event) => {
   sendMessage(messageInput.value);
 });
 
-promptButtons.forEach((button) => {
+suggestionButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    messageInput.value = button.dataset.prompt || "";
+    messageInput.value = button.textContent.trim();
     messageInput.focus();
   });
 });
@@ -159,8 +177,4 @@ messageInput.addEventListener("keydown", (event) => {
   }
 });
 
-if (themeButton) {
-  themeButton.addEventListener("click", () => {
-    document.body.classList.toggle("dark-theme");
-  });
-}
+restoreConversation();
