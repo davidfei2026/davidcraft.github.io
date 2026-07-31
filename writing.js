@@ -1,8 +1,6 @@
 const WORKER_URL =
   "https://davidcraft-ai.feidavid81022.workers.dev";
 
-const STORAGE_KEY = "davidcraft-writing-chat";
-
 const chatForm = document.querySelector("#chat-form");
 const messageInput = document.querySelector("#message-input");
 const messagesElement = document.querySelector("#messages");
@@ -10,35 +8,15 @@ const suggestionButtons =
   document.querySelectorAll(".suggestions button");
 
 let waitingForReply = false;
-let conversation = loadConversation();
 
-function loadConversation() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-    if (!Array.isArray(saved)) {
-      return [];
-    }
-
-    return saved
-      .filter((item) => {
-        return (
-          item &&
-          (item.role === "user" || item.role === "assistant") &&
-          typeof item.content === "string"
-        );
-      })
-      .slice(-20);
-  } catch (error) {
-    console.error("Could not load saved conversation:", error);
-    return [];
-  }
-}
+let conversation = JSON.parse(
+  localStorage.getItem("davidcraft-writing-chat")
+) || [];
 
 function saveConversation() {
   localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(conversation.slice(-20))
+    "davidcraft-writing-chat",
+    JSON.stringify(conversation)
   );
 }
 
@@ -58,7 +36,6 @@ function addMessage(text, sender, save = true) {
 
   message.append(name, paragraph);
   messagesElement.appendChild(message);
-
   messagesElement.scrollTop = messagesElement.scrollHeight;
 
   if (save) {
@@ -75,6 +52,20 @@ function addMessage(text, sender, save = true) {
 }
 
 function restoreConversation() {
+  if (!Array.isArray(conversation)) {
+    conversation = [];
+    saveConversation();
+    return;
+  }
+
+  conversation = conversation.filter((item) => {
+    return (
+      item &&
+      (item.role === "user" || item.role === "assistant") &&
+      typeof item.content === "string"
+    );
+  });
+
   if (conversation.length === 0) {
     return;
   }
@@ -98,20 +89,13 @@ async function sendMessage(text) {
   }
 
   waitingForReply = true;
-
-  const submitButton = chatForm.querySelector(
-    'button[type="submit"]'
-  );
-
   messageInput.disabled = true;
-  submitButton.disabled = true;
 
   addMessage(cleanText, "user");
-
   messageInput.value = "";
 
   const loadingMessage = addMessage(
-    "Thinking...",
+    "Thinking…",
     "assistant",
     false
   );
@@ -123,7 +107,6 @@ async function sendMessage(text) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        assistant: "writing",
         messages: conversation
       })
     });
@@ -131,29 +114,23 @@ async function sendMessage(text) {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(
-        data.error || "The Writing Assistant could not respond."
-      );
+      throw new Error(data.error || "The request failed.");
     }
 
-    const reply =
-      typeof data.reply === "string" && data.reply.trim()
-        ? data.reply.trim()
-        : "The Writing Assistant returned an empty response.";
-
     loadingMessage.remove();
-    addMessage(reply, "assistant");
+
+    addMessage(
+      data.reply || "The Writing Assistant returned no response.",
+      "assistant"
+    );
   } catch (error) {
     console.error(error);
 
-    const paragraph = loadingMessage.querySelector("p");
-
-    paragraph.textContent =
+    loadingMessage.querySelector("p").textContent =
       `Connection error: ${error.message}`;
   } finally {
     waitingForReply = false;
     messageInput.disabled = false;
-    submitButton.disabled = false;
     messageInput.focus();
   }
 }
@@ -165,8 +142,7 @@ chatForm.addEventListener("submit", (event) => {
 
 suggestionButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    messageInput.value = button.textContent.trim();
-    messageInput.focus();
+    sendMessage(button.textContent);
   });
 });
 
