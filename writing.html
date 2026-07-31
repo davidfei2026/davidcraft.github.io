@@ -3,74 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Writing Assistant | DavidCraft AI</title>
+
+  <title>Writing Assistant — DavidCraft AI</title>
+
+  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="chat.css">
 </head>
 
 <body>
-  <header class="chat-topbar">
+  <header class="topbar">
     <a class="logo" href="index.html">
       DavidCraft <span>AI</span>
     </a>
 
     <div class="topbar-actions">
-      <a href="index.html" class="back-link">← All assistants</a>
+      <a class="back-link" href="index.html">← All assistants</a>
       <button id="theme-button" aria-label="Change color theme">◐</button>
     </div>
   </header>
 
   <main class="chat-page">
-    <section class="chat-card">
-      <header class="assistant-header">
-        <div class="assistant-avatar writing-avatar">Aa</div>
+    <section class="chat-shell">
+      <div class="chat-header">
+        <div class="chat-avatar writing-avatar">Aa</div>
 
         <div>
           <h1>Writing Assistant</h1>
-          <p>Improve, rewrite, brainstorm, and polish your writing.</p>
+          <p>Improve essays, emails, stories, grammar, and more.</p>
         </div>
-      </header>
-
-      <div class="prompt-buttons">
-        <button type="button" data-prompt="Please improve this writing: ">
-          Improve writing
-        </button>
-
-        <button type="button" data-prompt="Please rewrite this to sound more professional: ">
-          Make professional
-        </button>
-
-        <button type="button" data-prompt="Please check the grammar and explain the corrections: ">
-          Check grammar
-        </button>
-
-        <button type="button" data-prompt="Help me brainstorm ideas for: ">
-          Brainstorm ideas
-        </button>
       </div>
 
-      <div id="chat-messages" class="chat-messages">
-        <article class="message assistant-message">
-          <strong>Writing Assistant</strong>
+      <div class="suggestions">
+        <button type="button">Improve my writing</button>
+        <button type="button">Fix my grammar</button>
+        <button type="button">Make this more professional</button>
+        <button type="button">Help me write a story</button>
+      </div>
+
+      <div id="messages" class="messages" aria-live="polite">
+        <div class="message assistant">
+          <div class="message-name">Writing Assistant</div>
           <p>
-            Hi! Paste something you wrote, or ask me to help create,
-            revise, shorten, or improve it.
+            Hi! I can help you write, rewrite, proofread, shorten, or improve
+            essays, emails, stories, and other writing.
           </p>
-        </article>
+        </div>
       </div>
 
       <form id="chat-form" class="chat-form">
+        <label class="sr-only" for="message-input">Type your message</label>
+
         <textarea
           id="message-input"
           rows="1"
-          placeholder="Paste your writing or ask for help..."
+          placeholder="Paste your writing or ask for writing help..."
           required
         ></textarea>
 
-        <button id="send-button" type="submit">Send</button>
+        <button type="submit">Send</button>
       </form>
     </section>
   </main>
 
+  <script src="script.js"></script>
   <script src="writing.js"></script>
 </body>
 </html>
