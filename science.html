@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Science Assistant — DavidCraft AI</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="chat.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <a class="logo" href="index.html">
+      DavidCraft <span>AI</span>
+    </a>
+
+    <div class="topbar-actions">
+      <a class="back-link" href="index.html">← All assistants</a>
+      <button id="theme-button" aria-label="Change color theme">◐</button>
+    </div>
+  </header>
+
+  <main class="chat-page">
+    <section class="chat-shell">
+      <div class="chat-header">
+        <div class="chat-avatar science-avatar">⚗</div>
+
+        <div>
+          <h1>Science Assistant</h1>
+          <p>Ask about biology, chemistry, physics, earth science, and more.</p>
+        </div>
+      </div>
+
+      <div class="suggestions">
+        <button type="button">Explain photosynthesis</button>
+        <button type="button">What is an atom?</button>
+        <button type="button">How does gravity work?</button>
+        <button type="button">Why do volcanoes erupt?</button>
+      </div>
+
+      <div id="messages" class="messages" aria-live="polite">
+        <div class="message assistant">
+          <div class="message-name">Science Assistant</div>
+          <p>
+            Hi! I can help explain biology, chemistry, physics, earth science,
+            astronomy, and other science topics.
+          </p>
+        </div>
+      </div>
+
+      <form id="chat-form" class="chat-form">
+        <label class="sr-only" for="message-input">Type your message</label>
+
+        <textarea
+          id="message-input"
+          rows="1"
+          placeholder="Ask a science question..."
+          required
+        ></textarea>
+
+        <button type="submit">Send</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+  <script src="science.js"></script>
+</body>
+</html>
