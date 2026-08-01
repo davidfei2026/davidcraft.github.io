@@ -2,74 +2,1604 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Coding Assistant — DavidCraft AI</title>
 
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="chat.css">
+  <script>
+    /*
+      Apply the saved theme before the page appears.
+      This prevents a bright flash when dark mode is selected.
+    */
+    (() => {
+      const savedTheme =
+        localStorage.getItem("davidcraft-theme") || "system";
+
+      const systemIsDark =
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      const visibleTheme =
+        savedTheme === "system"
+          ? systemIsDark
+            ? "dark"
+            : "light"
+          : savedTheme;
+
+      document.documentElement.dataset.theme = visibleTheme;
+    })();
+  </script>
+
+  <style>
+    :root {
+      color-scheme: light;
+
+      --page: #f5f7fc;
+      --sidebar: #ffffff;
+      --card: #ffffff;
+      --soft: #f1f3f8;
+      --input: #ffffff;
+
+      --text: #171923;
+      --muted: #697386;
+      --border: #dfe3ec;
+
+      --accent: #695cff;
+      --accent-hover: #594ceb;
+
+      --shadow: rgba(25, 32, 55, 0.1);
+      --sidebar-width: 268px;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+
+      --page: #0c1220;
+      --sidebar: #121a28;
+      --card: #171f2d;
+      --soft: #202938;
+      --input: #101827;
+
+      --text: #f5f7fb;
+      --muted: #aab4c7;
+      --border: #303a4c;
+
+      --accent: #7568ff;
+      --accent-hover: #8479ff;
+
+      --shadow: rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+
+      background: var(--page);
+      color: var(--text);
+
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+    }
+
+    button,
+    textarea {
+      font: inherit;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    body.no-scroll {
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 1000;
+
+      width: var(--sidebar-width);
+      padding: 18px 14px;
+
+      display: flex;
+      flex-direction: column;
+
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+
+      transition: transform 0.25s ease;
+    }
+
+    .sidebar-header {
+      min-height: 48px;
+      padding: 0 8px 14px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-logo {
+      font-size: 20px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .sidebar-logo span {
+      color: var(--accent);
+    }
+
+    .sidebar-close {
+      display: none;
+
+      width: 38px;
+      height: 38px;
+
+      border: 0;
+      border-radius: 10px;
+
+      background: transparent;
+
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .sidebar-close:hover {
+      background: var(--soft);
+    }
+
+    .new-chat {
+      min-height: 46px;
+      padding: 0 14px;
+      margin: 4px 0 22px;
+
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      border: 0;
+      border-radius: 12px;
+
+      background: var(--accent);
+      color: #ffffff;
+
+      font-weight: 750;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .new-chat:hover {
+      background: var(--accent-hover);
+    }
+
+    .navigation {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .navigation-label {
+      margin: 0 10px 8px;
+
+      color: var(--muted);
+
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .navigation a {
+      min-height: 46px;
+      padding: 0 10px;
+
+      display: flex;
+      align-items: center;
+      gap: 11px;
+
+      border-radius: 11px;
+
+      font-size: 14px;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .navigation a:hover,
+    .navigation a.active {
+      background: var(--soft);
+    }
+
+    .nav-icon {
+      width: 31px;
+      height: 31px;
+
+      display: grid;
+      place-items: center;
+
+      flex-shrink: 0;
+
+      border-radius: 9px;
+
+      color: #ffffff;
+
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .purple {
+      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+    }
+
+    .blue {
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    }
+
+    .green {
+      background: linear-gradient(135deg, #22c55e, #10b981);
+    }
+
+    .orange {
+      background: linear-gradient(135deg, #f59e0b, #f97316);
+    }
+
+    .pink {
+      background: linear-gradient(135deg, #ec4899, #a855f7);
+    }
+
+    .science {
+      background: linear-gradient(135deg, #14b8a6, #22c55e);
+    }
+
+    .gray {
+      background: linear-gradient(135deg, #64748b, #334155);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 14px;
+
+      border-top: 1px solid var(--border);
+    }
+
+    .settings-button {
+      width: 100%;
+      min-height: 46px;
+      padding: 0 12px;
+
+      display: flex;
+      align-items: center;
+      gap: 11px;
+
+      border: 0;
+      border-radius: 11px;
+
+      background: transparent;
+
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .settings-button:hover {
+      background: var(--soft);
+    }
+
+    /* Main page */
+
+    .page {
+      min-height: 100vh;
+      margin-left: var(--sidebar-width);
+
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      min-height: 68px;
+      padding: 12px 24px;
+
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .menu-button {
+      display: none;
+
+      width: 42px;
+      height: 42px;
+
+      border: 1px solid var(--border);
+      border-radius: 11px;
+
+      background: var(--card);
+
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .mobile-logo {
+      display: none;
+
+      font-size: 19px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .mobile-logo span {
+      color: var(--accent);
+    }
+
+    .topbar-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .chat-page {
+      width: min(100% - 40px, 980px);
+      margin: 0 auto;
+      padding: 42px 0;
+
+      flex: 1;
+    }
+
+    .chat-shell {
+      min-height: calc(100vh - 152px);
+
+      display: flex;
+      flex-direction: column;
+
+      overflow: hidden;
+
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+
+      box-shadow: 0 18px 48px var(--shadow);
+    }
+
+    .assistant-header {
+      padding: 25px;
+
+      display: flex;
+      align-items: center;
+      gap: 18px;
+
+      border-bottom: 1px solid var(--border);
+    }
+
+    .assistant-avatar {
+      width: 56px;
+      height: 56px;
+
+      display: grid;
+      place-items: center;
+
+      flex-shrink: 0;
+
+      border-radius: 16px;
+
+      background: linear-gradient(135deg, #8b5cf6, #635bff);
+      color: #ffffff;
+
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .assistant-header h1 {
+      margin: 0 0 5px;
+      font-size: 25px;
+    }
+
+    .assistant-header p {
+      margin: 0;
+
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .suggestions {
+      padding: 17px 24px;
+
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+
+      border-bottom: 1px solid var(--border);
+    }
+
+    .suggestions button {
+      padding: 9px 14px;
+
+      border: 1px solid var(--border);
+      border-radius: 999px;
+
+      background: var(--soft);
+      color: var(--text);
+
+      cursor: pointer;
+    }
+
+    .suggestions button:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .messages {
+      min-height: 420px;
+      padding: 24px;
+
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: 16px;
+
+      overflow-y: auto;
+
+      background: var(--page);
+    }
+
+    .message {
+      max-width: 78%;
+      padding: 15px 17px;
+
+      border-radius: 17px;
+
+      line-height: 1.6;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .message.assistant {
+      align-self: flex-start;
+
+      background: var(--soft);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 5px;
+    }
+
+    .message.user {
+      align-self: flex-end;
+
+      background: var(--accent);
+      color: #ffffff;
+
+      border-bottom-right-radius: 5px;
+    }
+
+    .message-name {
+      margin-bottom: 6px;
+
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .message-content {
+      margin: 0;
+    }
+
+    .chat-form {
+      padding: 18px 22px;
+
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+
+      border-top: 1px solid var(--border);
+    }
+
+    .message-input {
+      min-height: 55px;
+      max-height: 180px;
+      padding: 15px 17px;
+
+      resize: vertical;
+
+      border: 1px solid var(--border);
+      border-radius: 15px;
+
+      background: var(--input);
+      color: var(--text);
+
+      outline: none;
+    }
+
+    .message-input::placeholder {
+      color: var(--muted);
+    }
+
+    .message-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(105, 92, 255, 0.16);
+    }
+
+    .send-button {
+      min-width: 94px;
+      padding: 0 22px;
+
+      border: 0;
+      border-radius: 14px;
+
+      background: var(--accent);
+      color: #ffffff;
+
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .send-button:hover {
+      background: var(--accent-hover);
+    }
+
+    .send-button:disabled,
+    .message-input:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Overlays */
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1090;
+
+      background: rgba(5, 9, 18, 0.55);
+      backdrop-filter: blur(3px);
+    }
+
+    .overlay[hidden] {
+      display: none;
+    }
+
+    /* Settings */
+
+    .settings-panel {
+      position: fixed;
+      inset: 0 0 0 auto;
+      z-index: 1100;
+
+      width: min(400px, 92vw);
+
+      display: flex;
+      flex-direction: column;
+
+      background: var(--card);
+      border-left: 1px solid var(--border);
+
+      box-shadow: -20px 0 50px rgba(0, 0, 0, 0.22);
+
+      transform: translateX(105%);
+      visibility: hidden;
+
+      transition:
+        transform 0.25s ease,
+        visibility 0.25s ease;
+    }
+
+    .settings-panel.open {
+      transform: translateX(0);
+      visibility: visible;
+    }
+
+    .settings-header {
+      min-height: 70px;
+      padding: 15px 20px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      border-bottom: 1px solid var(--border);
+    }
+
+    .settings-header h2 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .settings-close {
+      width: 40px;
+      height: 40px;
+
+      display: grid;
+      place-items: center;
+
+      border: 0;
+      border-radius: 10px;
+
+      background: transparent;
+
+      font-size: 30px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .settings-close:hover {
+      background: var(--soft);
+    }
+
+    .settings-content {
+      padding: 22px;
+      overflow-y: auto;
+    }
+
+    .settings-section + .settings-section {
+      margin-top: 28px;
+      padding-top: 24px;
+
+      border-top: 1px solid var(--border);
+    }
+
+    .settings-section h3 {
+      margin: 0 0 6px;
+      font-size: 17px;
+    }
+
+    .settings-description {
+      margin: 0 0 16px;
+
+      color: var(--muted);
+
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .theme-options {
+      display: grid;
+      gap: 10px;
+    }
+
+    .theme-option {
+      width: 100%;
+      padding: 14px;
+
+      display: grid;
+      grid-template-columns: 42px 1fr 24px;
+      align-items: center;
+      gap: 12px;
+
+      border: 1px solid var(--border);
+      border-radius: 14px;
+
+      background: var(--page);
+      color: var(--text);
+
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .theme-option:hover {
+      border-color: var(--accent);
+    }
+
+    .theme-option.active {
+      border-color: var(--accent);
+      background: rgba(105, 92, 255, 0.12);
+    }
+
+    .theme-icon {
+      width: 42px;
+      height: 42px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 11px;
+
+      background: var(--card);
+
+      font-size: 20px;
+    }
+
+    .theme-copy strong,
+    .theme-copy small {
+      display: block;
+    }
+
+    .theme-copy strong {
+      margin-bottom: 3px;
+    }
+
+    .theme-copy small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .theme-check {
+      opacity: 0;
+
+      color: var(--accent);
+
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .theme-option.active .theme-check {
+      opacity: 1;
+    }
+
+    .settings-action {
+      width: 100%;
+      min-height: 46px;
+      padding: 0 14px;
+
+      border: 1px solid var(--border);
+      border-radius: 12px;
+
+      background: var(--page);
+      color: var(--text);
+
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .settings-action:hover {
+      border-color: var(--accent);
+    }
+
+    .about-card {
+      padding: 16px;
+
+      border: 1px solid var(--border);
+      border-radius: 14px;
+
+      background: var(--page);
+    }
+
+    .about-card p {
+      margin: 6px 0;
+      color: var(--muted);
+    }
+
+    .about-card small {
+      color: var(--muted);
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        width: min(280px, 86vw);
+
+        transform: translateX(-105%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-close {
+        display: grid;
+        place-items: center;
+      }
+
+      .page {
+        margin-left: 0;
+      }
+
+      .menu-button {
+        display: grid;
+        place-items: center;
+      }
+
+      .mobile-logo {
+        display: inline-block;
+      }
+
+      .topbar-title {
+        display: none;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .chat-page {
+        width: calc(100% - 20px);
+        padding: 12px 0;
+      }
+
+      .chat-shell {
+        min-height: calc(100vh - 94px);
+        border-radius: 16px;
+      }
+
+      .assistant-header,
+      .suggestions,
+      .messages,
+      .chat-form {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .assistant-header {
+        align-items: flex-start;
+      }
+
+      .assistant-avatar {
+        width: 50px;
+        height: 50px;
+      }
+
+      .assistant-header h1 {
+        font-size: 21px;
+      }
+
+      .message {
+        max-width: 90%;
+      }
+
+      .chat-form {
+        grid-template-columns: 1fr;
+      }
+
+      .send-button {
+        min-height: 48px;
+      }
+
+      .settings-panel {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <header class="topbar">
-    <a class="logo" href="index.html">
-      DavidCraft <span>AI</span>
-    </a>
+  <div
+    id="sidebar-overlay"
+    class="overlay"
+    hidden
+  ></div>
 
-    <div class="topbar-actions">
-      <a class="back-link" href="index.html">← All assistants</a>
-      <button id="theme-button" aria-label="Change color theme">◐</button>
+  <aside
+    id="sidebar"
+    class="sidebar"
+    aria-label="Main navigation"
+  >
+    <div class="sidebar-header">
+      <a class="sidebar-logo" href="index.html">
+        DavidCraft <span>AI</span>
+      </a>
+
+      <button
+        id="sidebar-close"
+        class="sidebar-close"
+        type="button"
+        aria-label="Close sidebar"
+      >
+        ×
+      </button>
     </div>
-  </header>
 
-  <main class="chat-page">
-    <section class="chat-shell">
-      <div class="chat-header">
-        <div class="chat-avatar">&lt;/&gt;</div>
+    <button
+      id="new-chat-button"
+      class="new-chat"
+      type="button"
+    >
+      <span>＋</span>
+      <span>New chat</span>
+    </button>
 
-        <div>
-          <h1>Coding Assistant</h1>
-          <p>Ask about HTML, CSS, JavaScript, Python, GitHub, and more.</p>
+    <nav class="navigation" aria-label="Assistants">
+      <p class="navigation-label">Assistants</p>
+
+      <a class="active" href="coding.html">
+        <span class="nav-icon purple">&lt;/&gt;</span>
+        Coding Assistant
+      </a>
+
+      <a href="writing.html">
+        <span class="nav-icon blue">Aa</span>
+        Writing Assistant
+      </a>
+
+      <a href="math.html">
+        <span class="nav-icon green">π</span>
+        Math Helper
+      </a>
+
+      <a href="study.html">
+        <span class="nav-icon orange">✦</span>
+        Study Assistant
+      </a>
+
+      <a href="ideas.html">
+        <span class="nav-icon pink">☼</span>
+        Idea Generator
+      </a>
+
+      <a href="science.html">
+        <span class="nav-icon science">⚗</span>
+        Science Assistant
+      </a>
+
+      <a href="chat.html">
+        <span class="nav-icon gray">●</span>
+        General Chat
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button
+        id="settings-button"
+        class="settings-button"
+        type="button"
+        aria-expanded="false"
+      >
+        <span>⚙</span>
+        <span>Settings</span>
+      </button>
+    </div>
+  </aside>
+
+  <div class="page">
+    <header class="topbar">
+      <button
+        id="menu-button"
+        class="menu-button"
+        type="button"
+        aria-label="Open sidebar"
+        aria-expanded="false"
+      >
+        ☰
+      </button>
+
+      <a class="mobile-logo" href="index.html">
+        DavidCraft <span>AI</span>
+      </a>
+
+      <span class="topbar-title">Coding Assistant</span>
+    </header>
+
+    <main class="chat-page">
+      <section class="chat-shell">
+        <header class="assistant-header">
+          <div class="assistant-avatar">&lt;/&gt;</div>
+
+          <div>
+            <h1>Coding Assistant</h1>
+            <p>
+              Ask about HTML, CSS, JavaScript, Python, GitHub, and more.
+            </p>
+          </div>
+        </header>
+
+        <div class="suggestions">
+          <button type="button">Explain HTML links</button>
+          <button type="button">Help me fix CSS</button>
+          <button type="button">What is JavaScript?</button>
+          <button type="button">How does GitHub Pages work?</button>
         </div>
-      </div>
 
-      <div class="suggestions">
-        <button type="button">Explain HTML links</button>
-        <button type="button">Help me fix CSS</button>
-        <button type="button">What is JavaScript?</button>
-        <button type="button">How does GitHub Pages work?</button>
-      </div>
+        <div
+          id="messages"
+          class="messages"
+          aria-live="polite"
+        >
+          <article class="message assistant">
+            <div class="message-name">Coding Assistant</div>
 
-      <div id="messages" class="messages" aria-live="polite">
-        <div class="message assistant">
-          <div class="message-name">Coding Assistant</div>
-          <p>
-            Hi! I can help with basic coding questions. Try asking about HTML,
-            CSS, JavaScript, Python, or GitHub Pages.
-          </p>
+            <p class="message-content">
+              Hi! I can help with coding questions. Ask me about HTML,
+              CSS, JavaScript, Python, Git, GitHub, or debugging.
+            </p>
+          </article>
         </div>
-      </div>
 
-      <form id="chat-form" class="chat-form">
-        <label class="sr-only" for="message-input">Type your message</label>
+        <form id="chat-form" class="chat-form">
+          <textarea
+            id="message-input"
+            class="message-input"
+            rows="1"
+            placeholder="Ask a coding question..."
+            required
+          ></textarea>
 
-        <textarea
-          id="message-input"
-          rows="1"
-          placeholder="Ask a coding question..."
-          required
-        ></textarea>
+          <button
+            id="send-button"
+            class="send-button"
+            type="submit"
+          >
+            Send
+          </button>
+        </form>
+      </section>
+    </main>
+  </div>
 
-        <button type="submit">Send</button>
-      </form>
+  <div
+    id="settings-overlay"
+    class="overlay"
+    hidden
+  ></div>
 
-      <p class="demo-note">
-        This first version is a local demo. It does not connect to a real AI service yet.
-      </p>
-    </section>
-  </main>
+  <aside
+    id="settings-panel"
+    class="settings-panel"
+    aria-hidden="true"
+    aria-labelledby="settings-title"
+  >
+    <header class="settings-header">
+      <h2 id="settings-title">Settings</h2>
 
-  <script src="script.js"></script>
-  <script src="coding.js"></script>
+      <button
+        id="settings-close"
+        class="settings-close"
+        type="button"
+        aria-label="Close settings"
+      >
+        ×
+      </button>
+    </header>
+
+    <div class="settings-content">
+      <section class="settings-section">
+        <h3>Appearance</h3>
+
+        <p class="settings-description">
+          Choose how DavidCraft AI looks.
+        </p>
+
+        <div class="theme-options">
+          <button
+            class="theme-option"
+            type="button"
+            data-theme-choice="light"
+          >
+            <span class="theme-icon">☀</span>
+
+            <span class="theme-copy">
+              <strong>Light</strong>
+              <small>Use the light appearance</small>
+            </span>
+
+            <span class="theme-check">✓</span>
+          </button>
+
+          <button
+            class="theme-option"
+            type="button"
+            data-theme-choice="dark"
+          >
+            <span class="theme-icon">☾</span>
+
+            <span class="theme-copy">
+              <strong>Dark</strong>
+              <small>Use the dark appearance</small>
+            </span>
+
+            <span class="theme-check">✓</span>
+          </button>
+
+          <button
+            class="theme-option"
+            type="button"
+            data-theme-choice="system"
+          >
+            <span class="theme-icon">◐</span>
+
+            <span class="theme-copy">
+              <strong>System</strong>
+              <small>Match your device setting</small>
+            </span>
+
+            <span class="theme-check">✓</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <h3>Conversation</h3>
+
+        <button
+          id="clear-chat-button"
+          class="settings-action"
+          type="button"
+        >
+          Clear Coding Assistant chat
+        </button>
+      </section>
+
+      <section class="settings-section">
+        <h3>About</h3>
+
+        <div class="about-card">
+          <strong>DavidCraft AI</strong>
+          <p>Your personal AI workspace.</p>
+          <small>Version 1.0</small>
+        </div>
+      </section>
+    </div>
+  </aside>
+
+  <script>
+    const WORKER_URL =
+      "https://davidcraft-ai.feidavid81022.workers.dev";
+
+    const STORAGE_KEY = "davidcraft-coding-chat";
+    const THEME_KEY = "davidcraft-theme";
+
+    const welcomeMessage =
+      "Hi! I can help with coding questions. Ask me about HTML, " +
+      "CSS, JavaScript, Python, Git, GitHub, or debugging.";
+
+    const messagesElement =
+      document.getElementById("messages");
+
+    const chatForm =
+      document.getElementById("chat-form");
+
+    const messageInput =
+      document.getElementById("message-input");
+
+    const sendButton =
+      document.getElementById("send-button");
+
+    const suggestionButtons =
+      document.querySelectorAll(".suggestions button");
+
+    const sidebar =
+      document.getElementById("sidebar");
+
+    const menuButton =
+      document.getElementById("menu-button");
+
+    const sidebarClose =
+      document.getElementById("sidebar-close");
+
+    const sidebarOverlay =
+      document.getElementById("sidebar-overlay");
+
+    const settingsButton =
+      document.getElementById("settings-button");
+
+    const settingsPanel =
+      document.getElementById("settings-panel");
+
+    const settingsClose =
+      document.getElementById("settings-close");
+
+    const settingsOverlay =
+      document.getElementById("settings-overlay");
+
+    const themeOptions =
+      document.querySelectorAll("[data-theme-choice]");
+
+    const clearChatButton =
+      document.getElementById("clear-chat-button");
+
+    const newChatButton =
+      document.getElementById("new-chat-button");
+
+    const systemThemeQuery =
+      window.matchMedia("(prefers-color-scheme: dark)");
+
+    let waitingForReply = false;
+    let conversation = loadConversation();
+
+    function loadConversation() {
+      try {
+        const saved = JSON.parse(
+          localStorage.getItem(STORAGE_KEY)
+        );
+
+        if (!Array.isArray(saved)) {
+          return [];
+        }
+
+        return saved
+          .filter((item) => {
+            return (
+              item &&
+              (item.role === "user" ||
+                item.role === "assistant") &&
+              typeof item.content === "string" &&
+              item.content.trim()
+            );
+          })
+          .slice(-20);
+      } catch {
+        return [];
+      }
+    }
+
+    function saveConversation() {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(conversation.slice(-20))
+      );
+    }
+
+    function createMessage(role, content, save = true) {
+      const article = document.createElement("article");
+      article.className = `message ${role}`;
+
+      const name = document.createElement("div");
+      name.className = "message-name";
+      name.textContent =
+        role === "assistant"
+          ? "Coding Assistant"
+          : "You";
+
+      const text = document.createElement("p");
+      text.className = "message-content";
+      text.textContent = content;
+
+      article.append(name, text);
+      messagesElement.appendChild(article);
+
+      messagesElement.scrollTop =
+        messagesElement.scrollHeight;
+
+      if (save) {
+        conversation.push({
+          role,
+          content
+        });
+
+        conversation = conversation.slice(-20);
+        saveConversation();
+      }
+
+      return article;
+    }
+
+    function showWelcomeMessage() {
+      messagesElement.innerHTML = "";
+
+      createMessage(
+        "assistant",
+        welcomeMessage,
+        false
+      );
+    }
+
+    function restoreConversation() {
+      if (conversation.length === 0) {
+        showWelcomeMessage();
+        return;
+      }
+
+      messagesElement.innerHTML = "";
+
+      conversation.forEach((item) => {
+        createMessage(
+          item.role,
+          item.content,
+          false
+        );
+      });
+    }
+
+    function clearConversation() {
+      conversation = [];
+      localStorage.removeItem(STORAGE_KEY);
+
+      showWelcomeMessage();
+
+      messageInput.value = "";
+      messageInput.focus();
+    }
+
+    async function sendMessage(text) {
+      const cleanText = text.trim();
+
+      if (!cleanText || waitingForReply) {
+        return;
+      }
+
+      waitingForReply = true;
+
+      messageInput.disabled = true;
+      sendButton.disabled = true;
+      sendButton.textContent = "Sending…";
+
+      createMessage("user", cleanText);
+
+      messageInput.value = "";
+
+      const thinkingMessage = createMessage(
+        "assistant",
+        "Thinking…",
+        false
+      );
+
+      try {
+        const response = await fetch(WORKER_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            messages: conversation
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.error || "The request failed."
+          );
+        }
+
+        thinkingMessage.remove();
+
+        const reply =
+          typeof data.reply === "string" &&
+          data.reply.trim()
+            ? data.reply.trim()
+            : "The Coding Assistant returned no response.";
+
+        createMessage("assistant", reply);
+      } catch (error) {
+        console.error(error);
+
+        const content =
+          thinkingMessage.querySelector(
+            ".message-content"
+          );
+
+        content.textContent =
+          `Connection error: ${error.message}`;
+      } finally {
+        waitingForReply = false;
+
+        messageInput.disabled = false;
+        sendButton.disabled = false;
+        sendButton.textContent = "Send";
+
+        messageInput.focus();
+      }
+    }
+
+    chatForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      sendMessage(messageInput.value);
+    });
+
+    messageInput.addEventListener(
+      "keydown",
+      (event) => {
+        if (
+          event.key === "Enter" &&
+          !event.shiftKey
+        ) {
+          event.preventDefault();
+          chatForm.requestSubmit();
+        }
+      }
+    );
+
+    suggestionButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        sendMessage(button.textContent);
+      });
+    });
+
+    newChatButton.addEventListener(
+      "click",
+      clearConversation
+    );
+
+    clearChatButton.addEventListener(
+      "click",
+      () => {
+        clearConversation();
+        closeSettings();
+      }
+    );
+
+    function openSidebar() {
+      sidebar.classList.add("open");
+      sidebarOverlay.hidden = false;
+      document.body.classList.add("no-scroll");
+
+      menuButton.setAttribute(
+        "aria-expanded",
+        "true"
+      );
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove("open");
+      sidebarOverlay.hidden = true;
+      document.body.classList.remove("no-scroll");
+
+      menuButton.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+    }
+
+    menuButton.addEventListener(
+      "click",
+      openSidebar
+    );
+
+    sidebarClose.addEventListener(
+      "click",
+      closeSidebar
+    );
+
+    sidebarOverlay.addEventListener(
+      "click",
+      closeSidebar
+    );
+
+    function getSelectedTheme() {
+      const saved =
+        localStorage.getItem(THEME_KEY);
+
+      return ["light", "dark", "system"].includes(saved)
+        ? saved
+        : "system";
+    }
+
+    function getVisibleTheme(choice) {
+      if (choice === "system") {
+        return systemThemeQuery.matches
+          ? "dark"
+          : "light";
+      }
+
+      return choice;
+    }
+
+    function updateThemeButtons(choice) {
+      themeOptions.forEach((button) => {
+        const active =
+          button.dataset.themeChoice === choice;
+
+        button.classList.toggle(
+          "active",
+          active
+        );
+
+        button.setAttribute(
+          "aria-pressed",
+          String(active)
+        );
+      });
+    }
+
+    function applyTheme(choice) {
+      const selected =
+        ["light", "dark", "system"].includes(choice)
+          ? choice
+          : "system";
+
+      localStorage.setItem(
+        THEME_KEY,
+        selected
+      );
+
+      document.documentElement.dataset.theme =
+        getVisibleTheme(selected);
+
+      updateThemeButtons(selected);
+    }
+
+    function openSettings() {
+      closeSidebar();
+
+      settingsPanel.classList.add("open");
+      settingsPanel.setAttribute(
+        "aria-hidden",
+        "false"
+      );
+
+      settingsOverlay.hidden = false;
+      document.body.classList.add("no-scroll");
+
+      settingsButton.setAttribute(
+        "aria-expanded",
+        "true"
+      );
+    }
+
+    function closeSettings() {
+      settingsPanel.classList.remove("open");
+      settingsPanel.setAttribute(
+        "aria-hidden",
+        "true"
+      );
+
+      settingsOverlay.hidden = true;
+      document.body.classList.remove("no-scroll");
+
+      settingsButton.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+    }
+
+    settingsButton.addEventListener(
+      "click",
+      openSettings
+    );
+
+    settingsClose.addEventListener(
+      "click",
+      closeSettings
+    );
+
+    settingsOverlay.addEventListener(
+      "click",
+      closeSettings
+    );
+
+    themeOptions.forEach((button) => {
+      button.addEventListener("click", () => {
+        applyTheme(
+          button.dataset.themeChoice
+        );
+      });
+    });
+
+    systemThemeQuery.addEventListener(
+      "change",
+      () => {
+        if (getSelectedTheme() === "system") {
+          applyTheme("system");
+        }
+      }
+    );
+
+    document.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.key === "Escape") {
+          closeSidebar();
+          closeSettings();
+        }
+      }
+    );
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 900) {
+        closeSidebar();
+      }
+    });
+
+    applyTheme(getSelectedTheme());
+    restoreConversation();
+  </script>
 </body>
 </html>
