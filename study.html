@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Study Assistant — DavidCraft AI</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="chat.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <a class="logo" href="index.html">
+      DavidCraft <span>AI</span>
+    </a>
+
+    <div class="topbar-actions">
+      <a class="back-link" href="index.html">← All assistants</a>
+      <button id="theme-button" aria-label="Change color theme">◐</button>
+    </div>
+  </header>
+
+  <main class="chat-page">
+    <section class="chat-shell">
+      <div class="chat-header">
+        <div class="chat-avatar study-avatar">✦</div>
+
+        <div>
+          <h1>Study Assistant</h1>
+          <p>Create notes, quizzes, summaries, explanations, and study plans.</p>
+        </div>
+      </div>
+
+      <div class="suggestions">
+        <button type="button">Summarize my notes</button>
+        <button type="button">Create a practice quiz</button>
+        <button type="button">Explain this concept simply</button>
+        <button type="button">Make me a study plan</button>
+      </div>
+
+      <div id="messages" class="messages" aria-live="polite">
+        <div class="message assistant">
+          <div class="message-name">Study Assistant</div>
+          <p>
+            Hi! I can help you review notes, understand difficult topics,
+            create quizzes, make flashcards, and prepare for tests.
+          </p>
+        </div>
+      </div>
+
+      <form id="chat-form" class="chat-form">
+        <label class="sr-only" for="message-input">Type your message</label>
+
+        <textarea
+          id="message-input"
+          rows="1"
+          placeholder="Ask for study help..."
+          required
+        ></textarea>
+
+        <button type="submit">Send</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+  <script src="study.js"></script>
+</body>
+</html>
