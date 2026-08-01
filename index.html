@@ -11,9 +11,17 @@
 </head>
 
 <body>
-  <div id="sidebar-overlay" class="sidebar-overlay" hidden></div>
+  <div
+    id="sidebar-overlay"
+    class="sidebar-overlay"
+    hidden
+  ></div>
 
-  <aside id="sidebar" class="sidebar">
+  <aside
+    id="sidebar"
+    class="sidebar"
+    aria-label="Main navigation"
+  >
     <div class="sidebar-header">
       <a class="sidebar-logo" href="index.html">
         DavidCraft <span>AI</span>
@@ -30,8 +38,8 @@
     </div>
 
     <a class="new-chat-button" href="chat.html">
-      <span>＋</span>
-      New chat
+      <span aria-hidden="true">＋</span>
+      <span>New chat</span>
     </a>
 
     <nav class="sidebar-navigation" aria-label="Assistants">
@@ -39,37 +47,37 @@
 
       <a href="coding.html">
         <span class="sidebar-icon purple-icon">&lt;/&gt;</span>
-        Coding Assistant
+        <span>Coding Assistant</span>
       </a>
 
       <a href="writing.html">
         <span class="sidebar-icon blue-icon">Aa</span>
-        Writing Assistant
+        <span>Writing Assistant</span>
       </a>
 
       <a href="math.html">
         <span class="sidebar-icon green-icon">π</span>
-        Math Helper
+        <span>Math Helper</span>
       </a>
 
       <a href="study.html">
         <span class="sidebar-icon orange-icon">✦</span>
-        Study Assistant
+        <span>Study Assistant</span>
       </a>
 
       <a href="ideas.html">
         <span class="sidebar-icon pink-icon">☼</span>
-        Idea Generator
+        <span>Idea Generator</span>
       </a>
 
       <a href="science.html">
         <span class="sidebar-icon science-icon">⚗</span>
-        Science Assistant
+        <span>Science Assistant</span>
       </a>
 
       <a href="chat.html">
         <span class="sidebar-icon gray-icon">●</span>
-        General Chat
+        <span>General Chat</span>
       </a>
     </nav>
 
@@ -78,30 +86,29 @@
         id="settings-button"
         class="sidebar-settings"
         type="button"
+        aria-expanded="false"
       >
-        <span>⚙</span>
-        Settings
+        <span aria-hidden="true">⚙</span>
+        <span>Settings</span>
       </button>
     </div>
   </aside>
 
   <div class="site-content">
     <header class="topbar">
-      <div class="topbar-left">
-        <button
-          id="sidebar-open"
-          class="sidebar-open"
-          type="button"
-          aria-label="Open sidebar"
-          aria-expanded="false"
-        >
-          ☰
-        </button>
+      <button
+        id="sidebar-open"
+        class="sidebar-open"
+        type="button"
+        aria-label="Open sidebar"
+        aria-expanded="false"
+      >
+        ☰
+      </button>
 
-        <a class="logo mobile-logo" href="index.html">
-          DavidCraft <span>AI</span>
-        </a>
-      </div>
+      <a class="mobile-logo" href="index.html">
+        DavidCraft <span>AI</span>
+      </a>
     </header>
 
     <main>
@@ -119,7 +126,7 @@
         <a class="assistant-card purple" href="coding.html">
           <div class="icon">&lt;/&gt;</div>
 
-          <div>
+          <div class="card-text">
             <h2>Coding Assistant</h2>
             <p>Get help with HTML, CSS, JavaScript, Python, and more.</p>
           </div>
@@ -130,7 +137,7 @@
         <a class="assistant-card blue" href="writing.html">
           <div class="icon">Aa</div>
 
-          <div>
+          <div class="card-text">
             <h2>Writing Assistant</h2>
             <p>Improve writing, generate ideas, and rewrite text.</p>
           </div>
@@ -141,7 +148,7 @@
         <a class="assistant-card green" href="math.html">
           <div class="icon">π</div>
 
-          <div>
+          <div class="card-text">
             <h2>Math Helper</h2>
             <p>Work through math questions and explanations.</p>
           </div>
@@ -152,7 +159,7 @@
         <a class="assistant-card orange" href="study.html">
           <div class="icon">✦</div>
 
-          <div>
+          <div class="card-text">
             <h2>Study Assistant</h2>
             <p>Create notes, quizzes, summaries, and study plans.</p>
           </div>
@@ -163,7 +170,7 @@
         <a class="assistant-card pink" href="ideas.html">
           <div class="icon">☼</div>
 
-          <div>
+          <div class="card-text">
             <h2>Idea Generator</h2>
             <p>Brainstorm projects, stories, businesses, and inventions.</p>
           </div>
@@ -174,12 +181,9 @@
         <a class="assistant-card science" href="science.html">
           <div class="icon">⚗</div>
 
-          <div>
+          <div class="card-text">
             <h2>Science Assistant</h2>
-            <p>
-              Explore biology, chemistry, physics, astronomy,
-              and earth science.
-            </p>
+            <p>Explore biology, chemistry, physics, astronomy, and earth science.</p>
           </div>
 
           <span class="arrow">→</span>
@@ -188,7 +192,7 @@
         <a class="assistant-card gray" href="chat.html">
           <div class="icon">●</div>
 
-          <div>
+          <div class="card-text">
             <h2>General Chat</h2>
             <p>Ask questions and have a general conversation.</p>
           </div>
@@ -203,7 +207,101 @@
     </footer>
   </div>
 
-  <script src="script.js"></script>
+  <div
+    id="settings-overlay"
+    class="settings-overlay"
+    hidden
+  ></div>
+
+  <aside
+    id="settings-panel"
+    class="settings-panel"
+    aria-hidden="true"
+    aria-labelledby="settings-title"
+  >
+    <div class="settings-header">
+      <h2 id="settings-title">Settings</h2>
+
+      <button
+        id="settings-close"
+        class="settings-close"
+        type="button"
+        aria-label="Close settings"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="settings-content">
+      <section class="settings-section">
+        <h3>Appearance</h3>
+        <p>Choose how DavidCraft AI looks.</p>
+
+        <div
+          class="theme-options"
+          role="group"
+          aria-label="Appearance settings"
+        >
+          <button
+            class="theme-option"
+            type="button"
+            data-theme-choice="light"
+          >
+            <span class="theme-icon">☀</span>
+
+            <span class="theme-text">
+              <strong>Light</strong>
+              <small>Use the light appearance</small>
+            </span>
+
+            <span class="theme-check">✓</span>
+          </button>
+
+          <button
+            class="theme-option"
+            type="button"
+            data-theme-choice="dark"
+          >
+            <span class="theme-icon">☾</span>
+
+            <span class="theme-text">
+              <strong>Dark</strong>
+              <small>Use the dark appearance</small>
+            </span>
+
+            <span class="theme-check">✓</span>
+          </button>
+
+          <button
+            class="theme-option"
+            type="button"
+            data-theme-choice="system"
+          >
+            <span class="theme-icon">◐</span>
+
+            <span class="theme-text">
+              <strong>System</strong>
+              <small>Match your device setting</small>
+            </span>
+
+            <span class="theme-check">✓</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <h3>About</h3>
+
+        <div class="about-card">
+          <strong>DavidCraft AI</strong>
+          <p>Your personal AI workspace.</p>
+          <small>Version 1.0</small>
+        </div>
+      </section>
+    </div>
+  </aside>
+
   <script src="sidebar.js"></script>
+  <script src="settings.js"></script>
 </body>
 </html>
