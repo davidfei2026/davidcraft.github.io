@@ -10,11 +10,10 @@ function openSidebar() {
 
   sidebar.classList.add("open");
   sidebarOverlay.hidden = false;
+
   document.body.classList.add("sidebar-is-open");
 
-  if (sidebarOpen) {
-    sidebarOpen.setAttribute("aria-expanded", "true");
-  }
+  sidebarOpen?.setAttribute("aria-expanded", "true");
 }
 
 function closeSidebar() {
@@ -24,27 +23,24 @@ function closeSidebar() {
 
   sidebar.classList.remove("open");
   sidebarOverlay.hidden = true;
+
   document.body.classList.remove("sidebar-is-open");
 
-  if (sidebarOpen) {
-    sidebarOpen.setAttribute("aria-expanded", "false");
-  }
+  sidebarOpen?.setAttribute("aria-expanded", "false");
 }
 
-if (sidebarOpen) {
-  sidebarOpen.addEventListener("click", openSidebar);
-}
-
-if (sidebarClose) {
-  sidebarClose.addEventListener("click", closeSidebar);
-}
-
-if (sidebarOverlay) {
-  sidebarOverlay.addEventListener("click", closeSidebar);
-}
+sidebarOpen?.addEventListener("click", openSidebar);
+sidebarClose?.addEventListener("click", closeSidebar);
+sidebarOverlay?.addEventListener("click", closeSidebar);
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
+    closeSidebar();
+  }
+});
+
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 900) {
     closeSidebar();
   }
 });
