@@ -2,34 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Coding Assistant — DavidCraft AI</title>
 
   <script>
-    /*
-      Apply the saved theme before the page appears.
-      This prevents a bright flash when dark mode is selected.
-    */
     (() => {
-      const savedTheme =
-        localStorage.getItem("davidcraft-theme") || "system";
-
-      const systemIsDark =
-        window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-      const visibleTheme =
-        savedTheme === "system"
-          ? systemIsDark
-            ? "dark"
-            : "light"
-          : savedTheme;
-
-      document.documentElement.dataset.theme = visibleTheme;
+      const choice = localStorage.getItem("davidcraft-theme") || "system";
+      const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const visible = choice === "system" ? (systemDark ? "dark" : "light") : choice;
+      document.documentElement.setAttribute("data-theme", visible);
     })();
   </script>
 
@@ -38,8 +20,7 @@
       color-scheme: light;
 
       --page: #f5f7fc;
-      --sidebar: #ffffff;
-      --card: #ffffff;
+      --panel: #ffffff;
       --soft: #f1f3f8;
       --input: #ffffff;
 
@@ -50,7 +31,7 @@
       --accent: #695cff;
       --accent-hover: #594ceb;
 
-      --shadow: rgba(25, 32, 55, 0.1);
+      --shadow: rgba(25, 32, 55, 0.10);
       --sidebar-width: 268px;
     }
 
@@ -58,8 +39,7 @@
       color-scheme: dark;
 
       --page: #0c1220;
-      --sidebar: #121a28;
-      --card: #171f2d;
+      --panel: #171f2d;
       --soft: #202938;
       --input: #101827;
 
@@ -70,7 +50,7 @@
       --accent: #7568ff;
       --accent-hover: #8479ff;
 
-      --shadow: rgba(0, 0, 0, 0.3);
+      --shadow: rgba(0, 0, 0, 0.30);
     }
 
     * {
@@ -84,10 +64,8 @@
 
     body {
       margin: 0;
-
       background: var(--page);
       color: var(--text);
-
       font-family:
         Inter,
         ui-sans-serif,
@@ -96,10 +74,11 @@
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
 
-      transition:
-        background-color 0.2s ease,
-        color 0.2s ease;
+    body.no-scroll {
+      overflow: hidden;
     }
 
     button,
@@ -120,33 +99,24 @@
       color: inherit;
     }
 
-    body.no-scroll {
-      overflow: hidden;
-    }
-
     /* Sidebar */
 
     .sidebar {
       position: fixed;
       inset: 0 auto 0 0;
       z-index: 1000;
-
       width: var(--sidebar-width);
       padding: 18px 14px;
-
       display: flex;
       flex-direction: column;
-
-      background: var(--sidebar);
+      background: var(--panel);
       border-right: 1px solid var(--border);
-
       transition: transform 0.25s ease;
     }
 
     .sidebar-header {
       min-height: 48px;
       padding: 0 8px 14px;
-
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -158,27 +128,26 @@
       text-decoration: none;
     }
 
-    .sidebar-logo span {
+    .sidebar-logo span,
+    .mobile-logo span {
       color: var(--accent);
     }
 
     .sidebar-close {
       display: none;
-
       width: 38px;
       height: 38px;
-
       border: 0;
       border-radius: 10px;
-
       background: transparent;
-
       font-size: 28px;
-      line-height: 1;
       cursor: pointer;
     }
 
-    .sidebar-close:hover {
+    .sidebar-close:hover,
+    .settings-button:hover,
+    .navigation a:hover,
+    .navigation a.active {
       background: var(--soft);
     }
 
@@ -186,23 +155,19 @@
       min-height: 46px;
       padding: 0 14px;
       margin: 4px 0 22px;
-
       display: flex;
       align-items: center;
       gap: 10px;
-
       border: 0;
       border-radius: 12px;
-
       background: var(--accent);
       color: #ffffff;
-
       font-weight: 750;
-      text-decoration: none;
       cursor: pointer;
     }
 
-    .new-chat:hover {
+    .new-chat:hover,
+    .send-button:hover {
       background: var(--accent-hover);
     }
 
@@ -214,9 +179,7 @@
 
     .navigation-label {
       margin: 0 10px 8px;
-
       color: var(--muted);
-
       font-size: 11px;
       font-weight: 800;
       letter-spacing: 0.11em;
@@ -226,72 +189,38 @@
     .navigation a {
       min-height: 46px;
       padding: 0 10px;
-
       display: flex;
       align-items: center;
       gap: 11px;
-
       border-radius: 11px;
-
       font-size: 14px;
       font-weight: 650;
       text-decoration: none;
     }
 
-    .navigation a:hover,
-    .navigation a.active {
-      background: var(--soft);
-    }
-
     .nav-icon {
       width: 31px;
       height: 31px;
-
       display: grid;
       place-items: center;
-
       flex-shrink: 0;
-
       border-radius: 9px;
-
       color: #ffffff;
-
       font-size: 12px;
       font-weight: 800;
     }
 
-    .purple {
-      background: linear-gradient(135deg, #8b5cf6, #6366f1);
-    }
-
-    .blue {
-      background: linear-gradient(135deg, #3b82f6, #06b6d4);
-    }
-
-    .green {
-      background: linear-gradient(135deg, #22c55e, #10b981);
-    }
-
-    .orange {
-      background: linear-gradient(135deg, #f59e0b, #f97316);
-    }
-
-    .pink {
-      background: linear-gradient(135deg, #ec4899, #a855f7);
-    }
-
-    .science {
-      background: linear-gradient(135deg, #14b8a6, #22c55e);
-    }
-
-    .gray {
-      background: linear-gradient(135deg, #64748b, #334155);
-    }
+    .purple { background: linear-gradient(135deg, #8b5cf6, #6366f1); }
+    .blue { background: linear-gradient(135deg, #3b82f6, #06b6d4); }
+    .green { background: linear-gradient(135deg, #22c55e, #10b981); }
+    .orange { background: linear-gradient(135deg, #f59e0b, #f97316); }
+    .pink { background: linear-gradient(135deg, #ec4899, #a855f7); }
+    .science { background: linear-gradient(135deg, #14b8a6, #22c55e); }
+    .gray { background: linear-gradient(135deg, #64748b, #334155); }
 
     .sidebar-footer {
       margin-top: auto;
       padding-top: 14px;
-
       border-top: 1px solid var(--border);
     }
 
@@ -299,31 +228,22 @@
       width: 100%;
       min-height: 46px;
       padding: 0 12px;
-
       display: flex;
       align-items: center;
       gap: 11px;
-
       border: 0;
       border-radius: 11px;
-
       background: transparent;
-
       font-weight: 700;
       text-align: left;
       cursor: pointer;
     }
 
-    .settings-button:hover {
-      background: var(--soft);
-    }
-
-    /* Main page */
+    /* Main */
 
     .page {
       min-height: 100vh;
       margin-left: var(--sidebar-width);
-
       display: flex;
       flex-direction: column;
     }
@@ -331,40 +251,29 @@
     .topbar {
       min-height: 68px;
       padding: 12px 24px;
-
       display: flex;
       align-items: center;
       gap: 12px;
-
-      background: var(--card);
+      background: var(--panel);
       border-bottom: 1px solid var(--border);
     }
 
     .menu-button {
       display: none;
-
       width: 42px;
       height: 42px;
-
       border: 1px solid var(--border);
       border-radius: 11px;
-
-      background: var(--card);
-
+      background: var(--panel);
       font-size: 20px;
       cursor: pointer;
     }
 
     .mobile-logo {
       display: none;
-
       font-size: 19px;
       font-weight: 800;
       text-decoration: none;
-    }
-
-    .mobile-logo span {
-      color: var(--accent);
     }
 
     .topbar-title {
@@ -377,49 +286,37 @@
       width: min(100% - 40px, 980px);
       margin: 0 auto;
       padding: 42px 0;
-
       flex: 1;
     }
 
     .chat-shell {
       min-height: calc(100vh - 152px);
-
       display: flex;
       flex-direction: column;
-
       overflow: hidden;
-
-      background: var(--card);
+      background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 22px;
-
       box-shadow: 0 18px 48px var(--shadow);
     }
 
     .assistant-header {
       padding: 25px;
-
       display: flex;
       align-items: center;
       gap: 18px;
-
       border-bottom: 1px solid var(--border);
     }
 
     .assistant-avatar {
       width: 56px;
       height: 56px;
-
       display: grid;
       place-items: center;
-
       flex-shrink: 0;
-
       border-radius: 16px;
-
       background: linear-gradient(135deg, #8b5cf6, #635bff);
       color: #ffffff;
-
       font-size: 18px;
       font-weight: 800;
     }
@@ -431,30 +328,24 @@
 
     .assistant-header p {
       margin: 0;
-
       color: var(--muted);
       line-height: 1.5;
     }
 
     .suggestions {
       padding: 17px 24px;
-
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-
       border-bottom: 1px solid var(--border);
     }
 
     .suggestions button {
       padding: 9px 14px;
-
       border: 1px solid var(--border);
       border-radius: 999px;
-
       background: var(--soft);
       color: var(--text);
-
       cursor: pointer;
     }
 
@@ -466,23 +357,18 @@
     .messages {
       min-height: 420px;
       padding: 24px;
-
       display: flex;
       flex: 1;
       flex-direction: column;
       gap: 16px;
-
       overflow-y: auto;
-
       background: var(--page);
     }
 
     .message {
       max-width: 78%;
       padding: 15px 17px;
-
       border-radius: 17px;
-
       line-height: 1.6;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
@@ -490,7 +376,6 @@
 
     .message.assistant {
       align-self: flex-start;
-
       background: var(--soft);
       border: 1px solid var(--border);
       border-bottom-left-radius: 5px;
@@ -498,16 +383,13 @@
 
     .message.user {
       align-self: flex-end;
-
       background: var(--accent);
       color: #ffffff;
-
       border-bottom-right-radius: 5px;
     }
 
     .message-name {
       margin-bottom: 6px;
-
       font-size: 12px;
       font-weight: 800;
     }
@@ -518,11 +400,9 @@
 
     .chat-form {
       padding: 18px 22px;
-
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 12px;
-
       border-top: 1px solid var(--border);
     }
 
@@ -530,15 +410,11 @@
       min-height: 55px;
       max-height: 180px;
       padding: 15px 17px;
-
       resize: vertical;
-
       border: 1px solid var(--border);
       border-radius: 15px;
-
       background: var(--input);
       color: var(--text);
-
       outline: none;
     }
 
@@ -554,19 +430,12 @@
     .send-button {
       min-width: 94px;
       padding: 0 22px;
-
       border: 0;
       border-radius: 14px;
-
       background: var(--accent);
       color: #ffffff;
-
       font-weight: 750;
       cursor: pointer;
-    }
-
-    .send-button:hover {
-      background: var(--accent-hover);
     }
 
     .send-button:disabled,
@@ -575,13 +444,12 @@
       cursor: not-allowed;
     }
 
-    /* Overlays */
+    /* Overlay and settings */
 
     .overlay {
       position: fixed;
       inset: 0;
       z-index: 1090;
-
       background: rgba(5, 9, 18, 0.55);
       backdrop-filter: blur(3px);
     }
@@ -590,29 +458,19 @@
       display: none;
     }
 
-    /* Settings */
-
     .settings-panel {
       position: fixed;
       inset: 0 0 0 auto;
       z-index: 1100;
-
       width: min(400px, 92vw);
-
       display: flex;
       flex-direction: column;
-
-      background: var(--card);
+      background: var(--panel);
       border-left: 1px solid var(--border);
-
       box-shadow: -20px 0 50px rgba(0, 0, 0, 0.22);
-
       transform: translateX(105%);
       visibility: hidden;
-
-      transition:
-        transform 0.25s ease,
-        visibility 0.25s ease;
+      transition: transform 0.25s ease, visibility 0.25s ease;
     }
 
     .settings-panel.open {
@@ -623,11 +481,9 @@
     .settings-header {
       min-height: 70px;
       padding: 15px 20px;
-
       display: flex;
       align-items: center;
       justify-content: space-between;
-
       border-bottom: 1px solid var(--border);
     }
 
@@ -639,15 +495,11 @@
     .settings-close {
       width: 40px;
       height: 40px;
-
       display: grid;
       place-items: center;
-
       border: 0;
       border-radius: 10px;
-
       background: transparent;
-
       font-size: 30px;
       line-height: 1;
       cursor: pointer;
@@ -665,7 +517,6 @@
     .settings-section + .settings-section {
       margin-top: 28px;
       padding-top: 24px;
-
       border-top: 1px solid var(--border);
     }
 
@@ -676,9 +527,7 @@
 
     .settings-description {
       margin: 0 0 16px;
-
       color: var(--muted);
-
       font-size: 14px;
       line-height: 1.5;
     }
@@ -691,18 +540,14 @@
     .theme-option {
       width: 100%;
       padding: 14px;
-
       display: grid;
       grid-template-columns: 42px 1fr 24px;
       align-items: center;
       gap: 12px;
-
       border: 1px solid var(--border);
       border-radius: 14px;
-
       background: var(--page);
       color: var(--text);
-
       text-align: left;
       cursor: pointer;
     }
@@ -719,14 +564,10 @@
     .theme-icon {
       width: 42px;
       height: 42px;
-
       display: grid;
       place-items: center;
-
       border-radius: 11px;
-
-      background: var(--card);
-
+      background: var(--panel);
       font-size: 20px;
     }
 
@@ -746,9 +587,7 @@
 
     .theme-check {
       opacity: 0;
-
       color: var(--accent);
-
       font-size: 18px;
       font-weight: 800;
     }
@@ -761,13 +600,10 @@
       width: 100%;
       min-height: 46px;
       padding: 0 14px;
-
       border: 1px solid var(--border);
       border-radius: 12px;
-
       background: var(--page);
       color: var(--text);
-
       font-weight: 700;
       text-align: left;
       cursor: pointer;
@@ -779,10 +615,8 @@
 
     .about-card {
       padding: 16px;
-
       border: 1px solid var(--border);
       border-radius: 14px;
-
       background: var(--page);
     }
 
@@ -798,7 +632,6 @@
     @media (max-width: 900px) {
       .sidebar {
         width: min(280px, 86vw);
-
         transform: translateX(-105%);
       }
 
@@ -881,37 +714,20 @@
 </head>
 
 <body>
-  <div
-    id="sidebar-overlay"
-    class="overlay"
-    hidden
-  ></div>
+  <div id="sidebar-overlay" class="overlay" hidden></div>
 
-  <aside
-    id="sidebar"
-    class="sidebar"
-    aria-label="Main navigation"
-  >
+  <aside id="sidebar" class="sidebar" aria-label="Main navigation">
     <div class="sidebar-header">
       <a class="sidebar-logo" href="index.html">
         DavidCraft <span>AI</span>
       </a>
 
-      <button
-        id="sidebar-close"
-        class="sidebar-close"
-        type="button"
-        aria-label="Close sidebar"
-      >
+      <button id="sidebar-close" class="sidebar-close" type="button" aria-label="Close sidebar">
         ×
       </button>
     </div>
 
-    <button
-      id="new-chat-button"
-      class="new-chat"
-      type="button"
-    >
+    <button id="new-chat-button" class="new-chat" type="button">
       <span>＋</span>
       <span>New chat</span>
     </button>
@@ -956,12 +772,7 @@
     </nav>
 
     <div class="sidebar-footer">
-      <button
-        id="settings-button"
-        class="settings-button"
-        type="button"
-        aria-expanded="false"
-      >
+      <button id="settings-button" class="settings-button" type="button" aria-expanded="false">
         <span>⚙</span>
         <span>Settings</span>
       </button>
@@ -970,13 +781,7 @@
 
   <div class="page">
     <header class="topbar">
-      <button
-        id="menu-button"
-        class="menu-button"
-        type="button"
-        aria-label="Open sidebar"
-        aria-expanded="false"
-      >
+      <button id="menu-button" class="menu-button" type="button" aria-label="Open sidebar" aria-expanded="false">
         ☰
       </button>
 
@@ -994,9 +799,7 @@
 
           <div>
             <h1>Coding Assistant</h1>
-            <p>
-              Ask about HTML, CSS, JavaScript, Python, GitHub, and more.
-            </p>
+            <p>Ask about HTML, CSS, JavaScript, Python, GitHub, and more.</p>
           </div>
         </header>
 
@@ -1007,20 +810,7 @@
           <button type="button">How does GitHub Pages work?</button>
         </div>
 
-        <div
-          id="messages"
-          class="messages"
-          aria-live="polite"
-        >
-          <article class="message assistant">
-            <div class="message-name">Coding Assistant</div>
-
-            <p class="message-content">
-              Hi! I can help with coding questions. Ask me about HTML,
-              CSS, JavaScript, Python, Git, GitHub, or debugging.
-            </p>
-          </article>
-        </div>
+        <div id="messages" class="messages" aria-live="polite"></div>
 
         <form id="chat-form" class="chat-form">
           <textarea
@@ -1031,11 +821,7 @@
             required
           ></textarea>
 
-          <button
-            id="send-button"
-            class="send-button"
-            type="submit"
-          >
+          <button id="send-button" class="send-button" type="submit">
             Send
           </button>
         </form>
@@ -1043,11 +829,7 @@
     </main>
   </div>
 
-  <div
-    id="settings-overlay"
-    class="overlay"
-    hidden
-  ></div>
+  <div id="settings-overlay" class="overlay" hidden></div>
 
   <aside
     id="settings-panel"
@@ -1058,12 +840,7 @@
     <header class="settings-header">
       <h2 id="settings-title">Settings</h2>
 
-      <button
-        id="settings-close"
-        class="settings-close"
-        type="button"
-        aria-label="Close settings"
-      >
+      <button id="settings-close" class="settings-close" type="button" aria-label="Close settings">
         ×
       </button>
     </header>
@@ -1071,54 +848,33 @@
     <div class="settings-content">
       <section class="settings-section">
         <h3>Appearance</h3>
-
-        <p class="settings-description">
-          Choose how DavidCraft AI looks.
-        </p>
+        <p class="settings-description">Choose how DavidCraft AI looks.</p>
 
         <div class="theme-options">
-          <button
-            class="theme-option"
-            type="button"
-            data-theme-choice="light"
-          >
+          <button class="theme-option" type="button" data-theme-choice="light">
             <span class="theme-icon">☀</span>
-
             <span class="theme-copy">
               <strong>Light</strong>
               <small>Use the light appearance</small>
             </span>
-
             <span class="theme-check">✓</span>
           </button>
 
-          <button
-            class="theme-option"
-            type="button"
-            data-theme-choice="dark"
-          >
+          <button class="theme-option" type="button" data-theme-choice="dark">
             <span class="theme-icon">☾</span>
-
             <span class="theme-copy">
               <strong>Dark</strong>
               <small>Use the dark appearance</small>
             </span>
-
             <span class="theme-check">✓</span>
           </button>
 
-          <button
-            class="theme-option"
-            type="button"
-            data-theme-choice="system"
-          >
+          <button class="theme-option" type="button" data-theme-choice="system">
             <span class="theme-icon">◐</span>
-
             <span class="theme-copy">
               <strong>System</strong>
               <small>Match your device setting</small>
             </span>
-
             <span class="theme-check">✓</span>
           </button>
         </div>
@@ -1127,11 +883,7 @@
       <section class="settings-section">
         <h3>Conversation</h3>
 
-        <button
-          id="clear-chat-button"
-          class="settings-action"
-          type="button"
-        >
+        <button id="clear-chat-button" class="settings-action" type="button">
           Clear Coding Assistant chat
         </button>
       </section>
@@ -1149,75 +901,40 @@
   </aside>
 
   <script>
-    const WORKER_URL =
-      "https://davidcraft-ai.feidavid81022.workers.dev";
-
+    const WORKER_URL = "https://davidcraft-ai.feidavid81022.workers.dev";
     const STORAGE_KEY = "davidcraft-coding-chat";
     const THEME_KEY = "davidcraft-theme";
 
     const welcomeMessage =
-      "Hi! I can help with coding questions. Ask me about HTML, " +
-      "CSS, JavaScript, Python, Git, GitHub, or debugging.";
+      "Hi! I can help with coding questions. Ask me about HTML, CSS, JavaScript, Python, Git, GitHub, or debugging.";
 
-    const messagesElement =
-      document.getElementById("messages");
+    const messagesElement = document.getElementById("messages");
+    const chatForm = document.getElementById("chat-form");
+    const messageInput = document.getElementById("message-input");
+    const sendButton = document.getElementById("send-button");
+    const suggestionButtons = document.querySelectorAll(".suggestions button");
 
-    const chatForm =
-      document.getElementById("chat-form");
+    const sidebar = document.getElementById("sidebar");
+    const menuButton = document.getElementById("menu-button");
+    const sidebarClose = document.getElementById("sidebar-close");
+    const sidebarOverlay = document.getElementById("sidebar-overlay");
 
-    const messageInput =
-      document.getElementById("message-input");
+    const settingsButton = document.getElementById("settings-button");
+    const settingsPanel = document.getElementById("settings-panel");
+    const settingsClose = document.getElementById("settings-close");
+    const settingsOverlay = document.getElementById("settings-overlay");
+    const themeOptions = document.querySelectorAll("[data-theme-choice]");
+    const clearChatButton = document.getElementById("clear-chat-button");
+    const newChatButton = document.getElementById("new-chat-button");
 
-    const sendButton =
-      document.getElementById("send-button");
-
-    const suggestionButtons =
-      document.querySelectorAll(".suggestions button");
-
-    const sidebar =
-      document.getElementById("sidebar");
-
-    const menuButton =
-      document.getElementById("menu-button");
-
-    const sidebarClose =
-      document.getElementById("sidebar-close");
-
-    const sidebarOverlay =
-      document.getElementById("sidebar-overlay");
-
-    const settingsButton =
-      document.getElementById("settings-button");
-
-    const settingsPanel =
-      document.getElementById("settings-panel");
-
-    const settingsClose =
-      document.getElementById("settings-close");
-
-    const settingsOverlay =
-      document.getElementById("settings-overlay");
-
-    const themeOptions =
-      document.querySelectorAll("[data-theme-choice]");
-
-    const clearChatButton =
-      document.getElementById("clear-chat-button");
-
-    const newChatButton =
-      document.getElementById("new-chat-button");
-
-    const systemThemeQuery =
-      window.matchMedia("(prefers-color-scheme: dark)");
+    const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     let waitingForReply = false;
     let conversation = loadConversation();
 
     function loadConversation() {
       try {
-        const saved = JSON.parse(
-          localStorage.getItem(STORAGE_KEY)
-        );
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
 
         if (!Array.isArray(saved)) {
           return [];
@@ -1227,8 +944,7 @@
           .filter((item) => {
             return (
               item &&
-              (item.role === "user" ||
-                item.role === "assistant") &&
+              (item.role === "user" || item.role === "assistant") &&
               typeof item.content === "string" &&
               item.content.trim()
             );
@@ -1240,10 +956,7 @@
     }
 
     function saveConversation() {
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(conversation.slice(-20))
-      );
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(conversation.slice(-20)));
     }
 
     function createMessage(role, content, save = true) {
@@ -1252,10 +965,7 @@
 
       const name = document.createElement("div");
       name.className = "message-name";
-      name.textContent =
-        role === "assistant"
-          ? "Coding Assistant"
-          : "You";
+      name.textContent = role === "assistant" ? "Coding Assistant" : "You";
 
       const text = document.createElement("p");
       text.className = "message-content";
@@ -1263,16 +973,10 @@
 
       article.append(name, text);
       messagesElement.appendChild(article);
-
-      messagesElement.scrollTop =
-        messagesElement.scrollHeight;
+      messagesElement.scrollTop = messagesElement.scrollHeight;
 
       if (save) {
-        conversation.push({
-          role,
-          content
-        });
-
+        conversation.push({ role, content });
         conversation = conversation.slice(-20);
         saveConversation();
       }
@@ -1282,12 +986,7 @@
 
     function showWelcomeMessage() {
       messagesElement.innerHTML = "";
-
-      createMessage(
-        "assistant",
-        welcomeMessage,
-        false
-      );
+      createMessage("assistant", welcomeMessage, false);
     }
 
     function restoreConversation() {
@@ -1299,20 +998,14 @@
       messagesElement.innerHTML = "";
 
       conversation.forEach((item) => {
-        createMessage(
-          item.role,
-          item.content,
-          false
-        );
+        createMessage(item.role, item.content, false);
       });
     }
 
     function clearConversation() {
       conversation = [];
       localStorage.removeItem(STORAGE_KEY);
-
       showWelcomeMessage();
-
       messageInput.value = "";
       messageInput.focus();
     }
@@ -1325,20 +1018,14 @@
       }
 
       waitingForReply = true;
-
       messageInput.disabled = true;
       sendButton.disabled = true;
       sendButton.textContent = "Sending…";
 
       createMessage("user", cleanText);
-
       messageInput.value = "";
 
-      const thinkingMessage = createMessage(
-        "assistant",
-        "Thinking…",
-        false
-      );
+      const thinkingMessage = createMessage("assistant", "Thinking…", false);
 
       try {
         const response = await fetch(WORKER_URL, {
@@ -1354,37 +1041,26 @@
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(
-            data.error || "The request failed."
-          );
+          throw new Error(data.error || "The request failed.");
         }
 
         thinkingMessage.remove();
 
         const reply =
-          typeof data.reply === "string" &&
-          data.reply.trim()
+          typeof data.reply === "string" && data.reply.trim()
             ? data.reply.trim()
             : "The Coding Assistant returned no response.";
 
         createMessage("assistant", reply);
       } catch (error) {
         console.error(error);
-
-        const content =
-          thinkingMessage.querySelector(
-            ".message-content"
-          );
-
-        content.textContent =
+        thinkingMessage.querySelector(".message-content").textContent =
           `Connection error: ${error.message}`;
       } finally {
         waitingForReply = false;
-
         messageInput.disabled = false;
         sendButton.disabled = false;
         sendButton.textContent = "Send";
-
         messageInput.focus();
       }
     }
@@ -1394,18 +1070,12 @@
       sendMessage(messageInput.value);
     });
 
-    messageInput.addEventListener(
-      "keydown",
-      (event) => {
-        if (
-          event.key === "Enter" &&
-          !event.shiftKey
-        ) {
-          event.preventDefault();
-          chatForm.requestSubmit();
-        }
+    messageInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        chatForm.requestSubmit();
       }
-    );
+    });
 
     suggestionButtons.forEach((button) => {
       button.addEventListener("click", () => {
@@ -1413,59 +1083,33 @@
       });
     });
 
-    newChatButton.addEventListener(
-      "click",
-      clearConversation
-    );
+    newChatButton.addEventListener("click", clearConversation);
 
-    clearChatButton.addEventListener(
-      "click",
-      () => {
-        clearConversation();
-        closeSettings();
-      }
-    );
+    clearChatButton.addEventListener("click", () => {
+      clearConversation();
+      closeSettings();
+    });
 
     function openSidebar() {
       sidebar.classList.add("open");
       sidebarOverlay.hidden = false;
       document.body.classList.add("no-scroll");
-
-      menuButton.setAttribute(
-        "aria-expanded",
-        "true"
-      );
+      menuButton.setAttribute("aria-expanded", "true");
     }
 
     function closeSidebar() {
       sidebar.classList.remove("open");
       sidebarOverlay.hidden = true;
       document.body.classList.remove("no-scroll");
-
-      menuButton.setAttribute(
-        "aria-expanded",
-        "false"
-      );
+      menuButton.setAttribute("aria-expanded", "false");
     }
 
-    menuButton.addEventListener(
-      "click",
-      openSidebar
-    );
-
-    sidebarClose.addEventListener(
-      "click",
-      closeSidebar
-    );
-
-    sidebarOverlay.addEventListener(
-      "click",
-      closeSidebar
-    );
+    menuButton.addEventListener("click", openSidebar);
+    sidebarClose.addEventListener("click", closeSidebar);
+    sidebarOverlay.addEventListener("click", closeSidebar);
 
     function getSelectedTheme() {
-      const saved =
-        localStorage.getItem(THEME_KEY);
+      const saved = localStorage.getItem(THEME_KEY);
 
       return ["light", "dark", "system"].includes(saved)
         ? saved
@@ -1474,9 +1118,7 @@
 
     function getVisibleTheme(choice) {
       if (choice === "system") {
-        return systemThemeQuery.matches
-          ? "dark"
-          : "light";
+        return systemThemeQuery.matches ? "dark" : "light";
       }
 
       return choice;
@@ -1484,113 +1126,66 @@
 
     function updateThemeButtons(choice) {
       themeOptions.forEach((button) => {
-        const active =
-          button.dataset.themeChoice === choice;
-
-        button.classList.toggle(
-          "active",
-          active
-        );
-
-        button.setAttribute(
-          "aria-pressed",
-          String(active)
-        );
+        const active = button.dataset.themeChoice === choice;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
       });
     }
 
     function applyTheme(choice) {
-      const selected =
-        ["light", "dark", "system"].includes(choice)
-          ? choice
-          : "system";
+      const selected = ["light", "dark", "system"].includes(choice)
+        ? choice
+        : "system";
 
-      localStorage.setItem(
-        THEME_KEY,
-        selected
+      localStorage.setItem(THEME_KEY, selected);
+
+      document.documentElement.setAttribute(
+        "data-theme",
+        getVisibleTheme(selected)
       );
-
-      document.documentElement.dataset.theme =
-        getVisibleTheme(selected);
 
       updateThemeButtons(selected);
     }
 
     function openSettings() {
       closeSidebar();
-
       settingsPanel.classList.add("open");
-      settingsPanel.setAttribute(
-        "aria-hidden",
-        "false"
-      );
-
+      settingsPanel.setAttribute("aria-hidden", "false");
       settingsOverlay.hidden = false;
       document.body.classList.add("no-scroll");
-
-      settingsButton.setAttribute(
-        "aria-expanded",
-        "true"
-      );
+      settingsButton.setAttribute("aria-expanded", "true");
     }
 
     function closeSettings() {
       settingsPanel.classList.remove("open");
-      settingsPanel.setAttribute(
-        "aria-hidden",
-        "true"
-      );
-
+      settingsPanel.setAttribute("aria-hidden", "true");
       settingsOverlay.hidden = true;
       document.body.classList.remove("no-scroll");
-
-      settingsButton.setAttribute(
-        "aria-expanded",
-        "false"
-      );
+      settingsButton.setAttribute("aria-expanded", "false");
     }
 
-    settingsButton.addEventListener(
-      "click",
-      openSettings
-    );
-
-    settingsClose.addEventListener(
-      "click",
-      closeSettings
-    );
-
-    settingsOverlay.addEventListener(
-      "click",
-      closeSettings
-    );
+    settingsButton.addEventListener("click", openSettings);
+    settingsClose.addEventListener("click", closeSettings);
+    settingsOverlay.addEventListener("click", closeSettings);
 
     themeOptions.forEach((button) => {
       button.addEventListener("click", () => {
-        applyTheme(
-          button.dataset.themeChoice
-        );
+        applyTheme(button.dataset.themeChoice);
       });
     });
 
-    systemThemeQuery.addEventListener(
-      "change",
-      () => {
-        if (getSelectedTheme() === "system") {
-          applyTheme("system");
-        }
+    systemThemeQuery.addEventListener("change", () => {
+      if (getSelectedTheme() === "system") {
+        applyTheme("system");
       }
-    );
+    });
 
-    document.addEventListener(
-      "keydown",
-      (event) => {
-        if (event.key === "Escape") {
-          closeSidebar();
-          closeSettings();
-        }
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeSidebar();
+        closeSettings();
       }
-    );
+    });
 
     window.addEventListener("resize", () => {
       if (window.innerWidth > 900) {
