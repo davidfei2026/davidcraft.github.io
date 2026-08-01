@@ -1,26 +1,5 @@
-/* ========================================
-   DAVIDCRAFT SIDEBAR
-======================================== */
-
 :root {
-  --sidebar-width: 260px;
-  --sidebar-background: #ffffff;
-  --sidebar-border: #dfe3ec;
-  --sidebar-text: #171923;
-  --sidebar-muted: #6b7280;
-  --sidebar-hover: #f2f4f8;
-}
-
-html[data-theme="dark"] {
-  --sidebar-background: #151b29;
-  --sidebar-border: #303849;
-  --sidebar-text: #f5f7fb;
-  --sidebar-muted: #aab3c5;
-  --sidebar-hover: #222b3b;
-}
-
-body {
-  margin: 0;
+  --sidebar-width: 270px;
 }
 
 .sidebar {
@@ -36,29 +15,31 @@ body {
   display: flex;
   flex-direction: column;
 
-  background: var(--sidebar-background);
-  color: var(--sidebar-text);
-  border-right: 1px solid var(--sidebar-border);
+  background: var(--card-background);
+  color: var(--text-color);
+
+  border-right: 1px solid var(--border-color);
 }
 
 .sidebar-header {
+  min-height: 48px;
+  padding: 0 8px 14px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  min-height: 48px;
-  padding: 0 8px 14px;
 }
 
 .sidebar-logo {
-  color: var(--sidebar-text);
+  color: var(--text-color);
+
   font-size: 20px;
   font-weight: 800;
   text-decoration: none;
 }
 
 .sidebar-logo span {
-  color: #6366f1;
+  color: var(--accent);
 }
 
 .sidebar-close {
@@ -78,7 +59,7 @@ body {
 }
 
 .sidebar-close:hover {
-  background: var(--sidebar-hover);
+  background: var(--soft-background);
 }
 
 .new-chat-button {
@@ -92,16 +73,18 @@ body {
 
   border-radius: 12px;
 
-  background: #6366f1;
+  background: var(--accent);
   color: #ffffff;
 
   font-size: 14px;
   font-weight: 700;
   text-decoration: none;
+
+  transition: background 0.2s ease;
 }
 
 .new-chat-button:hover {
-  background: #5558e8;
+  background: var(--accent-hover);
 }
 
 .sidebar-navigation {
@@ -113,7 +96,7 @@ body {
 .sidebar-label {
   margin: 0 10px 8px;
 
-  color: var(--sidebar-muted);
+  color: var(--secondary-text);
 
   font-size: 11px;
   font-weight: 800;
@@ -131,7 +114,7 @@ body {
 
   border-radius: 11px;
 
-  color: var(--sidebar-text);
+  color: var(--text-color);
 
   font-size: 14px;
   font-weight: 600;
@@ -139,7 +122,7 @@ body {
 }
 
 .sidebar-navigation a:hover {
-  background: var(--sidebar-hover);
+  background: var(--soft-background);
 }
 
 .sidebar-icon {
@@ -191,7 +174,7 @@ body {
   margin-top: auto;
   padding-top: 14px;
 
-  border-top: 1px solid var(--sidebar-border);
+  border-top: 1px solid var(--border-color);
 }
 
 .sidebar-settings {
@@ -207,9 +190,8 @@ body {
   border-radius: 11px;
 
   background: transparent;
-  color: var(--sidebar-text);
+  color: var(--text-color);
 
-  font: inherit;
   font-size: 14px;
   font-weight: 700;
   text-align: left;
@@ -218,38 +200,7 @@ body {
 }
 
 .sidebar-settings:hover {
-  background: var(--sidebar-hover);
-}
-
-.site-content {
-  min-height: 100vh;
-  margin-left: var(--sidebar-width);
-}
-
-.topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.sidebar-open {
-  display: none;
-
-  width: 42px;
-  height: 42px;
-
-  border: 1px solid var(--sidebar-border);
-  border-radius: 11px;
-
-  background: var(--sidebar-background);
-  color: var(--sidebar-text);
-
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.mobile-logo {
-  display: none;
+  background: var(--soft-background);
 }
 
 .sidebar-overlay {
@@ -264,15 +215,6 @@ body {
 .sidebar-overlay[hidden] {
   display: none;
 }
-
-body.sidebar-is-open {
-  overflow: hidden;
-}
-
-
-/* ========================================
-   TABLETS AND PHONES
-======================================== */
 
 @media (max-width: 900px) {
   .sidebar {
@@ -294,18 +236,5 @@ body.sidebar-is-open {
   .sidebar-close {
     display: grid;
     place-items: center;
-  }
-
-  .site-content {
-    margin-left: 0;
-  }
-
-  .sidebar-open {
-    display: grid;
-    place-items: center;
-  }
-
-  .mobile-logo {
-    display: inline-block;
   }
 }
