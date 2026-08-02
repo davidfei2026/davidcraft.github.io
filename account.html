@@ -66,5 +66,7 @@ $('logout').onclick=async()=>{busy($('logout'),true,'Logging out…');const{erro
 db.auth.onAuthStateChange((event,session)=>{if(event==='PASSWORD_RECOVERY'){auth.hidden=true;profile.classList.remove('show');recovery.classList.add('show');return}render(session)});
 (async()=>{const{data,error}=await db.auth.getSession();if(error)status(authStatus,error.message,'error');render(data.session)})();
 </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="account.js?v=1"></script>
 </body>
 </html>
