@@ -238,3 +238,11 @@
     place-items: center;
   }
 }
+.sidebar-footer {
+  display: grid;
+  gap: 6px;
+}
+
+.sidebar-footer a.sidebar-settings {
+  text-decoration: none;
+}
