@@ -1,3 +1,4 @@
+alert("account.js loaded");
 const SUPABASE_URL =
   "https://dvzxdpdphtuolotzwqng.supabase.co";
 
