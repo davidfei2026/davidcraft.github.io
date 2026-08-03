@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Files — DavidCraft</title>
+  <link rel="stylesheet" href="davidcraft.css">
+  <style>
+    :root{--a:#2563eb;--b:#06b6d4;--danger:#dc2626}
+    html[data-theme="dark"]{--a:#60a5fa;--b:#22d3ee;--danger:#f87171}
+    .page{width:min(100% - 24px,1380px);margin:auto;padding:26px 0 48px}
+    .hero{padding:32px;margin-bottom:22px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;background:radial-gradient(circle at 95% 5%,color-mix(in srgb,var(--b) 22%,transparent),transparent 22rem),radial-gradient(circle at 5% 100%,color-mix(in srgb,var(--a) 20%,transparent),transparent 24rem),var(--dc-panel);border:1px solid var(--dc-border);border-radius:26px;box-shadow:0 14px 36px var(--dc-shadow)}
+    .hero h1{margin:0;font-size:clamp(42px,7vw,74px);line-height:1;letter-spacing:-.055em}
+    .hero p{max-width:760px;margin:16px 0 0;color:var(--dc-muted);font-size:17px;line-height:1.65}
+    .hero-icon{width:122px;height:122px;display:grid;place-items:center;border-radius:30px;background:linear-gradient(135deg,var(--a),var(--b));color:#fff;font-size:54px}
+    .workspace{display:grid;grid-template-columns:270px 1fr;gap:20px}
+    .panel{background:var(--dc-panel);border:1px solid var(--dc-border);border-radius:22px;box-shadow:0 14px 36px var(--dc-shadow)}
+    .sidebar{padding:18px;align-self:start;position:sticky;top:88px}
+    .side-title{margin:0 0 10px;color:var(--dc-muted);font-size:12px;font-weight:850;letter-spacing:.1em;text-transform:uppercase}
+    .view{width:100%;min-height:46px;padding:0 13px;display:flex;align-items:center;justify-content:space-between;border:0;border-radius:12px;background:transparent;color:var(--dc-text);font-weight:750;cursor:pointer}
+    .view:hover,.view.active{background:var(--dc-soft)}
+    .count{color:var(--dc-muted);font-size:12px}
+    .upload,.folder{width:100%;min-height:46px;margin-top:10px;border-radius:12px;font-weight:850;cursor:pointer}
+    .upload{margin-top:18px;border:0;background:linear-gradient(135deg,var(--a),var(--b));color:#fff}
+    .folder{border:1px solid var(--dc-border);background:var(--dc-panel);color:var(--dc-text)}
+    .library{overflow:hidden}
+    .head{padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid var(--dc-border)}
+    .head h2{margin:0}.head p{margin:4px 0 0;color:var(--dc-muted);font-size:13px}
+    .tools{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+    .input,.select{min-height:42px;padding:0 12px;border:1px solid var(--dc-border);border-radius:11px;background:var(--dc-page);color:var(--dc-text)}
+    .input{width:min(280px,35vw)}
+    .small{min-height:42px;padding:0 12px;border:1px solid var(--dc-border);border-radius:11px;background:var(--dc-panel);color:var(--dc-text);font-weight:750}
+    .drop{margin:20px;padding:36px 22px;display:grid;place-items:center;text-align:center;border:2px dashed var(--dc-border);border-radius:18px;background:var(--dc-soft);color:var(--dc-muted);cursor:pointer}
+    .drop.drag{border-color:var(--a)}
+    .drop strong{display:block;margin-bottom:6px;color:var(--dc-text);font-size:18px}
+    table{width:100%;border-collapse:collapse}th,td{padding:13px 16px;border-bottom:1px solid var(--dc-border);text-align:left}th{color:var(--dc-muted);font-size:12px;text-transform:uppercase}
+    tr:hover{background:var(--dc-soft)}
+    .file-main{display:flex;align-items:center;gap:12px;min-width:0}.file-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:color-mix(in srgb,var(--a) 12%,var(--dc-panel));font-size:20px}
+    .file-name{display:block;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:800}.sub{display:block;margin-top:3px;color:var(--dc-muted);font-size:12px}
+    .actions{display:flex;gap:6px;justify-content:flex-end}.icon{width:36px;height:36px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-panel);color:var(--dc-text)}.icon.active{color:#f59e0b}.icon.delete{color:var(--danger)}
+    .empty{padding:48px 22px;text-align:center;color:var(--dc-muted)}
+    .overlay{position:fixed;inset:0;z-index:3000;display:none;place-items:center;padding:20px;background:rgba(2,6,23,.76)}.overlay.open{display:grid}
+    .modal{width:min(100%,760px);max-height:88vh;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;background:var(--dc-panel);border-radius:24px}
+    .modal-head,.modal-foot{padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}.modal-head{border-bottom:1px solid var(--dc-border)}.modal-foot{border-top:1px solid var(--dc-border)}
+    .modal-body{overflow:auto;padding:18px}.preview{min-height:280px;display:grid;place-items:center;border:1px solid var(--dc-border);border-radius:16px;background:var(--dc-soft);padding:18px}.preview img{max-width:100%;max-height:60vh}.preview iframe{width:100%;min-height:520px;border:0}.preview pre{width:100%;white-space:pre-wrap;word-break:break-word;text-align:left}
+    .close{width:42px;height:42px;border:1px solid var(--dc-border);border-radius:11px;background:var(--dc-panel);color:var(--dc-text);font-size:22px}
+    #file{display:none}
+    @media(max-width:980px){.workspace{grid-template-columns:1fr}.sidebar{position:static}.views{display:flex;overflow-x:auto}.view{width:auto;white-space:nowrap}}
+    @media(max-width:760px){.head{flex-direction:column;align-items:flex-start}.tools{width:100%}.input{width:100%;flex:1}thead{display:none}table,tbody,tr,td{display:block;width:100%}tr{padding:10px 0}td{border:0;padding:6px 14px}.actions{justify-content:flex-start}}
+    @media(max-width:620px){.page{width:min(100% - 14px,1380px)}.hero{grid-template-columns:1fr}.hero-icon{display:none}.drop{margin:12px}}
+  </style>
+</head>
+<body data-davidcraft-page="files">
+<div id="davidcraft-navbar"></div>
+<main class="page">
+  <section class="hero">
+    <div><h1>DavidCraft Files</h1><p>Add files from your computer, organize them into folders, search, favorite, preview supported files, and download them again.</p></div>
+    <div class="hero-icon">📁</div>
+  </section>
+  <section class="workspace">
+    <aside class="panel sidebar">
+      <p class="side-title">Library</p>
+      <div class="views">
+        <button class="view active" data-view="all"><span>📄 All Files</span><span id="all-count" class="count">0</span></button>
+        <button class="view" data-view="favorites"><span>⭐ Favorites</span><span id="fav-count" class="count">0</span></button>
+        <button class="view" data-view="recent"><span>🕘 Recent</span><span id="recent-count" class="count">0</span></button>
+      </div>
+      <button id="upload" class="upload">＋ Add Files</button>
+      <button id="new-folder" class="folder">＋ New Folder</button>
+    </aside>
+    <section class="panel library">
+      <header class="head">
+        <div><h2 id="title">All Files</h2><p id="subtitle">Files added during this browser session.</p></div>
+        <div class="tools">
+          <input id="search" class="input" type="search" placeholder="Search files">
+          <select id="folder-filter" class="select"><option value="all">All folders</option></select>
+          <button id="sort" class="small">Sort: Newest</button>
+        </div>
+      </header>
+      <div id="drop" class="drop"><div><strong>Drop files here</strong><span>or press “Add Files” to choose files.</span></div></div>
+      <div id="container"></div>
+    </section>
+  </section>
+</main>
+<footer class="dc-footer">DavidCraft Files · V1</footer>
+<input id="file" type="file" multiple>
+
+<div id="preview-overlay" class="overlay">
+  <section class="modal">
+    <header class="modal-head"><h2 id="preview-title">File preview</h2><button id="preview-close" class="close">×</button></header>
+    <div id="preview-body" class="modal-body"></div>
+    <footer class="modal-foot"><span id="preview-meta"></span><button id="preview-download" class="small">Download</button></footer>
+  </section>
+</div>
+
+<script>
+const file=document.getElementById("file"),upload=document.getElementById("upload"),drop=document.getElementById("drop"),container=document.getElementById("container"),search=document.getElementById("search"),filter=document.getElementById("folder-filter"),sort=document.getElementById("sort");
+const previewOverlay=document.getElementById("preview-overlay"),previewTitle=document.getElementById("preview-title"),previewBody=document.getElementById("preview-body"),previewMeta=document.getElementById("preview-meta");
+let files=[],folders=["General"],view="all",newest=true,previewing=null;
+
+function addFiles(list){
+  [...list].forEach(f=>files.unshift({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random()),name:f.name,size:f.size,type:f.type,addedAt:Date.now(),favorite:false,folder:"General",file:f,url:URL.createObjectURL(f)}));
+  render();
+}
+function size(b){if(b<1024)return b+" B";if(b<1048576)return(b/1024).toFixed(1)+" KB";if(b<1073741824)return(b/1048576).toFixed(1)+" MB";return(b/1073741824).toFixed(1)+" GB"}
+function ext(n){const p=n.split(".");return p.length>1?p.pop().toLowerCase():""}
+function icon(x){const t=x.type||"",e=ext(x.name);if(t.startsWith("image/"))return"🖼️";if(t.startsWith("video/"))return"🎬";if(t.startsWith("audio/"))return"🎵";if(t==="application/pdf"||e==="pdf")return"📕";if(["doc","docx"].includes(e))return"📘";if(["xls","xlsx","csv"].includes(e))return"📗";if(["ppt","pptx"].includes(e))return"📙";if(["txt","md","json","js","css","html","py"].includes(e))return"📝";if(["zip","rar","7z"].includes(e))return"🗜️";return"📄"}
+function visible(){
+  const q=search.value.trim().toLowerCase(),folder=filter.value;
+  return files.filter(x=>(view==="all"||(view==="favorites"&&x.favorite)||view==="recent")&&(!q||x.name.toLowerCase().includes(q))&&(folder==="all"||x.folder===folder)).sort((a,b)=>newest?b.addedAt-a.addedAt:a.name.localeCompare(b.name));
+}
+function renderFolders(){
+  const selected=filter.value;filter.innerHTML='<option value="all">All folders</option>';
+  folders.forEach(f=>{const o=document.createElement("option");o.value=f;o.textContent=f;filter.appendChild(o)});
+  filter.value=folders.includes(selected)?selected:"all";
+}
+function render(){
+  const list=visible();document.getElementById("all-count").textContent=files.length;document.getElementById("fav-count").textContent=files.filter(x=>x.favorite).length;document.getElementById("recent-count").textContent=files.length;drop.style.display=files.length?"none":"grid";container.innerHTML="";renderFolders();
+  if(files.length&&!list.length){container.innerHTML='<div class="empty">No files match this view.</div>';return}
+  if(!files.length)return;
+  const table=document.createElement("table");table.innerHTML='<thead><tr><th>Name</th><th>Folder</th><th>Size</th><th>Added</th><th>Actions</th></tr></thead>';const body=document.createElement("tbody");
+  list.forEach(x=>{
+    const row=document.createElement("tr");
+    const n=document.createElement("td");n.innerHTML=`<div class="file-main"><div class="file-icon">${icon(x)}</div><div><span class="file-name"></span><span class="sub">${x.type||"Unknown type"}</span></div></div>`;n.querySelector(".file-name").textContent=x.name;
+    const f=document.createElement("td"),sel=document.createElement("select");sel.className="select";folders.forEach(name=>{const o=document.createElement("option");o.value=name;o.textContent=name;sel.appendChild(o)});sel.value=x.folder;sel.onchange=()=>{x.folder=sel.value;render()};f.appendChild(sel);
+    const s=document.createElement("td");s.textContent=size(x.size);const d=document.createElement("td");d.textContent=new Date(x.addedAt).toLocaleString();
+    const a=document.createElement("td"),actions=document.createElement("div");actions.className="actions";
+    const p=document.createElement("button");p.className="icon";p.textContent="👁";p.onclick=()=>openPreview(x);
+    const fav=document.createElement("button");fav.className="icon"+(x.favorite?" active":"");fav.textContent=x.favorite?"★":"☆";fav.onclick=()=>{x.favorite=!x.favorite;render()};
+    const down=document.createElement("button");down.className="icon";down.textContent="⬇";down.onclick=()=>download(x);
+    const del=document.createElement("button");del.className="icon delete";del.textContent="×";del.onclick=()=>{URL.revokeObjectURL(x.url);files=files.filter(i=>i.id!==x.id);render()};
+    actions.append(p,fav,down,del);a.appendChild(actions);row.append(n,f,s,d,a);body.appendChild(row);
+  });
+  table.appendChild(body);container.appendChild(table);
+}
+function download(x){const a=document.createElement("a");a.href=x.url;a.download=x.name;document.body.appendChild(a);a.click();a.remove()}
+function openPreview(x){
+  previewing=x;previewTitle.textContent=x.name;previewMeta.textContent=size(x.size)+" · "+x.folder;previewBody.innerHTML="";const box=document.createElement("div");box.className="preview";const e=ext(x.name);
+  if(x.type.startsWith("image/")){const img=document.createElement("img");img.src=x.url;box.appendChild(img)}
+  else if(x.type==="application/pdf"||e==="pdf"){const frame=document.createElement("iframe");frame.src=x.url;box.appendChild(frame)}
+  else if(x.type.startsWith("text/")||["txt","md","json","js","css","html","py","csv"].includes(e)){box.textContent="Loading text preview…";const r=new FileReader();r.onload=()=>{const pre=document.createElement("pre");pre.textContent=String(r.result).slice(0,200000);box.innerHTML="";box.appendChild(pre)};r.readAsText(x.file)}
+  else if(x.type.startsWith("video/")){const v=document.createElement("video");v.src=x.url;v.controls=true;v.style.maxWidth="100%";box.appendChild(v)}
+  else if(x.type.startsWith("audio/")){const au=document.createElement("audio");au.src=x.url;au.controls=true;box.appendChild(au)}
+  else box.innerHTML=`<div><div style="font-size:64px">${icon(x)}</div><p>This file type does not have a browser preview yet.</p></div>`;
+  previewBody.appendChild(box);previewOverlay.classList.add("open");document.body.classList.add("dc-no-scroll");
+}
+function closePreview(){previewOverlay.classList.remove("open");document.body.classList.remove("dc-no-scroll");previewBody.innerHTML="";previewing=null}
+
+upload.onclick=()=>file.click();drop.onclick=()=>file.click();file.onchange=()=>{addFiles(file.files);file.value=""};
+["dragenter","dragover"].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.add("drag")}));["dragleave","drop"].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.remove("drag")}));drop.addEventListener("drop",e=>addFiles(e.dataTransfer.files));
+document.querySelectorAll(".view").forEach(b=>b.onclick=()=>{document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));b.classList.add("active");view=b.dataset.view;const labels={all:["All Files","Files added during this browser session."],favorites:["Favorites","Files you marked with a star."],recent:["Recent","Files added during this session."]};document.getElementById("title").textContent=labels[view][0];document.getElementById("subtitle").textContent=labels[view][1];render()});
+search.oninput=render;filter.onchange=render;sort.onclick=()=>{newest=!newest;sort.textContent=newest?"Sort: Newest":"Sort: Name";render()};
+document.getElementById("new-folder").onclick=()=>{const name=prompt("Folder name:");if(name&&name.trim()&&!folders.includes(name.trim())){folders.push(name.trim());render()}};
+document.getElementById("preview-close").onclick=closePreview;document.getElementById("preview-download").onclick=()=>{if(previewing)download(previewing)};previewOverlay.onclick=e=>{if(e.target===previewOverlay)closePreview()};document.addEventListener("keydown",e=>{if(e.key==="Escape")closePreview()});
+render();
+</script>
+<script src="davidcraft.js"></script>
+</body>
+</html>
