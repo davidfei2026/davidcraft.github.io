@@ -3,110 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maps — DavidCraft Home</title>
+  <title>Maps — DavidCraft</title>
 
+  <link rel="stylesheet" href="davidcraft.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
-  <script>
-    (() => {
-      const choice = localStorage.getItem("davidcraft-theme") || "system";
-      const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      document.documentElement.dataset.theme =
-        choice === "system" ? (systemDark ? "dark" : "light") : choice;
-    })();
-  </script>
 
   <style>
     :root {
-      color-scheme: light;
-      --page: #f4f7fb;
-      --panel: #ffffff;
-      --soft: #eef2f7;
-      --text: #171923;
-      --muted: #697386;
-      --border: #dfe3ec;
-      --accent: #22a06b;
-      --accent-hover: #188456;
-      --danger: #dc2626;
-      --shadow: rgba(24, 32, 50, 0.12);
+      --map-accent: #22a06b;
+      --map-accent-hover: #188456;
+      --map-danger: #dc2626;
     }
 
     html[data-theme="dark"] {
-      color-scheme: dark;
-      --page: #0c1220;
-      --panel: #171f2d;
-      --soft: #202938;
-      --text: #f5f7fb;
-      --muted: #aab4c7;
-      --border: #303a4c;
-      --accent: #35c486;
-      --accent-hover: #47d497;
-      --danger: #f87171;
-      --shadow: rgba(0, 0, 0, 0.30);
+      --map-accent: #35c486;
+      --map-accent-hover: #47d497;
+      --map-danger: #f87171;
     }
 
-    * { box-sizing: border-box; }
-    html, body { min-height: 100%; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      background:
-        radial-gradient(circle at 10% 0%, rgba(34, 197, 94, 0.12), transparent 28rem),
-        var(--page);
-      color: var(--text);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    button, input, select { font: inherit; }
-
-    .topbar {
-      min-height: 70px;
-      padding: 14px 22px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      background: color-mix(in srgb, var(--panel) 90%, transparent);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(14px);
-    }
-
-    .logo {
-      color: var(--text);
-      font-size: 21px;
-      font-weight: 850;
-      text-decoration: none;
-    }
-
-    .logo span { color: var(--accent); }
-    .top-actions { display: flex; gap: 10px; }
-
-    .top-link, .theme-button {
-      min-height: 42px;
-      padding: 0 14px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--panel);
-      color: var(--text);
-      font-size: 14px;
-      font-weight: 700;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .top-link:hover, .theme-button:hover { border-color: var(--accent); }
-
-    main {
+    .maps-page {
       width: min(100% - 24px, 1380px);
       margin: 0 auto;
       padding: 22px 0 30px;
-      flex: 1;
     }
 
     .maps-layout {
@@ -116,15 +34,15 @@
       min-height: calc(100vh - 125px);
     }
 
-    .panel {
+    .maps-panel {
       padding: 20px;
-      background: var(--panel);
-      border: 1px solid var(--border);
+      background: var(--dc-panel);
+      border: 1px solid var(--dc-border);
       border-radius: 20px;
-      box-shadow: 0 14px 36px var(--shadow);
+      box-shadow: 0 14px 36px var(--dc-shadow);
     }
 
-    .sidebar-panel {
+    .maps-sidebar {
       display: flex;
       flex-direction: column;
       gap: 20px;
@@ -132,79 +50,92 @@
       overflow-y: auto;
     }
 
-    .sidebar-panel h1 {
+    .maps-sidebar h1 {
       margin: 0;
       font-size: 31px;
-      letter-spacing: -0.03em;
     }
 
-    .sidebar-panel > div > p {
-      margin: 7px 0 0;
-      color: var(--muted);
-      line-height: 1.5;
+    .maps-sidebar p {
+      color: var(--dc-muted);
     }
 
-    .search-group { display: grid; gap: 10px; }
-    .search-group label, .section-title { font-size: 13px; font-weight: 800; }
-    .search-row { display: grid; grid-template-columns: 1fr auto; gap: 9px; }
+    .search-row,
+    .create-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 9px;
+    }
 
-    .search-input, .collection-input, .collection-select {
+    .text-input,
+    .collection-select {
       min-width: 0;
       min-height: 46px;
       padding: 0 13px;
-      border: 1px solid var(--border);
+      border: 1px solid var(--dc-border);
       border-radius: 12px;
-      background: var(--page);
-      color: var(--text);
-      outline: none;
+      background: var(--dc-page);
+      color: var(--dc-text);
     }
 
-    .search-input:focus,
-    .collection-input:focus,
-    .collection-select:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(34, 160, 107, 0.15);
-    }
-
-    .search-button, .primary-button {
+    .primary,
+    .secondary {
       min-height: 46px;
-      padding: 0 16px;
-      border: 0;
+      padding: 0 15px;
       border-radius: 12px;
-      background: var(--accent);
-      color: #ffffff;
       font-weight: 800;
       cursor: pointer;
     }
 
-    .search-button:hover, .primary-button:hover { background: var(--accent-hover); }
-    .search-button:disabled, .primary-button:disabled { opacity: 0.65; cursor: not-allowed; }
-
-    .secondary-button {
-      min-height: 42px;
-      padding: 0 13px;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      background: var(--soft);
-      color: var(--text);
-      font-weight: 750;
-      cursor: pointer;
+    .primary {
+      border: 0;
+      background: var(--map-accent);
+      color: white;
     }
 
-    .secondary-button:hover { border-color: var(--accent); }
+    .primary:hover {
+      background: var(--map-accent-hover);
+    }
+
+    .secondary {
+      border: 1px solid var(--dc-border);
+      background: var(--dc-soft);
+      color: var(--dc-text);
+    }
 
     .status {
       min-height: 22px;
-      margin: 0;
-      color: var(--muted);
+      margin: 8px 0 0;
+      color: var(--dc-muted);
       font-size: 13px;
-      line-height: 1.45;
     }
 
-    .status.error { color: var(--danger); }
-    .quick-list, .saved-list { display: grid; gap: 9px; }
+    .status.error {
+      color: var(--map-danger);
+    }
 
-    .quick-place, .saved-place {
+    .box {
+      display: grid;
+      gap: 9px;
+      padding: 14px;
+      border: 1px solid var(--dc-border);
+      border-radius: 14px;
+      background: var(--dc-soft);
+    }
+
+    .section-title {
+      margin: 0 0 9px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--dc-text) !important;
+    }
+
+    .list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .place-row,
+    .saved-row {
       width: 100%;
       min-height: 46px;
       padding: 10px 13px;
@@ -212,27 +143,34 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      border: 1px solid var(--border);
+      border: 1px solid var(--dc-border);
       border-radius: 12px;
-      background: var(--soft);
-      color: var(--text);
-      text-align: left;
+      background: var(--dc-soft);
+      color: var(--dc-text);
     }
 
-    .quick-place { cursor: pointer; }
-    .quick-place:hover, .saved-place:hover { border-color: var(--accent); }
+    .place-row {
+      cursor: pointer;
+    }
 
-    .place-name { font-weight: 750; }
+    .place-row:hover,
+    .saved-row:hover {
+      border-color: var(--map-accent);
+    }
 
-    .place-subtitle {
+    .place-row strong,
+    .saved-main strong {
+      display: block;
+    }
+
+    .subtext {
       display: block;
       margin-top: 2px;
-      color: var(--muted);
+      color: var(--dc-muted);
       font-size: 12px;
-      font-weight: 500;
     }
 
-    .saved-place-main {
+    .saved-main {
       min-width: 0;
       flex: 1;
       border: 0;
@@ -242,75 +180,30 @@
       cursor: pointer;
     }
 
-    .saved-place-name {
-      display: block;
-      font-weight: 750;
+    .saved-main strong {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    .saved-place-meta {
-      display: block;
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .delete-place {
+    .delete {
       width: 34px;
       height: 34px;
       border: 0;
       border-radius: 9px;
       background: transparent;
-      color: var(--danger);
-      font-weight: 900;
+      color: var(--map-danger);
+      font-size: 20px;
       cursor: pointer;
     }
 
-    .delete-place:hover { background: color-mix(in srgb, var(--danger) 10%, transparent); }
-
-    .create-collection {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 9px;
-      margin-top: 10px;
-    }
-
-    .save-current {
-      display: grid;
-      gap: 9px;
-      padding: 14px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: var(--soft);
-    }
-
-    .current-place-name {
-      margin: 0;
-      font-weight: 800;
-      line-height: 1.4;
-    }
-
-    .empty-state {
+    .empty {
       margin: 0;
       padding: 12px;
-      border: 1px dashed var(--border);
+      border: 1px dashed var(--dc-border);
       border-radius: 12px;
-      color: var(--muted);
+      color: var(--dc-muted);
       font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .tip {
-      margin-top: auto;
-      padding: 14px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: var(--soft);
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
     }
 
     .map-panel {
@@ -323,128 +216,90 @@
       width: 100%;
       height: 100%;
       min-height: 620px;
-      background: var(--soft);
-    }
-
-    .leaflet-control-zoom a,
-    .leaflet-popup-content-wrapper,
-    .leaflet-popup-tip {
-      background: var(--panel);
-      color: var(--text);
-    }
-
-    .leaflet-control-attribution {
-      background: color-mix(in srgb, var(--panel) 88%, transparent) !important;
-      color: var(--muted);
-    }
-
-    .leaflet-control-attribution a { color: var(--accent); }
-
-    footer {
-      padding: 20px;
-      text-align: center;
-      color: var(--muted);
-      border-top: 1px solid var(--border);
+      background: var(--dc-soft);
     }
 
     @media (max-width: 900px) {
-      .maps-layout { grid-template-columns: 1fr; }
-      .sidebar-panel { max-height: none; overflow: visible; }
-      .map-panel, #map { min-height: 540px; }
+      .maps-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .maps-sidebar {
+        max-height: none;
+        overflow: visible;
+      }
+
+      .map-panel,
+      #map {
+        min-height: 540px;
+      }
     }
 
     @media (max-width: 560px) {
-      .topbar { padding-left: 14px; padding-right: 14px; }
-      .top-link { display: none; }
-      main { width: min(100% - 14px, 1380px); }
-      .panel { border-radius: 16px; }
-      .search-row, .create-collection { grid-template-columns: 1fr; }
-      .search-button, .primary-button, .secondary-button { width: 100%; }
-      .map-panel, #map { min-height: 470px; }
+      .maps-page {
+        width: min(100% - 14px, 1380px);
+      }
+
+      .search-row,
+      .create-row {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 
-<body>
-  <header class="topbar">
-    <a class="logo" href="home.html">DavidCraft <span>Maps</span></a>
+<body data-davidcraft-page="maps">
+  <div id="davidcraft-navbar"></div>
 
-    <div class="top-actions">
-      <a class="top-link" href="home.html">← DavidCraft Home</a>
-      <button id="theme-button" class="theme-button" type="button">◐ Theme</button>
-    </div>
-  </header>
-
-  <main>
+  <main class="maps-page">
     <section class="maps-layout">
-      <aside class="panel sidebar-panel">
+      <aside class="maps-panel maps-sidebar">
         <div>
           <h1>Maps</h1>
           <p>Search for a city, address, park, restaurant, or landmark.</p>
         </div>
 
-        <div class="search-group">
-          <label for="place-search">Search for a place</label>
-
+        <div>
+          <label for="place-search"><strong>Search for a place</strong></label>
           <div class="search-row">
-            <input
-              id="place-search"
-              class="search-input"
-              type="search"
-              placeholder="Example: Forest Park, St. Louis"
-              autocomplete="off"
-            >
-
-            <button id="search-button" class="search-button" type="button">
-              Search
-            </button>
+            <input id="place-search" class="text-input" type="search"
+              placeholder="Forest Park, St. Louis">
+            <button id="search-button" class="primary" type="button">Search</button>
           </div>
-
           <p id="search-status" class="status" aria-live="polite">
             The map starts in St. Louis.
           </p>
         </div>
 
-        <div class="save-current">
-          <p id="current-place-name" class="current-place-name">
-            Current place: St. Louis
-          </p>
-
-          <select id="collection-select" class="collection-select" aria-label="Choose collection"></select>
-
-          <button id="save-place-button" class="primary-button" type="button">
+        <div class="box">
+          <strong id="current-place-name">Current place: St. Louis</strong>
+          <select id="collection-select" class="collection-select"></select>
+          <button id="save-place-button" class="primary" type="button">
             ★ Save Current Place
           </button>
         </div>
 
         <div>
           <p class="section-title">Quick places</p>
-
-          <div class="quick-list">
-            <button class="quick-place" type="button"
-              data-lat="38.6270" data-lon="-90.1994" data-zoom="12" data-name="St. Louis">
-              <span>
-                <span class="place-name">St. Louis</span>
-                <span class="place-subtitle">Missouri</span>
-              </span>
+          <div class="list">
+            <button class="place-row" type="button"
+              data-lat="38.6270" data-lon="-90.1994" data-zoom="12"
+              data-name="St. Louis">
+              <span><strong>St. Louis</strong><span class="subtext">Missouri</span></span>
               <span>→</span>
             </button>
 
-            <button class="quick-place" type="button"
-              data-lat="38.6386" data-lon="-90.2845" data-zoom="14" data-name="Forest Park">
-              <span>
-                <span class="place-name">Forest Park</span>
-                <span class="place-subtitle">St. Louis</span>
-              </span>
+            <button class="place-row" type="button"
+              data-lat="38.6386" data-lon="-90.2845" data-zoom="14"
+              data-name="Forest Park">
+              <span><strong>Forest Park</strong><span class="subtext">St. Louis</span></span>
               <span>→</span>
             </button>
 
-            <button class="quick-place" type="button"
-              data-lat="37.1903" data-lon="-91.1690" data-zoom="11" data-name="Ozark National Scenic Riverways">
-              <span>
-                <span class="place-name">Ozark Riverways</span>
-                <span class="place-subtitle">Missouri</span>
-              </span>
+            <button class="place-row" type="button"
+              data-lat="37.1903" data-lon="-91.1690" data-zoom="11"
+              data-name="Ozark National Scenic Riverways">
+              <span><strong>Ozark Riverways</strong><span class="subtext">Missouri</span></span>
               <span>→</span>
             </button>
           </div>
@@ -452,44 +307,28 @@
 
         <div>
           <p class="section-title">Collections</p>
-
-          <div class="create-collection">
-            <input
-              id="new-collection-name"
-              class="collection-input"
-              type="text"
-              placeholder="New collection name"
-              maxlength="40"
-            >
-
-            <button id="create-collection-button" class="secondary-button" type="button">
-              Add
-            </button>
+          <div class="create-row">
+            <input id="new-collection-name" class="text-input" type="text"
+              placeholder="New collection name" maxlength="40">
+            <button id="create-collection-button" class="secondary" type="button">Add</button>
           </div>
-
           <div id="collections-container"></div>
-        </div>
-
-        <div class="tip">
-          Collections and saved places are stored in this browser, so they remain after you refresh.
         </div>
       </aside>
 
-      <section class="panel map-panel" aria-label="Interactive map">
+      <section class="maps-panel map-panel" aria-label="Interactive map">
         <div id="map"></div>
       </section>
     </section>
   </main>
 
-  <footer>DavidCraft Maps</footer>
+  <footer class="dc-footer">DavidCraft Maps · v0.1</footer>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
-    const THEME_KEY = "davidcraft-theme";
     const COLLECTIONS_KEY = "davidcraft-map-collections";
 
-    const themeButton = document.getElementById("theme-button");
     const searchInput = document.getElementById("place-search");
     const searchButton = document.getElementById("search-button");
     const searchStatus = document.getElementById("search-status");
@@ -504,15 +343,15 @@
 
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      attribution: "&copy; OpenStreetMap contributors"
     }).addTo(map);
 
-    let activeMarker = L.marker([38.6270, -90.1994])
+    let marker = L.marker([38.6270, -90.1994])
       .addTo(map)
-      .bindPopup("<strong>St. Louis</strong><br>Welcome to DavidCraft Maps.");
+      .bindPopup("<strong>St. Louis</strong>")
+      .openPopup();
 
     let currentPlace = {
-      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
       name: "St. Louis",
       lat: 38.6270,
       lon: -90.1994,
@@ -524,31 +363,17 @@
     function loadCollections() {
       try {
         const saved = JSON.parse(localStorage.getItem(COLLECTIONS_KEY));
-
         if (saved && typeof saved === "object" && !Array.isArray(saved)) {
           return saved;
         }
       } catch (error) {
         console.error(error);
       }
-
-      return {
-        Favorites: []
-      };
+      return { Favorites: [] };
     }
 
     function saveCollections() {
       localStorage.setItem(COLLECTIONS_KEY, JSON.stringify(collections));
-    }
-
-    function escapeHtml(value) {
-      return String(value).replace(/[&<>"']/g, (character) => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-      })[character]);
     }
 
     function showLocation(lat, lon, name, zoom = 14) {
@@ -557,17 +382,14 @@
 
       map.setView([latitude, longitude], Number(zoom));
 
-      if (activeMarker) {
-        map.removeLayer(activeMarker);
-      }
+      if (marker) map.removeLayer(marker);
 
-      activeMarker = L.marker([latitude, longitude])
+      marker = L.marker([latitude, longitude])
         .addTo(map)
-        .bindPopup(`<strong>${escapeHtml(name)}</strong>`)
+        .bindPopup(`<strong>${name}</strong>`)
         .openPopup();
 
       currentPlace = {
-        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
         name,
         lat: latitude,
         lon: longitude,
@@ -577,98 +399,66 @@
       currentPlaceName.textContent = `Current place: ${name}`;
     }
 
-    function renderCollectionSelect() {
-      const names = Object.keys(collections);
-
-      collectionSelect.innerHTML = "";
-
-      names.forEach((name) => {
-        const option = document.createElement("option");
-        option.value = name;
-        option.textContent = name;
-        collectionSelect.appendChild(option);
-      });
-    }
-
     function renderCollections() {
       collectionsContainer.innerHTML = "";
+      collectionSelect.innerHTML = "";
 
-      const names = Object.keys(collections);
+      Object.keys(collections).forEach((collectionName) => {
+        const option = document.createElement("option");
+        option.value = collectionName;
+        option.textContent = collectionName;
+        collectionSelect.appendChild(option);
 
-      if (names.length === 0) {
-        const empty = document.createElement("p");
-        empty.className = "empty-state";
-        empty.textContent = "No collections yet.";
-        collectionsContainer.appendChild(empty);
-        renderCollectionSelect();
-        return;
-      }
-
-      names.forEach((collectionName) => {
         const section = document.createElement("section");
         section.style.marginTop = "16px";
 
-        const heading = document.createElement("p");
-        heading.className = "section-title";
-        heading.textContent = collectionName;
+        const title = document.createElement("p");
+        title.className = "section-title";
+        title.textContent = collectionName;
 
         const list = document.createElement("div");
-        list.className = "saved-list";
+        list.className = "list";
 
-        const places = collections[collectionName];
-
-        if (!places.length) {
+        if (!collections[collectionName].length) {
           const empty = document.createElement("p");
-          empty.className = "empty-state";
+          empty.className = "empty";
           empty.textContent = "No saved places in this collection.";
           list.appendChild(empty);
-        } else {
-          places.forEach((place, index) => {
-            const row = document.createElement("div");
-            row.className = "saved-place";
-
-            const openButton = document.createElement("button");
-            openButton.className = "saved-place-main";
-            openButton.type = "button";
-
-            const name = document.createElement("span");
-            name.className = "saved-place-name";
-            name.textContent = place.name;
-
-            const meta = document.createElement("span");
-            meta.className = "saved-place-meta";
-            meta.textContent = `${place.lat.toFixed(4)}, ${place.lon.toFixed(4)}`;
-
-            openButton.append(name, meta);
-
-            openButton.addEventListener("click", () => {
-              showLocation(place.lat, place.lon, place.name, place.zoom || 14);
-              searchStatus.textContent = place.name;
-              searchStatus.className = "status";
-            });
-
-            const deleteButton = document.createElement("button");
-            deleteButton.className = "delete-place";
-            deleteButton.type = "button";
-            deleteButton.textContent = "×";
-            deleteButton.setAttribute("aria-label", `Delete ${place.name}`);
-
-            deleteButton.addEventListener("click", () => {
-              collections[collectionName].splice(index, 1);
-              saveCollections();
-              renderCollections();
-            });
-
-            row.append(openButton, deleteButton);
-            list.appendChild(row);
-          });
         }
 
-        section.append(heading, list);
+        collections[collectionName].forEach((place, index) => {
+          const row = document.createElement("div");
+          row.className = "saved-row";
+
+          const open = document.createElement("button");
+          open.className = "saved-main";
+          open.type = "button";
+          open.innerHTML =
+            `<strong>${place.name}</strong>` +
+            `<span class="subtext">${place.lat.toFixed(4)}, ${place.lon.toFixed(4)}</span>`;
+
+          open.addEventListener("click", () => {
+            showLocation(place.lat, place.lon, place.name, place.zoom || 14);
+          });
+
+          const remove = document.createElement("button");
+          remove.className = "delete";
+          remove.type = "button";
+          remove.textContent = "×";
+
+          remove.addEventListener("click", () => {
+            collections[collectionName].splice(index, 1);
+            saveCollections();
+            renderCollections();
+          });
+
+          row.append(open, remove);
+          list.appendChild(row);
+        });
+
+        section.append(title, list);
         collectionsContainer.appendChild(section);
       });
-
-      renderCollectionSelect();
     }
 
     async function searchPlace() {
@@ -677,32 +467,23 @@
       if (!query) {
         searchStatus.textContent = "Type a place to search.";
         searchStatus.className = "status error";
-        searchInput.focus();
         return;
       }
 
       searchButton.disabled = true;
       searchButton.textContent = "Searching…";
-      searchStatus.textContent = "Searching OpenStreetMap…";
-      searchStatus.className = "status";
+      searchStatus.textContent = "Searching…";
 
       try {
-        const endpoint =
+        const url =
           "https://nominatim.openstreetmap.org/search" +
           `?format=jsonv2&limit=1&q=${encodeURIComponent(query)}`;
 
-        const response = await fetch(endpoint, {
-          headers: { "Accept": "application/json" }
-        });
-
-        if (!response.ok) {
-          throw new Error("Search service returned an error.");
-        }
-
+        const response = await fetch(url);
         const results = await response.json();
 
-        if (!Array.isArray(results) || results.length === 0) {
-          searchStatus.textContent = "No place was found. Try adding the city or state.";
+        if (!results.length) {
+          searchStatus.textContent = "No place found.";
           searchStatus.className = "status error";
           return;
         }
@@ -712,8 +493,7 @@
         searchStatus.textContent = result.display_name;
         searchStatus.className = "status";
       } catch (error) {
-        console.error(error);
-        searchStatus.textContent = "The place search could not connect. Please try again.";
+        searchStatus.textContent = "Search could not connect.";
         searchStatus.className = "status error";
       } finally {
         searchButton.disabled = false;
@@ -730,7 +510,7 @@
       }
     });
 
-    document.querySelectorAll(".quick-place").forEach((button) => {
+    document.querySelectorAll(".place-row").forEach((button) => {
       button.addEventListener("click", () => {
         showLocation(
           button.dataset.lat,
@@ -738,72 +518,37 @@
           button.dataset.name,
           button.dataset.zoom
         );
-
-        searchStatus.textContent = button.dataset.name;
-        searchStatus.className = "status";
       });
     });
 
     createCollectionButton.addEventListener("click", () => {
       const name = newCollectionName.value.trim();
 
-      if (!name) {
-        searchStatus.textContent = "Enter a collection name.";
-        searchStatus.className = "status error";
-        newCollectionName.focus();
-        return;
-      }
-
-      if (collections[name]) {
-        searchStatus.textContent = "That collection already exists.";
-        searchStatus.className = "status error";
-        return;
-      }
+      if (!name || collections[name]) return;
 
       collections[name] = [];
       newCollectionName.value = "";
       saveCollections();
       renderCollections();
-
       collectionSelect.value = name;
-      searchStatus.textContent = `Created collection: ${name}`;
-      searchStatus.className = "status";
-    });
-
-    newCollectionName.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        createCollectionButton.click();
-      }
     });
 
     savePlaceButton.addEventListener("click", () => {
       const collectionName = collectionSelect.value;
+      if (!collectionName) return;
 
-      if (!collectionName || !collections[collectionName]) {
-        searchStatus.textContent = "Create a collection first.";
-        searchStatus.className = "status error";
-        return;
-      }
-
-      const duplicate = collections[collectionName].some((place) => {
-        return (
-          Math.abs(place.lat - currentPlace.lat) < 0.00001 &&
-          Math.abs(place.lon - currentPlace.lon) < 0.00001
-        );
-      });
+      const duplicate = collections[collectionName].some((place) =>
+        Math.abs(place.lat - currentPlace.lat) < 0.00001 &&
+        Math.abs(place.lon - currentPlace.lon) < 0.00001
+      );
 
       if (duplicate) {
-        searchStatus.textContent = "That place is already saved in this collection.";
+        searchStatus.textContent = "That place is already saved.";
         searchStatus.className = "status error";
         return;
       }
 
-      collections[collectionName].push({
-        ...currentPlace,
-        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now())
-      });
-
+      collections[collectionName].push({ ...currentPlace });
       saveCollections();
       renderCollections();
 
@@ -811,40 +556,9 @@
       searchStatus.className = "status";
     });
 
-    function getVisibleTheme(choice) {
-      if (choice === "system") {
-        return window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
-      }
-
-      return choice;
-    }
-
-    function applyTheme(choice) {
-      localStorage.setItem(THEME_KEY, choice);
-      document.documentElement.dataset.theme = getVisibleTheme(choice);
-    }
-
-    themeButton.addEventListener("click", () => {
-      const current = localStorage.getItem(THEME_KEY) || "system";
-      const next =
-        current === "light"
-          ? "dark"
-          : current === "dark"
-            ? "system"
-            : "light";
-
-      applyTheme(next);
-    });
-
-    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
-      if ((localStorage.getItem(THEME_KEY) || "system") === "system") {
-        applyTheme("system");
-      }
-    });
-
     renderCollections();
   </script>
+
+  <script src="davidcraft.js"></script>
 </body>
 </html>
