@@ -27,6 +27,7 @@
       --border: #dfe3ec;
       --accent: #22a06b;
       --accent-hover: #188456;
+      --danger: #dc2626;
       --shadow: rgba(24, 32, 50, 0.12);
     }
 
@@ -40,6 +41,7 @@
       --border: #303a4c;
       --accent: #35c486;
       --accent-hover: #47d497;
+      --danger: #f87171;
       --shadow: rgba(0, 0, 0, 0.30);
     }
 
@@ -58,7 +60,7 @@
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    button, input { font: inherit; }
+    button, input, select { font: inherit; }
 
     .topbar {
       min-height: 70px;
@@ -101,7 +103,7 @@
     .top-link:hover, .theme-button:hover { border-color: var(--accent); }
 
     main {
-      width: min(100% - 24px, 1280px);
+      width: min(100% - 24px, 1380px);
       margin: 0 auto;
       padding: 22px 0 30px;
       flex: 1;
@@ -109,7 +111,7 @@
 
     .maps-layout {
       display: grid;
-      grid-template-columns: 340px minmax(0, 1fr);
+      grid-template-columns: 380px minmax(0, 1fr);
       gap: 18px;
       min-height: calc(100vh - 125px);
     }
@@ -126,6 +128,8 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
+      max-height: calc(100vh - 126px);
+      overflow-y: auto;
     }
 
     .sidebar-panel h1 {
@@ -144,9 +148,9 @@
     .search-group label, .section-title { font-size: 13px; font-weight: 800; }
     .search-row { display: grid; grid-template-columns: 1fr auto; gap: 9px; }
 
-    .search-input {
+    .search-input, .collection-input, .collection-select {
       min-width: 0;
-      min-height: 48px;
+      min-height: 46px;
       padding: 0 13px;
       border: 1px solid var(--border);
       border-radius: 12px;
@@ -155,13 +159,15 @@
       outline: none;
     }
 
-    .search-input:focus {
+    .search-input:focus,
+    .collection-input:focus,
+    .collection-select:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(34, 160, 107, 0.15);
     }
 
-    .search-button {
-      min-height: 48px;
+    .search-button, .primary-button {
+      min-height: 46px;
       padding: 0 16px;
       border: 0;
       border-radius: 12px;
@@ -171,8 +177,21 @@
       cursor: pointer;
     }
 
-    .search-button:hover { background: var(--accent-hover); }
-    .search-button:disabled { opacity: 0.65; cursor: not-allowed; }
+    .search-button:hover, .primary-button:hover { background: var(--accent-hover); }
+    .search-button:disabled, .primary-button:disabled { opacity: 0.65; cursor: not-allowed; }
+
+    .secondary-button {
+      min-height: 42px;
+      padding: 0 13px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: var(--soft);
+      color: var(--text);
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .secondary-button:hover { border-color: var(--accent); }
 
     .status {
       min-height: 22px;
@@ -182,13 +201,13 @@
       line-height: 1.45;
     }
 
-    .status.error { color: #dc2626; }
-    .quick-list { display: grid; gap: 9px; }
+    .status.error { color: var(--danger); }
+    .quick-list, .saved-list { display: grid; gap: 9px; }
 
-    .quick-place {
+    .quick-place, .saved-place {
       width: 100%;
       min-height: 46px;
-      padding: 0 13px;
+      padding: 10px 13px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -198,10 +217,11 @@
       background: var(--soft);
       color: var(--text);
       text-align: left;
-      cursor: pointer;
     }
 
-    .quick-place:hover { border-color: var(--accent); }
+    .quick-place { cursor: pointer; }
+    .quick-place:hover, .saved-place:hover { border-color: var(--accent); }
+
     .place-name { font-weight: 750; }
 
     .place-subtitle {
@@ -210,6 +230,76 @@
       color: var(--muted);
       font-size: 12px;
       font-weight: 500;
+    }
+
+    .saved-place-main {
+      min-width: 0;
+      flex: 1;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .saved-place-name {
+      display: block;
+      font-weight: 750;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .saved-place-meta {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .delete-place {
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--danger);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .delete-place:hover { background: color-mix(in srgb, var(--danger) 10%, transparent); }
+
+    .create-collection {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    .save-current {
+      display: grid;
+      gap: 9px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--soft);
+    }
+
+    .current-place-name {
+      margin: 0;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+
+    .empty-state {
+      margin: 0;
+      padding: 12px;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
     }
 
     .tip {
@@ -257,18 +347,19 @@
       border-top: 1px solid var(--border);
     }
 
-    @media (max-width: 850px) {
+    @media (max-width: 900px) {
       .maps-layout { grid-template-columns: 1fr; }
+      .sidebar-panel { max-height: none; overflow: visible; }
       .map-panel, #map { min-height: 540px; }
     }
 
     @media (max-width: 560px) {
       .topbar { padding-left: 14px; padding-right: 14px; }
       .top-link { display: none; }
-      main { width: min(100% - 14px, 1280px); }
+      main { width: min(100% - 14px, 1380px); }
       .panel { border-radius: 16px; }
-      .search-row { grid-template-columns: 1fr; }
-      .search-button { width: 100%; }
+      .search-row, .create-collection { grid-template-columns: 1fr; }
+      .search-button, .primary-button, .secondary-button { width: 100%; }
       .map-panel, #map { min-height: 470px; }
     }
   </style>
@@ -314,6 +405,18 @@
           </p>
         </div>
 
+        <div class="save-current">
+          <p id="current-place-name" class="current-place-name">
+            Current place: St. Louis
+          </p>
+
+          <select id="collection-select" class="collection-select" aria-label="Choose collection"></select>
+
+          <button id="save-place-button" class="primary-button" type="button">
+            ★ Save Current Place
+          </button>
+        </div>
+
         <div>
           <p class="section-title">Quick places</p>
 
@@ -347,8 +450,28 @@
           </div>
         </div>
 
+        <div>
+          <p class="section-title">Collections</p>
+
+          <div class="create-collection">
+            <input
+              id="new-collection-name"
+              class="collection-input"
+              type="text"
+              placeholder="New collection name"
+              maxlength="40"
+            >
+
+            <button id="create-collection-button" class="secondary-button" type="button">
+              Add
+            </button>
+          </div>
+
+          <div id="collections-container"></div>
+        </div>
+
         <div class="tip">
-          Tip: search for a full place name and city for the best result. You can drag, zoom, and tap the map.
+          Collections and saved places are stored in this browser, so they remain after you refresh.
         </div>
       </aside>
 
@@ -364,10 +487,18 @@
 
   <script>
     const THEME_KEY = "davidcraft-theme";
+    const COLLECTIONS_KEY = "davidcraft-map-collections";
+
     const themeButton = document.getElementById("theme-button");
     const searchInput = document.getElementById("place-search");
     const searchButton = document.getElementById("search-button");
     const searchStatus = document.getElementById("search-status");
+    const currentPlaceName = document.getElementById("current-place-name");
+    const collectionSelect = document.getElementById("collection-select");
+    const savePlaceButton = document.getElementById("save-place-button");
+    const newCollectionName = document.getElementById("new-collection-name");
+    const createCollectionButton = document.getElementById("create-collection-button");
+    const collectionsContainer = document.getElementById("collections-container");
 
     const map = L.map("map").setView([38.6270, -90.1994], 12);
 
@@ -379,6 +510,36 @@
     let activeMarker = L.marker([38.6270, -90.1994])
       .addTo(map)
       .bindPopup("<strong>St. Louis</strong><br>Welcome to DavidCraft Maps.");
+
+    let currentPlace = {
+      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+      name: "St. Louis",
+      lat: 38.6270,
+      lon: -90.1994,
+      zoom: 12
+    };
+
+    let collections = loadCollections();
+
+    function loadCollections() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(COLLECTIONS_KEY));
+
+        if (saved && typeof saved === "object" && !Array.isArray(saved)) {
+          return saved;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      return {
+        Favorites: []
+      };
+    }
+
+    function saveCollections() {
+      localStorage.setItem(COLLECTIONS_KEY, JSON.stringify(collections));
+    }
 
     function escapeHtml(value) {
       return String(value).replace(/[&<>"']/g, (character) => ({
@@ -404,6 +565,110 @@
         .addTo(map)
         .bindPopup(`<strong>${escapeHtml(name)}</strong>`)
         .openPopup();
+
+      currentPlace = {
+        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+        name,
+        lat: latitude,
+        lon: longitude,
+        zoom: Number(zoom)
+      };
+
+      currentPlaceName.textContent = `Current place: ${name}`;
+    }
+
+    function renderCollectionSelect() {
+      const names = Object.keys(collections);
+
+      collectionSelect.innerHTML = "";
+
+      names.forEach((name) => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        collectionSelect.appendChild(option);
+      });
+    }
+
+    function renderCollections() {
+      collectionsContainer.innerHTML = "";
+
+      const names = Object.keys(collections);
+
+      if (names.length === 0) {
+        const empty = document.createElement("p");
+        empty.className = "empty-state";
+        empty.textContent = "No collections yet.";
+        collectionsContainer.appendChild(empty);
+        renderCollectionSelect();
+        return;
+      }
+
+      names.forEach((collectionName) => {
+        const section = document.createElement("section");
+        section.style.marginTop = "16px";
+
+        const heading = document.createElement("p");
+        heading.className = "section-title";
+        heading.textContent = collectionName;
+
+        const list = document.createElement("div");
+        list.className = "saved-list";
+
+        const places = collections[collectionName];
+
+        if (!places.length) {
+          const empty = document.createElement("p");
+          empty.className = "empty-state";
+          empty.textContent = "No saved places in this collection.";
+          list.appendChild(empty);
+        } else {
+          places.forEach((place, index) => {
+            const row = document.createElement("div");
+            row.className = "saved-place";
+
+            const openButton = document.createElement("button");
+            openButton.className = "saved-place-main";
+            openButton.type = "button";
+
+            const name = document.createElement("span");
+            name.className = "saved-place-name";
+            name.textContent = place.name;
+
+            const meta = document.createElement("span");
+            meta.className = "saved-place-meta";
+            meta.textContent = `${place.lat.toFixed(4)}, ${place.lon.toFixed(4)}`;
+
+            openButton.append(name, meta);
+
+            openButton.addEventListener("click", () => {
+              showLocation(place.lat, place.lon, place.name, place.zoom || 14);
+              searchStatus.textContent = place.name;
+              searchStatus.className = "status";
+            });
+
+            const deleteButton = document.createElement("button");
+            deleteButton.className = "delete-place";
+            deleteButton.type = "button";
+            deleteButton.textContent = "×";
+            deleteButton.setAttribute("aria-label", `Delete ${place.name}`);
+
+            deleteButton.addEventListener("click", () => {
+              collections[collectionName].splice(index, 1);
+              saveCollections();
+              renderCollections();
+            });
+
+            row.append(openButton, deleteButton);
+            list.appendChild(row);
+          });
+        }
+
+        section.append(heading, list);
+        collectionsContainer.appendChild(section);
+      });
+
+      renderCollectionSelect();
     }
 
     async function searchPlace() {
@@ -479,6 +744,73 @@
       });
     });
 
+    createCollectionButton.addEventListener("click", () => {
+      const name = newCollectionName.value.trim();
+
+      if (!name) {
+        searchStatus.textContent = "Enter a collection name.";
+        searchStatus.className = "status error";
+        newCollectionName.focus();
+        return;
+      }
+
+      if (collections[name]) {
+        searchStatus.textContent = "That collection already exists.";
+        searchStatus.className = "status error";
+        return;
+      }
+
+      collections[name] = [];
+      newCollectionName.value = "";
+      saveCollections();
+      renderCollections();
+
+      collectionSelect.value = name;
+      searchStatus.textContent = `Created collection: ${name}`;
+      searchStatus.className = "status";
+    });
+
+    newCollectionName.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        createCollectionButton.click();
+      }
+    });
+
+    savePlaceButton.addEventListener("click", () => {
+      const collectionName = collectionSelect.value;
+
+      if (!collectionName || !collections[collectionName]) {
+        searchStatus.textContent = "Create a collection first.";
+        searchStatus.className = "status error";
+        return;
+      }
+
+      const duplicate = collections[collectionName].some((place) => {
+        return (
+          Math.abs(place.lat - currentPlace.lat) < 0.00001 &&
+          Math.abs(place.lon - currentPlace.lon) < 0.00001
+        );
+      });
+
+      if (duplicate) {
+        searchStatus.textContent = "That place is already saved in this collection.";
+        searchStatus.className = "status error";
+        return;
+      }
+
+      collections[collectionName].push({
+        ...currentPlace,
+        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now())
+      });
+
+      saveCollections();
+      renderCollections();
+
+      searchStatus.textContent = `Saved to ${collectionName}.`;
+      searchStatus.className = "status";
+    });
+
     function getVisibleTheme(choice) {
       if (choice === "system") {
         return window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -511,6 +843,8 @@
         applyTheme("system");
       }
     });
+
+    renderCollections();
   </script>
 </body>
 </html>
