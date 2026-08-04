@@ -9,6 +9,7 @@
     { key: "music", label: "Music", icon: "🎵", href: "music.html" },
     { key: "shows", label: "Shows", icon: "📺", href: "shows.html" },
     { key: "photos", label: "Photos", icon: "📷", href: "photos.html" },
+    { key: "files", label: "Files", icon: "📁", href: "files.html" },
     { key: "play", label: "Play", icon: "🎮", href: "play.html" }
   ];
 
