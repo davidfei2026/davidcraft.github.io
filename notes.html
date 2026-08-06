@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notes — DavidCraft</title>
+<link rel="stylesheet" href="davidcraft.css">
+<style>
+:root{--a:#f59e0b;--b:#f97316;--danger:#dc2626}
+html[data-theme="dark"]{--a:#fbbf24;--b:#fb923c;--danger:#f87171}
+.page{width:min(100% - 24px,1380px);margin:auto;padding:26px 0 48px}
+.hero{padding:32px;margin-bottom:22px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;background:radial-gradient(circle at 95% 5%,color-mix(in srgb,var(--b) 22%,transparent),transparent 22rem),radial-gradient(circle at 5% 100%,color-mix(in srgb,var(--a) 20%,transparent),transparent 24rem),var(--dc-panel);border:1px solid var(--dc-border);border-radius:26px;box-shadow:0 14px 36px var(--dc-shadow)}
+.hero h1{margin:0;font-size:clamp(42px,7vw,74px);line-height:1;letter-spacing:-.055em}.hero p{max-width:760px;margin:16px 0 0;color:var(--dc-muted);font-size:17px;line-height:1.65}
+.hero-icon{width:122px;height:122px;display:grid;place-items:center;border-radius:30px;background:linear-gradient(135deg,var(--a),var(--b));color:#fff;font-size:54px}
+.workspace{display:grid;grid-template-columns:280px 1fr;gap:20px}
+.panel{background:var(--dc-panel);border:1px solid var(--dc-border);border-radius:22px;box-shadow:0 14px 36px var(--dc-shadow)}
+.sidebar{padding:18px;align-self:start;position:sticky;top:88px}
+.side-title{margin:0 0 10px;color:var(--dc-muted);font-size:12px;font-weight:850;letter-spacing:.1em;text-transform:uppercase}
+.view{width:100%;min-height:46px;padding:0 13px;display:flex;align-items:center;justify-content:space-between;border:0;border-radius:12px;background:transparent;color:var(--dc-text);font-weight:750;cursor:pointer}
+.view:hover,.view.active{background:var(--dc-soft)}.count{color:var(--dc-muted);font-size:12px}
+.new-note{width:100%;min-height:46px;margin-top:18px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--a),var(--b));color:#fff;font-weight:850;cursor:pointer}
+.list{margin-top:16px;display:grid;gap:9px}.list-item{width:100%;padding:12px;border:1px solid transparent;border-radius:13px;background:transparent;color:var(--dc-text);text-align:left;cursor:pointer}
+.list-item:hover,.list-item.active{background:var(--dc-soft);border-color:var(--dc-border)}.list-item strong,.list-item span{display:block}.list-item strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.list-item span{margin-top:4px;color:var(--dc-muted);font-size:12px}
+.editor{overflow:hidden}.editor-head{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid var(--dc-border)}.editor-head h2{margin:0}
+.tools{display:flex;flex-wrap:wrap;gap:8px}.tool,.search{min-height:42px;border:1px solid var(--dc-border);border-radius:11px;background:var(--dc-panel);color:var(--dc-text)}.tool{padding:0 12px;font-weight:750;cursor:pointer}.tool.active{border-color:var(--a);color:var(--a)}.tool.delete{color:var(--danger)}.search{width:min(260px,32vw);padding:0 12px;background:var(--dc-page)}
+.editor-body{min-height:560px;padding:22px}.title{width:100%;padding:0;margin-bottom:18px;border:0;outline:none;background:transparent;color:var(--dc-text);font:inherit;font-size:clamp(30px,5vw,46px);font-weight:850;letter-spacing:-.04em}
+.content{width:100%;min-height:420px;padding:0;border:0;outline:none;resize:vertical;background:transparent;color:var(--dc-text);font:inherit;font-size:16px;line-height:1.7}
+.editor-foot{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-top:1px solid var(--dc-border);color:var(--dc-muted);font-size:12px}
+.empty{min-height:560px;padding:40px;display:grid;place-items:center;text-align:center;color:var(--dc-muted)}
+.colors{display:flex;gap:8px}.color{width:28px;height:28px;border:2px solid transparent;border-radius:50%;cursor:pointer}.color.active{border-color:var(--dc-text)}
+.yellow{background:#fef3c7}.blue{background:#dbeafe}.green{background:#dcfce7}.pink{background:#fce7f3}.purple{background:#ede9fe}
+html[data-theme="dark"] .yellow{background:#713f12}html[data-theme="dark"] .blue{background:#1e3a8a}html[data-theme="dark"] .green{background:#14532d}html[data-theme="dark"] .pink{background:#831843}html[data-theme="dark"] .purple{background:#4c1d95}
+@media(max-width:920px){.workspace{grid-template-columns:1fr}.sidebar{position:static}.views{display:flex;gap:8px;overflow-x:auto}.view{width:auto;white-space:nowrap}.list{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){.page{width:min(100% - 14px,1380px)}.hero{grid-template-columns:1fr}.hero-icon{display:none}.editor-head{flex-direction:column;align-items:flex-start}.tools,.search{width:100%}.list{grid-template-columns:1fr}.editor-foot{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body data-davidcraft-page="notes">
+<div id="davidcraft-navbar"></div>
+<main class="page">
+<section class="hero"><div><h1>DavidCraft Notes</h1><p>Write notes, pin important ideas, search your library, choose note colors, and keep everything saved in your browser.</p></div><div class="hero-icon">📝</div></section>
+<section class="workspace">
+<aside class="panel sidebar">
+<p class="side-title">Notes</p>
+<div class="views">
+<button class="view active" data-view="all"><span>📝 All Notes</span><span id="all-count" class="count">0</span></button>
+<button class="view" data-view="pinned"><span>📌 Pinned</span><span id="pinned-count" class="count">0</span></button>
+<button class="view" data-view="recent"><span>🕘 Recent</span><span id="recent-count" class="count">0</span></button>
+</div>
+<button id="new-note" class="new-note">＋ New Note</button>
+<div id="list" class="list"></div>
+</aside>
+<section class="panel editor">
+<header class="editor-head"><h2>Editor</h2><div class="tools"><input id="search" class="search" type="search" placeholder="Search notes"><button id="pin" class="tool">📌 Pin</button><button id="check" class="tool">☑ Checklist</button><button id="delete" class="tool delete">Delete</button></div></header>
+<div id="editor-area"></div>
+</section>
+</section>
+</main>
+<footer class="dc-footer">DavidCraft Notes · V1</footer>
+<script>
+const KEY="davidcraft-notes-v1";
+const list=document.getElementById("list"),editor=document.getElementById("editor-area"),search=document.getElementById("search"),pin=document.getElementById("pin"),check=document.getElementById("check"),del=document.getElementById("delete");
+let notes=load(),active=notes[0]?.id||null,view="all";
+function load(){try{const x=JSON.parse(localStorage.getItem(KEY));return Array.isArray(x)?x:[]}catch{return[]}}
+function save(){localStorage.setItem(KEY,JSON.stringify(notes))}
+function id(){return crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random())}
+function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function current(){return notes.find(n=>n.id===active)||null}
+function add(){const n={id:id(),title:"Untitled Note",content:"",pinned:false,color:"yellow",createdAt:Date.now(),updatedAt:Date.now()};notes.unshift(n);active=n.id;view="all";save();render()}
+function filtered(){const q=search.value.trim().toLowerCase();return notes.filter(n=>(view==="all"||(view==="pinned"&&n.pinned)||view==="recent")&&(!q||n.title.toLowerCase().includes(q)||n.content.toLowerCase().includes(q))).sort((a,b)=>a.pinned!==b.pinned?(a.pinned?-1:1):b.updatedAt-a.updatedAt)}
+function renderList(){const arr=filtered();list.innerHTML="";document.getElementById("all-count").textContent=notes.length;document.getElementById("pinned-count").textContent=notes.filter(n=>n.pinned).length;document.getElementById("recent-count").textContent=notes.length;if(!arr.length){list.innerHTML='<p class="count">No notes in this view.</p>';return}arr.forEach(n=>{const b=document.createElement("button");b.className="list-item"+(n.id===active?" active":"");b.innerHTML=`<strong>${n.pinned?"📌 ":""}${esc(n.title||"Untitled Note")}</strong><span>${new Date(n.updatedAt).toLocaleString()}</span>`;b.onclick=()=>{active=n.id;render()};list.appendChild(b)})}
+function renderEditor(){const n=current();if(!n){editor.innerHTML='<div class="empty"><div><div style="font-size:64px">📝</div><h2>No note selected</h2><p>Create a new note to begin.</p></div></div>';pin.disabled=check.disabled=del.disabled=true;return}pin.disabled=check.disabled=del.disabled=false;pin.textContent=n.pinned?"📌 Unpin":"📌 Pin";pin.classList.toggle("active",n.pinned);editor.innerHTML=`<div class="editor-body ${n.color}"><input id="title-input" class="title" maxlength="120" value="${esc(n.title)}" placeholder="Note title"><textarea id="content-input" class="content" placeholder="Start writing...">${esc(n.content)}</textarea></div><footer class="editor-foot"><div><span id="words">0 words</span> · <span id="status">Saved</span></div><div class="colors"><button class="color yellow" data-color="yellow"></button><button class="color blue" data-color="blue"></button><button class="color green" data-color="green"></button><button class="color pink" data-color="pink"></button><button class="color purple" data-color="purple"></button></div></footer>`;
+const t=document.getElementById("title-input"),c=document.getElementById("content-input"),w=document.getElementById("words"),s=document.getElementById("status");
+function count(){const k=c.value.trim().split(/\s+/).filter(Boolean).length;w.textContent=`${k} ${k===1?"word":"words"}`}
+function update(){n.title=t.value.trim()||"Untitled Note";n.content=c.value;n.updatedAt=Date.now();s.textContent="Saving…";save();count();setTimeout(()=>{s.textContent="Saved";renderList()},120)}
+t.oninput=update;c.oninput=update;document.querySelectorAll(".color").forEach(b=>{b.classList.toggle("active",b.dataset.color===n.color);b.onclick=()=>{n.color=b.dataset.color;n.updatedAt=Date.now();save();render()}});count()}
+function render(){renderList();renderEditor()}
+document.getElementById("new-note").onclick=add;pin.onclick=()=>{const n=current();if(!n)return;n.pinned=!n.pinned;n.updatedAt=Date.now();save();render()};check.onclick=()=>{const n=current(),c=document.getElementById("content-input");if(!n||!c)return;const p=c.selectionStart;c.value=c.value.slice(0,p)+"☐ "+c.value.slice(p);c.selectionStart=c.selectionEnd=p+2;c.focus();c.dispatchEvent(new Event("input"))};del.onclick=()=>{const n=current();if(!n||!confirm(`Delete “${n.title}”?`))return;notes=notes.filter(x=>x.id!==n.id);active=notes[0]?.id||null;save();render()};search.oninput=renderList;document.querySelectorAll(".view").forEach(b=>b.onclick=()=>{document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));b.classList.add("active");view=b.dataset.view;renderList()});if(!notes.length)add();else render();
+</script>
+<script src="davidcraft.js"></script>
+</body>
+</html>
