@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Files V3 — DavidCraft</title>
+  <title>Files V2 — DavidCraft</title>
 
   <link rel="stylesheet" href="davidcraft.css">
 
@@ -14,7 +14,6 @@
       --files-accent-2: #06b6d4;
       --files-danger: #dc2626;
       --files-success: #16a34a;
-      --selection: color-mix(in srgb, var(--files-accent) 12%, transparent);
     }
 
     html[data-theme="dark"] {
@@ -22,11 +21,10 @@
       --files-accent-2: #22d3ee;
       --files-danger: #f87171;
       --files-success: #4ade80;
-      --selection: color-mix(in srgb, var(--files-accent) 18%, transparent);
     }
 
     .files-page {
-      width: min(100% - 24px, 1480px);
+      width: min(100% - 24px, 1420px);
       margin: 0 auto;
       padding: 26px 0 48px;
     }
@@ -34,14 +32,17 @@
     .hero {
       padding: 32px;
       margin-bottom: 22px;
+
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 24px;
       align-items: center;
+
       background:
         radial-gradient(circle at 95% 5%, color-mix(in srgb, var(--files-accent-2) 22%, transparent), transparent 22rem),
         radial-gradient(circle at 5% 100%, color-mix(in srgb, var(--files-accent) 20%, transparent), transparent 24rem),
         var(--dc-panel);
+
       border: 1px solid var(--dc-border);
       border-radius: 26px;
       box-shadow: 0 14px 36px var(--dc-shadow);
@@ -55,7 +56,7 @@
     }
 
     .hero p {
-      max-width: 800px;
+      max-width: 780px;
       margin: 16px 0 0;
       color: var(--dc-muted);
       font-size: 17px;
@@ -105,7 +106,7 @@
 
     .workspace {
       display: grid;
-      grid-template-columns: 290px minmax(0, 1fr);
+      grid-template-columns: 285px minmax(0, 1fr);
       gap: 20px;
     }
 
@@ -137,14 +138,18 @@
       width: 100%;
       min-height: 46px;
       padding: 0 13px;
+
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
+
       border: 0;
       border-radius: 12px;
+
       background: transparent;
       color: var(--dc-text);
+
       font-weight: 750;
       cursor: pointer;
     }
@@ -154,6 +159,12 @@
     .folder-list-button:hover,
     .folder-list-button.active {
       background: var(--dc-soft);
+    }
+
+    .folder-list {
+      margin-top: 16px;
+      display: grid;
+      gap: 4px;
     }
 
     .count {
@@ -184,30 +195,19 @@
       color: var(--dc-text);
     }
 
-    .folder-list {
-      margin-top: 16px;
-      display: grid;
-      gap: 4px;
-    }
-
     .library {
       overflow: hidden;
     }
 
     .library-header {
-      padding: 18px 20px;
-      display: grid;
-      gap: 12px;
-      border-bottom: 1px solid var(--dc-border);
-    }
+      padding: 20px 22px;
 
-    .header-top,
-    .header-bottom {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 14px;
-      flex-wrap: wrap;
+
+      border-bottom: 1px solid var(--dc-border);
     }
 
     .library-header h2 {
@@ -221,10 +221,9 @@
       font-size: 13px;
     }
 
-    .header-tools,
-    .bulk-tools {
+    .header-tools {
       display: flex;
-      gap: 8px;
+      gap: 9px;
       align-items: center;
       flex-wrap: wrap;
     }
@@ -260,16 +259,6 @@
     .tool-button.active {
       border-color: var(--files-accent);
       color: var(--files-accent);
-    }
-
-    .tool-button.danger {
-      color: var(--files-danger);
-    }
-
-    .selection-note {
-      color: var(--dc-muted);
-      font-size: 13px;
-      font-weight: 700;
     }
 
     .drop-zone {
@@ -317,26 +306,8 @@
       letter-spacing: .05em;
     }
 
-    .file-row {
-      transition: background .15s ease;
-    }
-
     .file-row:hover {
       background: var(--dc-soft);
-    }
-
-    .file-row.selected {
-      background: var(--selection);
-    }
-
-    .select-cell {
-      width: 44px;
-    }
-
-    .row-checkbox {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--files-accent);
     }
 
     .file-main {
@@ -346,10 +317,9 @@
       min-width: 0;
     }
 
-    .file-icon,
-    .thumb {
-      width: 44px;
-      height: 44px;
+    .file-icon {
+      width: 42px;
+      height: 42px;
       display: grid;
       place-items: center;
       flex-shrink: 0;
@@ -357,13 +327,6 @@
       background: color-mix(in srgb, var(--files-accent) 12%, var(--dc-panel));
       color: var(--files-accent);
       font-size: 20px;
-      overflow: hidden;
-    }
-
-    .thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
     }
 
     .file-copy {
@@ -418,8 +381,7 @@
     }
 
     .file-card {
-      position: relative;
-      min-height: 205px;
+      min-height: 180px;
       padding: 16px;
       display: flex;
       flex-direction: column;
@@ -427,7 +389,7 @@
       border: 1px solid var(--dc-border);
       border-radius: 18px;
       background: var(--dc-panel);
-      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+      transition: transform .2s ease, border-color .2s ease;
     }
 
     .file-card:hover {
@@ -435,38 +397,12 @@
       border-color: var(--files-accent);
     }
 
-    .file-card.selected {
-      background: var(--selection);
-      border-color: var(--files-accent);
-    }
-
-    .card-checkbox {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 18px;
-      height: 18px;
-      accent-color: var(--files-accent);
-    }
-
-    .card-preview {
-      aspect-ratio: 16 / 9;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      border-radius: 12px;
-      background: var(--dc-soft);
-      font-size: 44px;
-    }
-
-    .card-preview img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .file-card-icon {
+      font-size: 42px;
     }
 
     .file-card h3 {
-      margin: 14px 0 5px;
+      margin: 16px 0 5px;
       font-size: 16px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -489,45 +425,6 @@
       padding: 48px 22px;
       text-align: center;
       color: var(--dc-muted);
-    }
-
-    .context-menu {
-      position: fixed;
-      z-index: 4000;
-      min-width: 210px;
-      padding: 8px;
-      display: none;
-      background: var(--dc-panel);
-      border: 1px solid var(--dc-border);
-      border-radius: 14px;
-      box-shadow: 0 18px 48px rgba(0,0,0,.25);
-    }
-
-    .context-menu.open {
-      display: block;
-    }
-
-    .context-menu button {
-      width: 100%;
-      min-height: 40px;
-      padding: 0 12px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border: 0;
-      border-radius: 9px;
-      background: transparent;
-      color: var(--dc-text);
-      text-align: left;
-      cursor: pointer;
-    }
-
-    .context-menu button:hover {
-      background: var(--dc-soft);
-    }
-
-    .context-menu .danger {
-      color: var(--files-danger);
     }
 
     .modal-overlay {
@@ -671,14 +568,12 @@
     }
 
     @media (max-width: 760px) {
-      .header-top,
-      .header-bottom {
-        align-items: flex-start;
+      .library-header {
         flex-direction: column;
+        align-items: flex-start;
       }
 
-      .header-tools,
-      .bulk-tools {
+      .header-tools {
         width: 100%;
       }
 
@@ -716,15 +611,11 @@
       .file-actions {
         justify-content: flex-start;
       }
-
-      .select-cell {
-        width: auto;
-      }
     }
 
     @media (max-width: 620px) {
       .files-page {
-        width: min(100% - 14px, 1480px);
+        width: min(100% - 14px, 1420px);
       }
 
       .hero {
@@ -752,12 +643,10 @@
   <main class="files-page">
     <section class="hero">
       <div>
-        <h1>DavidCraft Files V3</h1>
-
+        <h1>DavidCraft Files V2</h1>
         <p>
-          A Finder-style file manager with persistent storage, thumbnails,
-          multi-select, bulk actions, right-click menus, folders, previews,
-          rename, move, favorites, trash, and downloads.
+          A more powerful file manager with persistent browser storage, real folders,
+          rename and move tools, trash, grid and list views, previews, and downloads.
         </p>
 
         <div class="storage-card">
@@ -772,7 +661,7 @@
         </div>
       </div>
 
-      <div class="hero-icon" aria-hidden="true">🗂️</div>
+      <div class="hero-icon" aria-hidden="true">📂</div>
     </section>
 
     <section class="workspace">
@@ -817,42 +706,29 @@
 
       <section class="panel library">
         <header class="library-header">
-          <div class="header-top">
-            <div>
-              <h2 id="view-title">All Files</h2>
-              <p id="view-subtitle">Files saved in this browser.</p>
-            </div>
-
-            <div class="header-tools">
-              <input
-                id="file-search"
-                class="search-input"
-                type="search"
-                placeholder="Search files"
-              >
-
-              <select id="sort-select" class="select-input">
-                <option value="newest">Newest</option>
-                <option value="oldest">Oldest</option>
-                <option value="name">Name</option>
-                <option value="size">Size</option>
-              </select>
-
-              <button id="view-toggle" class="tool-button" type="button">
-                ▦ Grid
-              </button>
-            </div>
+          <div>
+            <h2 id="view-title">All Files</h2>
+            <p id="view-subtitle">Files saved in this browser.</p>
           </div>
 
-          <div class="header-bottom">
-            <span id="selection-note" class="selection-note">No files selected</span>
+          <div class="header-tools">
+            <input
+              id="file-search"
+              class="search-input"
+              type="search"
+              placeholder="Search files"
+            >
 
-            <div class="bulk-tools">
-              <button id="select-all" class="tool-button" type="button">Select All</button>
-              <button id="bulk-favorite" class="tool-button" type="button">⭐ Favorite</button>
-              <button id="bulk-move" class="tool-button" type="button">📁 Move</button>
-              <button id="bulk-trash" class="tool-button danger" type="button">🗑 Trash</button>
-            </div>
+            <select id="sort-select" class="select-input" aria-label="Sort files">
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="name">Name</option>
+              <option value="size">Size</option>
+            </select>
+
+            <button id="view-toggle" class="tool-button" type="button">
+              ▦ Grid
+            </button>
           </div>
         </header>
 
@@ -869,20 +745,12 @@
   </main>
 
   <footer class="dc-footer">
-    DavidCraft Files · V3
+    DavidCraft Files · V2
   </footer>
 
   <input id="file-input" type="file" multiple>
 
-  <div id="context-menu" class="context-menu">
-    <button type="button" data-action="preview">👁 Preview</button>
-    <button type="button" data-action="favorite">⭐ Favorite</button>
-    <button type="button" data-action="edit">✎ Rename or Move</button>
-    <button type="button" data-action="download">⬇ Download</button>
-    <button type="button" data-action="trash" class="danger">🗑 Move to Trash</button>
-  </div>
-
-  <div id="preview-overlay" class="modal-overlay">
+  <div id="preview-overlay" class="modal-overlay" role="dialog" aria-modal="true">
     <section class="modal">
       <header class="modal-header">
         <h2 id="preview-title">File preview</h2>
@@ -898,7 +766,7 @@
     </section>
   </div>
 
-  <div id="edit-overlay" class="modal-overlay">
+  <div id="edit-overlay" class="modal-overlay" role="dialog" aria-modal="true">
     <section class="modal">
       <header class="modal-header">
         <h2>Edit File</h2>
@@ -923,7 +791,7 @@
   </div>
 
   <script>
-    const DB_NAME = "DavidCraftFilesV3";
+    const DB_NAME = "DavidCraftFilesV2";
     const DB_VERSION = 1;
     const FILE_STORE = "files";
     const FOLDER_STORE = "folders";
@@ -938,14 +806,6 @@
     const viewToggle = document.getElementById("view-toggle");
     const folderList = document.getElementById("folder-list");
 
-    const selectionNote = document.getElementById("selection-note");
-    const selectAllButton = document.getElementById("select-all");
-    const bulkFavorite = document.getElementById("bulk-favorite");
-    const bulkMove = document.getElementById("bulk-move");
-    const bulkTrash = document.getElementById("bulk-trash");
-
-    const contextMenu = document.getElementById("context-menu");
-
     const previewOverlay = document.getElementById("preview-overlay");
     const previewTitle = document.getElementById("preview-title");
     const previewBody = document.getElementById("preview-body");
@@ -959,13 +819,11 @@
     let db = null;
     let files = [];
     let folders = [];
-    let selectedIds = new Set();
     let activeView = "all";
     let activeFolder = "all";
     let layout = "list";
     let previewingFile = null;
     let editingFile = null;
-    let contextFile = null;
 
     function requestToPromise(request) {
       return new Promise((resolve, reject) => {
@@ -982,7 +840,7 @@
       });
     }
 
-    function openDatabase() {
+    async function openDatabase() {
       return new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, DB_VERSION);
 
@@ -1006,8 +864,13 @@
     async function loadData() {
       const transaction = db.transaction([FILE_STORE, FOLDER_STORE], "readonly");
 
-      files = await requestToPromise(transaction.objectStore(FILE_STORE).getAll());
-      folders = await requestToPromise(transaction.objectStore(FOLDER_STORE).getAll());
+      files = await requestToPromise(
+        transaction.objectStore(FILE_STORE).getAll()
+      );
+
+      folders = await requestToPromise(
+        transaction.objectStore(FOLDER_STORE).getAll()
+      );
 
       await transactionDone(transaction);
 
@@ -1134,10 +997,6 @@
 
     async function refresh() {
       await loadData();
-
-      const validIds = new Set(files.map((item) => item.id));
-      selectedIds = new Set([...selectedIds].filter((id) => validIds.has(id)));
-
       render();
     }
 
@@ -1172,7 +1031,6 @@
 
       allButton.addEventListener("click", () => {
         activeFolder = "all";
-        selectedIds.clear();
         render();
       });
 
@@ -1196,7 +1054,6 @@
 
           button.addEventListener("click", () => {
             activeFolder = folder.id;
-            selectedIds.clear();
             render();
           });
 
@@ -1238,13 +1095,6 @@
           ? labels[activeView][1]
           : `${labels[activeView][1]} Folder: ${folderName(activeFolder)}.`;
 
-      const selectedVisible = visible.filter((item) => selectedIds.has(item.id));
-
-      selectionNote.textContent =
-        selectedVisible.length
-          ? `${selectedVisible.length} selected`
-          : "No files selected";
-
       filesContainer.innerHTML = "";
 
       if (!visible.length) {
@@ -1265,29 +1115,6 @@
       }
     }
 
-    function createThumbnail(item, className) {
-      const wrapper = document.createElement("div");
-      wrapper.className = className;
-
-      if ((item.type || "").startsWith("image/")) {
-        const image = document.createElement("img");
-        const url = URL.createObjectURL(item.blob);
-
-        image.src = url;
-        image.alt = item.name;
-
-        image.addEventListener("load", () => {
-          URL.revokeObjectURL(url);
-        });
-
-        wrapper.appendChild(image);
-      } else {
-        wrapper.textContent = getFileIcon(item);
-      }
-
-      return wrapper;
-    }
-
     function renderList(visible) {
       const table = document.createElement("table");
       table.className = "file-table";
@@ -1295,7 +1122,6 @@
       table.innerHTML = `
         <thead>
           <tr>
-            <th></th>
             <th>Name</th>
             <th>Folder</th>
             <th>Size</th>
@@ -1311,48 +1137,16 @@
         const row = document.createElement("tr");
         row.className = "file-row";
 
-        if (selectedIds.has(item.id)) {
-          row.classList.add("selected");
-        }
-
-        row.addEventListener("dblclick", () => openPreview(item));
-        row.addEventListener("contextmenu", (event) => openContextMenu(event, item));
-
-        const selectCell = document.createElement("td");
-        selectCell.className = "select-cell";
-
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.className = "row-checkbox";
-        checkbox.checked = selectedIds.has(item.id);
-
-        checkbox.addEventListener("change", () => {
-          toggleSelected(item.id);
-        });
-
-        selectCell.appendChild(checkbox);
-
         const nameCell = document.createElement("td");
-
-        const main = document.createElement("div");
-        main.className = "file-main";
-
-        main.appendChild(createThumbnail(item, "thumb"));
-
-        const copy = document.createElement("div");
-        copy.className = "file-copy";
-
-        const name = document.createElement("span");
-        name.className = "file-name";
-        name.textContent = item.name;
-
-        const subtitle = document.createElement("span");
-        subtitle.className = "file-subtitle";
-        subtitle.textContent = item.type || "Unknown file type";
-
-        copy.append(name, subtitle);
-        main.appendChild(copy);
-        nameCell.appendChild(main);
+        nameCell.innerHTML = `
+          <div class="file-main">
+            <div class="file-icon">${getFileIcon(item)}</div>
+            <div class="file-copy">
+              <span class="file-name">${escapeHtml(item.name)}</span>
+              <span class="file-subtitle">${escapeHtml(item.type || "Unknown file type")}</span>
+            </div>
+          </div>
+        `;
 
         const folderCell = document.createElement("td");
         folderCell.textContent = folderName(item.folderId);
@@ -1366,15 +1160,7 @@
         const actionsCell = document.createElement("td");
         actionsCell.appendChild(buildActions(item));
 
-        row.append(
-          selectCell,
-          nameCell,
-          folderCell,
-          sizeCell,
-          dateCell,
-          actionsCell
-        );
-
+        row.append(nameCell, folderCell, sizeCell, dateCell, actionsCell);
         body.appendChild(row);
       });
 
@@ -1390,49 +1176,22 @@
         const card = document.createElement("article");
         card.className = "file-card";
 
-        if (selectedIds.has(item.id)) {
-          card.classList.add("selected");
-        }
-
-        card.addEventListener("dblclick", () => openPreview(item));
-        card.addEventListener("contextmenu", (event) => openContextMenu(event, item));
-
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.className = "card-checkbox";
-        checkbox.checked = selectedIds.has(item.id);
-
-        checkbox.addEventListener("change", () => {
-          toggleSelected(item.id);
-        });
-
-        const preview = createThumbnail(item, "card-preview");
-
-        const title = document.createElement("h3");
-        title.textContent = item.name;
-
-        const meta = document.createElement("p");
-        meta.textContent =
-          `${folderName(item.folderId)} · ${formatSize(item.size)}`;
+        card.innerHTML = `
+          <div>
+            <div class="file-card-icon">${getFileIcon(item)}</div>
+            <h3>${escapeHtml(item.name)}</h3>
+            <p>${escapeHtml(folderName(item.folderId))} · ${formatSize(item.size)}</p>
+          </div>
+        `;
 
         const actions = buildActions(item);
         actions.classList.add("card-actions");
 
-        card.append(checkbox, preview, title, meta, actions);
+        card.appendChild(actions);
         grid.appendChild(card);
       });
 
       filesContainer.appendChild(grid);
-    }
-
-    function toggleSelected(id) {
-      if (selectedIds.has(id)) {
-        selectedIds.delete(id);
-      } else {
-        selectedIds.add(id);
-      }
-
-      render();
     }
 
     function buildActions(item) {
@@ -1470,6 +1229,7 @@
       );
 
       const edit = makeIconButton("✎", "Rename or move", () => openEdit(item));
+
       const download = makeIconButton("⬇", "Download", () => downloadFile(item));
 
       const trash = makeIconButton("🗑", "Move to trash", async () => {
@@ -1488,12 +1248,7 @@
       button.type = "button";
       button.textContent = text;
       button.setAttribute("aria-label", label);
-
-      button.addEventListener("click", (event) => {
-        event.stopPropagation();
-        action();
-      });
-
+      button.addEventListener("click", action);
       return button;
     }
 
@@ -1599,6 +1354,7 @@
     function openEdit(item) {
       editingFile = item;
       editName.value = item.name;
+
       editFolder.innerHTML = "";
 
       folders.forEach((folder) => {
@@ -1635,48 +1391,6 @@
       await refresh();
     }
 
-    function openContextMenu(event, item) {
-      event.preventDefault();
-
-      contextFile = item;
-      contextMenu.style.left = `${Math.min(event.clientX, window.innerWidth - 230)}px`;
-      contextMenu.style.top = `${Math.min(event.clientY, window.innerHeight - 230)}px`;
-      contextMenu.classList.add("open");
-    }
-
-    function closeContextMenu() {
-      contextMenu.classList.remove("open");
-      contextFile = null;
-    }
-
-    contextMenu.addEventListener("click", async (event) => {
-      const button = event.target.closest("button");
-
-      if (!button || !contextFile) return;
-
-      const action = button.dataset.action;
-      const item = contextFile;
-
-      closeContextMenu();
-
-      if (action === "preview") openPreview(item);
-
-      if (action === "favorite") {
-        item.favorite = !item.favorite;
-        await saveFile(item);
-        await refresh();
-      }
-
-      if (action === "edit") openEdit(item);
-      if (action === "download") downloadFile(item);
-
-      if (action === "trash") {
-        item.trashed = true;
-        await saveFile(item);
-        await refresh();
-      }
-    });
-
     uploadButton.addEventListener("click", () => fileInput.click());
     dropZone.addEventListener("click", () => fileInput.click());
 
@@ -1711,7 +1425,6 @@
 
         button.classList.add("active");
         activeView = button.dataset.view;
-        selectedIds.clear();
         render();
       });
     });
@@ -1746,70 +1459,6 @@
       render();
     });
 
-    selectAllButton.addEventListener("click", () => {
-      const visible = visibleFiles();
-      const allSelected = visible.every((item) => selectedIds.has(item.id));
-
-      if (allSelected) {
-        visible.forEach((item) => selectedIds.delete(item.id));
-      } else {
-        visible.forEach((item) => selectedIds.add(item.id));
-      }
-
-      render();
-    });
-
-    bulkFavorite.addEventListener("click", async () => {
-      const selected = files.filter((item) => selectedIds.has(item.id));
-
-      for (const item of selected) {
-        item.favorite = true;
-        await saveFile(item);
-      }
-
-      await refresh();
-    });
-
-    bulkMove.addEventListener("click", async () => {
-      const selected = files.filter((item) => selectedIds.has(item.id));
-
-      if (!selected.length) return;
-
-      const folderNames = folders.map((folder) => folder.name).join(", ");
-      const answer = prompt(`Move to which folder?\n${folderNames}`);
-
-      if (!answer) return;
-
-      const target = folders.find(
-        (folder) => folder.name.toLowerCase() === answer.trim().toLowerCase()
-      );
-
-      if (!target) {
-        alert("Folder not found.");
-        return;
-      }
-
-      for (const item of selected) {
-        item.folderId = target.id;
-        await saveFile(item);
-      }
-
-      selectedIds.clear();
-      await refresh();
-    });
-
-    bulkTrash.addEventListener("click", async () => {
-      const selected = files.filter((item) => selectedIds.has(item.id));
-
-      for (const item of selected) {
-        item.trashed = true;
-        await saveFile(item);
-      }
-
-      selectedIds.clear();
-      await refresh();
-    });
-
     document.getElementById("preview-close").addEventListener("click", closePreview);
 
     previewDownload.addEventListener("click", () => {
@@ -1828,22 +1477,12 @@
       });
     });
 
-    document.addEventListener("click", (event) => {
-      if (!contextMenu.contains(event.target)) {
-        closeContextMenu();
-      }
-    });
-
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
         closePreview();
         closeEdit();
-        closeContextMenu();
       }
     });
-
-    window.addEventListener("resize", closeContextMenu);
-    window.addEventListener("scroll", closeContextMenu, true);
 
     (async () => {
       try {
