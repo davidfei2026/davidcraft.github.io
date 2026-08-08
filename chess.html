@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>DavidCraft Chess</title>
+
+  <link rel="stylesheet" href="davidcraft.css">
+
+  <style>
+    :root {
+      --chess-accent: #8b5cf6;
+      --chess-accent-2: #22d3ee;
+      --board-light: #b8c7d9;
+      --board-dark: #3b4b63;
+      --board-selected: #facc15;
+      --board-move: rgba(34, 211, 238, 0.52);
+      --board-capture: rgba(239, 68, 68, 0.58);
+    }
+
+    html[data-theme="dark"] {
+      --chess-accent: #a78bfa;
+      --chess-accent-2: #67e8f9;
+      --board-light: #9fb0c5;
+      --board-dark: #263449;
+    }
+
+    .chess-page {
+      width: min(100% - 24px, 1400px);
+      margin: 0 auto;
+      padding: 26px 0 52px;
+    }
+
+    .hero {
+      margin-bottom: 22px;
+      padding: 28px 30px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+
+      background:
+        radial-gradient(circle at 92% 12%, color-mix(in srgb, var(--chess-accent) 25%, transparent), transparent 22rem),
+        var(--dc-panel);
+
+      border: 1px solid var(--dc-border);
+      border-radius: 24px;
+      box-shadow: 0 14px 36px var(--dc-shadow);
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(38px, 6vw, 64px);
+      letter-spacing: -0.05em;
+    }
+
+    .hero p {
+      margin: 10px 0 0;
+      color: var(--dc-muted);
+      line-height: 1.6;
+    }
+
+    .hero-badge {
+      padding: 9px 12px;
+      border: 1px solid var(--dc-border);
+      border-radius: 999px;
+      color: var(--chess-accent);
+      font-size: 12px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 820px) minmax(290px, 1fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .board-panel,
+    .side-panel {
+      background: var(--dc-panel);
+      border: 1px solid var(--dc-border);
+      border-radius: 22px;
+      box-shadow: 0 14px 36px var(--dc-shadow);
+    }
+
+    .board-panel {
+      padding: 18px;
+    }
+
+    .player-bar {
+      min-height: 56px;
+      padding: 0 4px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .player {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 11px;
+      background: var(--dc-soft);
+      font-size: 20px;
+    }
+
+    .player strong,
+    .player span {
+      display: block;
+    }
+
+    .player span {
+      margin-top: 2px;
+      color: var(--dc-muted);
+      font-size: 12px;
+    }
+
+    .clock {
+      min-width: 82px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: var(--dc-soft);
+      text-align: center;
+      font-weight: 850;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .clock.active {
+      background: color-mix(in srgb, var(--chess-accent) 15%, var(--dc-soft));
+      color: var(--chess-accent);
+    }
+
+    .board-wrap {
+      position: relative;
+      width: min(100%, 760px);
+      margin: 0 auto;
+      aspect-ratio: 1;
+    }
+
+    .board {
+      width: 100%;
+      height: 100%;
+
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+
+      overflow: hidden;
+      border-radius: 14px;
+      box-shadow: 0 18px 42px rgba(0,0,0,.24);
+
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    .square {
+      position: relative;
+
+      display: grid;
+      place-items: center;
+
+      border: 0;
+      padding: 0;
+
+      font-size: clamp(30px, 6vw, 64px);
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .square.light {
+      background: var(--board-light);
+    }
+
+    .square.dark {
+      background: var(--board-dark);
+    }
+
+    .square.selected::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border: 4px solid var(--board-selected);
+      border-radius: 8px;
+      pointer-events: none;
+    }
+
+    .square.move::before {
+      content: "";
+      position: absolute;
+      width: 23%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--board-move);
+      pointer-events: none;
+    }
+
+    .square.capture::before {
+      content: "";
+      position: absolute;
+      inset: 7%;
+      border: 5px solid var(--board-capture);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .piece {
+      position: relative;
+      z-index: 2;
+
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.22));
+      transform: translateY(-1px);
+    }
+
+    .white-piece {
+      color: #ffffff;
+      text-shadow:
+        -1px -1px 0 #111827,
+        1px -1px 0 #111827,
+        -1px 1px 0 #111827,
+        1px 1px 0 #111827;
+    }
+
+    .black-piece {
+      color: #101827;
+      text-shadow: 0 1px 0 rgba(255,255,255,.2);
+    }
+
+    .rank-label,
+    .file-label {
+      position: absolute;
+      z-index: 3;
+      font-size: 10px;
+      font-weight: 850;
+      pointer-events: none;
+      opacity: .8;
+    }
+
+    .rank-label {
+      top: 4px;
+      left: 5px;
+    }
+
+    .file-label {
+      right: 5px;
+      bottom: 3px;
+    }
+
+    .board-actions {
+      margin-top: 16px;
+
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .action-button {
+      min-height: 42px;
+      padding: 0 13px;
+
+      border: 1px solid var(--dc-border);
+      border-radius: 11px;
+
+      background: var(--dc-panel);
+      color: var(--dc-text);
+
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .action-button.primary {
+      border: 0;
+      background: linear-gradient(135deg, var(--chess-accent), var(--chess-accent-2));
+      color: #fff;
+    }
+
+    .side-panel {
+      overflow: hidden;
+    }
+
+    .tabs {
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      border-bottom: 1px solid var(--dc-border);
+    }
+
+    .tab {
+      min-height: 42px;
+
+      border: 0;
+      border-radius: 10px;
+
+      background: transparent;
+      color: var(--dc-muted);
+
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background: var(--dc-soft);
+      color: var(--dc-text);
+    }
+
+    .tab-panel {
+      display: none;
+      min-height: 540px;
+      padding: 18px;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .status-card {
+      padding: 16px;
+
+      border: 1px solid var(--dc-border);
+      border-radius: 16px;
+
+      background: var(--dc-soft);
+    }
+
+    .status-card strong {
+      display: block;
+      font-size: 18px;
+    }
+
+    .status-card span {
+      display: block;
+      margin-top: 5px;
+      color: var(--dc-muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .moves {
+      margin-top: 16px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .move-row {
+      display: grid;
+      grid-template-columns: 36px 1fr 1fr;
+      gap: 8px;
+      align-items: center;
+
+      min-height: 36px;
+      padding: 5px 8px;
+
+      border-radius: 9px;
+    }
+
+    .move-row:nth-child(odd) {
+      background: var(--dc-soft);
+    }
+
+    .move-number {
+      color: var(--dc-muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .move-cell {
+      font-weight: 750;
+      font-size: 13px;
+    }
+
+    .mode-grid {
+      margin-top: 16px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .mode-card {
+      padding: 16px;
+
+      border: 1px solid var(--dc-border);
+      border-radius: 15px;
+
+      background: var(--dc-panel);
+      color: var(--dc-text);
+
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .mode-card:hover {
+      border-color: var(--chess-accent);
+    }
+
+    .mode-card strong {
+      display: block;
+    }
+
+    .mode-card span {
+      display: block;
+      margin-top: 5px;
+      color: var(--dc-muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .puzzle-card {
+      margin-top: 16px;
+      padding: 18px;
+
+      border: 1px solid var(--dc-border);
+      border-radius: 16px;
+
+      background:
+        radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--chess-accent) 16%, transparent), transparent 12rem),
+        var(--dc-soft);
+    }
+
+    .puzzle-card h3 {
+      margin: 0;
+    }
+
+    .puzzle-card p {
+      color: var(--dc-muted);
+      line-height: 1.5;
+    }
+
+    .puzzle-button {
+      min-height: 42px;
+      padding: 0 13px;
+
+      border: 0;
+      border-radius: 11px;
+
+      background: linear-gradient(135deg, var(--chess-accent), var(--chess-accent-2));
+      color: #fff;
+
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    @media (max-width: 1030px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .tab-panel {
+        min-height: 300px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .chess-page {
+        width: min(100% - 12px, 1400px);
+      }
+
+      .hero {
+        padding: 22px 18px;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .board-panel {
+        padding: 10px;
+      }
+
+      .player-bar {
+        min-height: 50px;
+      }
+
+      .clock {
+        min-width: 70px;
+      }
+
+      .board-actions {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body data-davidcraft-page="play">
+  <div id="davidcraft-navbar"></div>
+
+  <main class="chess-page">
+    <section class="hero">
+      <div>
+        <h1>DavidCraft Chess</h1>
+        <p>
+          Play a full local chess game, highlight legal moves, undo moves,
+          flip the board, practice positions, and prepare for puzzles.
+        </p>
+      </div>
+
+      <span class="hero-badge">Play DavidCraft · Chess V1</span>
+    </section>
+
+    <section class="workspace">
+      <div class="board-panel">
+        <div class="player-bar">
+          <div class="player">
+            <div class="avatar">♚</div>
+            <div>
+              <strong>Black</strong>
+              <span id="black-status">Waiting</span>
+            </div>
+          </div>
+
+          <div id="black-clock" class="clock">10:00</div>
+        </div>
+
+        <div class="board-wrap">
+          <div id="board" class="board" aria-label="Chess board"></div>
+        </div>
+
+        <div class="player-bar">
+          <div class="player">
+            <div class="avatar">♔</div>
+            <div>
+              <strong>White</strong>
+              <span id="white-status">Your move</span>
+            </div>
+          </div>
+
+          <div id="white-clock" class="clock active">10:00</div>
+        </div>
+
+        <div class="board-actions">
+          <button id="new-game" class="action-button primary" type="button">New Game</button>
+          <button id="undo" class="action-button" type="button">↶ Undo</button>
+          <button id="flip" class="action-button" type="button">↕ Flip Board</button>
+          <button id="reset-clock" class="action-button" type="button">⏱ Reset Clock</button>
+        </div>
+      </div>
+
+      <aside class="side-panel">
+        <div class="tabs">
+          <button class="tab active" type="button" data-tab="game">Game</button>
+          <button class="tab" type="button" data-tab="practice">Practice</button>
+          <button class="tab" type="button" data-tab="puzzles">Puzzles</button>
+        </div>
+
+        <section id="panel-game" class="tab-panel active">
+          <div class="status-card">
+            <strong id="game-status">White to move</strong>
+            <span id="game-message">Select a piece to see its legal moves.</span>
+          </div>
+
+          <div id="moves" class="moves"></div>
+        </section>
+
+        <section id="panel-practice" class="tab-panel">
+          <div class="status-card">
+            <strong>Practice</strong>
+            <span>Choose a position to load onto the board.</span>
+          </div>
+
+          <div class="mode-grid">
+            <button class="mode-card" type="button" data-position="start">
+              <strong>Starting Position</strong>
+              <span>Reset to the normal starting position.</span>
+            </button>
+
+            <button class="mode-card" type="button" data-position="endgame">
+              <strong>King & Pawn Endgame</strong>
+              <span>Practice a simple king-and-pawn ending.</span>
+            </button>
+
+            <button class="mode-card" type="button" data-position="rook">
+              <strong>Rook Endgame</strong>
+              <span>Practice activity with kings, rooks, and pawns.</span>
+            </button>
+          </div>
+        </section>
+
+        <section id="panel-puzzles" class="tab-panel">
+          <div class="status-card">
+            <strong>Puzzle Center</strong>
+            <span>Chess puzzles will become a major part of Play DavidCraft.</span>
+          </div>
+
+          <div class="puzzle-card">
+            <h3>Mate in One</h3>
+            <p>Load a simple position and find the winning move.</p>
+            <button id="load-puzzle" class="puzzle-button" type="button">
+              Load Puzzle
+            </button>
+          </div>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="dc-footer">
+    DavidCraft Chess · Play DavidCraft
+  </footer>
+
+  <script>
+    const boardElement = document.getElementById("board");
+    const movesElement = document.getElementById("moves");
+    const gameStatus = document.getElementById("game-status");
+    const gameMessage = document.getElementById("game-message");
+    const whiteStatus = document.getElementById("white-status");
+    const blackStatus = document.getElementById("black-status");
+    const whiteClock = document.getElementById("white-clock");
+    const blackClock = document.getElementById("black-clock");
+
+    const symbols = {
+      wK: "♔", wQ: "♕", wR: "♖", wB: "♗", wN: "♘", wP: "♙",
+      bK: "♚", bQ: "♛", bR: "♜", bB: "♝", bN: "♞", bP: "♟"
+    };
+
+    const initialBoard = [
+      ["bR","bN","bB","bQ","bK","bB","bN","bR"],
+      ["bP","bP","bP","bP","bP","bP","bP","bP"],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      [null,null,null,null,null,null,null,null],
+      ["wP","wP","wP","wP","wP","wP","wP","wP"],
+      ["wR","wN","wB","wQ","wK","wB","wN","wR"]
+    ];
+
+    let board = cloneBoard(initialBoard);
+    let selected = null;
+    let legalMoves = [];
+    let turn = "w";
+    let flipped = false;
+    let history = [];
+    let moveHistory = [];
+    let whiteTime = 600;
+    let blackTime = 600;
+    let timer = null;
+    let gameOver = false;
+
+    function cloneBoard(source) {
+      return source.map((row) => [...row]);
+    }
+
+    function pieceColor(piece) {
+      return piece ? piece[0] : null;
+    }
+
+    function pieceType(piece) {
+      return piece ? piece[1] : null;
+    }
+
+    function inside(row, col) {
+      return row >= 0 && row < 8 && col >= 0 && col < 8;
+    }
+
+    function squareName(row, col) {
+      return "abcdefgh"[col] + (8 - row);
+    }
+
+    function renderBoard() {
+      boardElement.innerHTML = "";
+
+      const rowOrder = flipped
+        ? [7,6,5,4,3,2,1,0]
+        : [0,1,2,3,4,5,6,7];
+
+      const colOrder = flipped
+        ? [7,6,5,4,3,2,1,0]
+        : [0,1,2,3,4,5,6,7];
+
+      rowOrder.forEach((row) => {
+        colOrder.forEach((col) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "square";
+
+          button.classList.add((row + col) % 2 === 0 ? "light" : "dark");
+
+          if (selected && selected.row === row && selected.col === col) {
+            button.classList.add("selected");
+          }
+
+          const move = legalMoves.find((item) => item.row === row && item.col === col);
+
+          if (move) {
+            button.classList.add(board[row][col] ? "capture" : "move");
+          }
+
+          const piece = board[row][col];
+
+          if (piece) {
+            const span = document.createElement("span");
+            span.className = `piece ${pieceColor(piece) === "w" ? "white-piece" : "black-piece"}`;
+            span.textContent = symbols[piece];
+            button.appendChild(span);
+          }
+
+          const showRank = flipped ? col === 7 : col === 0;
+          const showFile = flipped ? row === 0 : row === 7;
+
+          if (showRank) {
+            const rank = document.createElement("span");
+            rank.className = "rank-label";
+            rank.textContent = 8 - row;
+            button.appendChild(rank);
+          }
+
+          if (showFile) {
+            const file = document.createElement("span");
+            file.className = "file-label";
+            file.textContent = "abcdefgh"[col];
+            button.appendChild(file);
+          }
+
+          button.addEventListener("click", () => handleSquareClick(row, col));
+          boardElement.appendChild(button);
+        });
+      });
+
+      updateStatus();
+    }
+
+    function handleSquareClick(row, col) {
+      if (gameOver) return;
+
+      const piece = board[row][col];
+
+      if (selected) {
+        const move = legalMoves.find((item) => item.row === row && item.col === col);
+
+        if (move) {
+          makeMove(selected.row, selected.col, row, col);
+          return;
+        }
+      }
+
+      if (piece && pieceColor(piece) === turn) {
+        selected = { row, col };
+        legalMoves = getLegalMoves(row, col);
+      } else {
+        selected = null;
+        legalMoves = [];
+      }
+
+      renderBoard();
+    }
+
+    function getLegalMoves(row, col) {
+      const piece = board[row][col];
+
+      if (!piece) return [];
+
+      const color = pieceColor(piece);
+      const type = pieceType(piece);
+
+      if (type === "P") return pawnMoves(row, col, color);
+      if (type === "N") return knightMoves(row, col, color);
+      if (type === "B") return slidingMoves(row, col, color, [[1,1],[1,-1],[-1,1],[-1,-1]]);
+      if (type === "R") return slidingMoves(row, col, color, [[1,0],[-1,0],[0,1],[0,-1]]);
+      if (type === "Q") return slidingMoves(row, col, color, [[1,1],[1,-1],[-1,1],[-1,-1],[1,0],[-1,0],[0,1],[0,-1]]);
+      if (type === "K") return kingMoves(row, col, color);
+
+      return [];
+    }
+
+    function pawnMoves(row, col, color) {
+      const moves = [];
+      const direction = color === "w" ? -1 : 1;
+      const startRow = color === "w" ? 6 : 1;
+
+      const one = row + direction;
+
+      if (inside(one, col) && !board[one][col]) {
+        moves.push({ row: one, col });
+
+        const two = row + direction * 2;
+
+        if (row === startRow && !board[two][col]) {
+          moves.push({ row: two, col });
+        }
+      }
+
+      [-1, 1].forEach((delta) => {
+        const captureCol = col + delta;
+
+        if (
+          inside(one, captureCol) &&
+          board[one][captureCol] &&
+          pieceColor(board[one][captureCol]) !== color
+        ) {
+          moves.push({ row: one, col: captureCol });
+        }
+      });
+
+      return moves;
+    }
+
+    function knightMoves(row, col, color) {
+      const deltas = [
+        [2,1],[2,-1],[-2,1],[-2,-1],
+        [1,2],[1,-2],[-1,2],[-1,-2]
+      ];
+
+      return deltas
+        .map(([dr, dc]) => ({ row: row + dr, col: col + dc }))
+        .filter((move) => {
+          if (!inside(move.row, move.col)) return false;
+
+          const target = board[move.row][move.col];
+
+          return !target || pieceColor(target) !== color;
+        });
+    }
+
+    function slidingMoves(row, col, color, directions) {
+      const moves = [];
+
+      directions.forEach(([dr, dc]) => {
+        let r = row + dr;
+        let c = col + dc;
+
+        while (inside(r, c)) {
+          const target = board[r][c];
+
+          if (!target) {
+            moves.push({ row: r, col: c });
+          } else {
+            if (pieceColor(target) !== color) {
+              moves.push({ row: r, col: c });
+            }
+
+            break;
+          }
+
+          r += dr;
+          c += dc;
+        }
+      });
+
+      return moves;
+    }
+
+    function kingMoves(row, col, color) {
+      const moves = [];
+
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          if (!dr && !dc) continue;
+
+          const r = row + dr;
+          const c = col + dc;
+
+          if (!inside(r, c)) continue;
+
+          const target = board[r][c];
+
+          if (!target || pieceColor(target) !== color) {
+            moves.push({ row: r, col: c });
+          }
+        }
+      }
+
+      return moves;
+    }
+
+    function makeMove(fromRow, fromCol, toRow, toCol) {
+      const movingPiece = board[fromRow][fromCol];
+      const capturedPiece = board[toRow][toCol];
+
+      history.push({
+        board: cloneBoard(board),
+        turn,
+        moveHistory: [...moveHistory]
+      });
+
+      board[toRow][toCol] = movingPiece;
+      board[fromRow][fromCol] = null;
+
+      if (pieceType(movingPiece) === "P" && (toRow === 0 || toRow === 7)) {
+        board[toRow][toCol] = pieceColor(movingPiece) + "Q";
+      }
+
+      moveHistory.push({
+        color: turn,
+        text: `${squareName(fromRow, fromCol)}-${squareName(toRow, toCol)}${capturedPiece ? " ×" : ""}`
+      });
+
+      selected = null;
+      legalMoves = [];
+      turn = turn === "w" ? "b" : "w";
+
+      checkForKingCapture();
+      renderBoard();
+      renderMoves();
+      startClock();
+    }
+
+    function checkForKingCapture() {
+      const allPieces = board.flat();
+
+      if (!allPieces.includes("wK")) {
+        gameOver = true;
+        gameStatus.textContent = "Black wins";
+        gameMessage.textContent = "The white king was captured.";
+      }
+
+      if (!allPieces.includes("bK")) {
+        gameOver = true;
+        gameStatus.textContent = "White wins";
+        gameMessage.textContent = "The black king was captured.";
+      }
+    }
+
+    function renderMoves() {
+      movesElement.innerHTML = "";
+
+      for (let i = 0; i < moveHistory.length; i += 2) {
+        const row = document.createElement("div");
+        row.className = "move-row";
+
+        const number = document.createElement("span");
+        number.className = "move-number";
+        number.textContent = `${Math.floor(i / 2) + 1}.`;
+
+        const white = document.createElement("span");
+        white.className = "move-cell";
+        white.textContent = moveHistory[i]?.text || "";
+
+        const black = document.createElement("span");
+        black.className = "move-cell";
+        black.textContent = moveHistory[i + 1]?.text || "";
+
+        row.append(number, white, black);
+        movesElement.appendChild(row);
+      }
+    }
+
+    function updateStatus() {
+      if (gameOver) return;
+
+      gameStatus.textContent = turn === "w" ? "White to move" : "Black to move";
+      gameMessage.textContent = selected
+        ? `${squareName(selected.row, selected.col)} selected. Choose a highlighted square.`
+        : "Select a piece to see its legal moves.";
+
+      whiteStatus.textContent = turn === "w" ? "Your move" : "Waiting";
+      blackStatus.textContent = turn === "b" ? "Your move" : "Waiting";
+
+      whiteClock.classList.toggle("active", turn === "w");
+      blackClock.classList.toggle("active", turn === "b");
+    }
+
+    function formatClock(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+
+      return `${mins}:${String(secs).padStart(2, "0")}`;
+    }
+
+    function renderClocks() {
+      whiteClock.textContent = formatClock(whiteTime);
+      blackClock.textContent = formatClock(blackTime);
+    }
+
+    function startClock() {
+      if (timer) clearInterval(timer);
+
+      timer = setInterval(() => {
+        if (gameOver) return;
+
+        if (turn === "w") {
+          whiteTime--;
+
+          if (whiteTime <= 0) {
+            whiteTime = 0;
+            gameOver = true;
+            gameStatus.textContent = "Black wins on time";
+          }
+        } else {
+          blackTime--;
+
+          if (blackTime <= 0) {
+            blackTime = 0;
+            gameOver = true;
+            gameStatus.textContent = "White wins on time";
+          }
+        }
+
+        renderClocks();
+      }, 1000);
+    }
+
+    function resetGame() {
+      board = cloneBoard(initialBoard);
+      selected = null;
+      legalMoves = [];
+      turn = "w";
+      history = [];
+      moveHistory = [];
+      whiteTime = 600;
+      blackTime = 600;
+      gameOver = false;
+
+      renderBoard();
+      renderMoves();
+      renderClocks();
+      startClock();
+    }
+
+    function undoMove() {
+      const previous = history.pop();
+
+      if (!previous) return;
+
+      board = cloneBoard(previous.board);
+      turn = previous.turn;
+      moveHistory = [...previous.moveHistory];
+      selected = null;
+      legalMoves = [];
+      gameOver = false;
+
+      renderBoard();
+      renderMoves();
+    }
+
+    function loadPosition(type) {
+      if (type === "start") {
+        resetGame();
+        return;
+      }
+
+      history = [];
+      moveHistory = [];
+      selected = null;
+      legalMoves = [];
+      turn = "w";
+      gameOver = false;
+
+      board = Array.from({ length: 8 }, () => Array(8).fill(null));
+
+      if (type === "endgame") {
+        board[1][4] = "bK";
+        board[3][4] = "bP";
+        board[6][4] = "wP";
+        board[7][4] = "wK";
+      }
+
+      if (type === "rook") {
+        board[0][6] = "bK";
+        board[1][6] = "bP";
+        board[7][1] = "wK";
+        board[6][7] = "wR";
+        board[6][5] = "wP";
+      }
+
+      renderBoard();
+      renderMoves();
+    }
+
+    function loadPuzzle() {
+      history = [];
+      moveHistory = [];
+      selected = null;
+      legalMoves = [];
+      turn = "w";
+      gameOver = false;
+
+      board = Array.from({ length: 8 }, () => Array(8).fill(null));
+
+      board[0][6] = "bK";
+      board[1][5] = "bP";
+      board[1][6] = "bP";
+      board[1][7] = "bP";
+
+      board[5][5] = "wQ";
+      board[6][6] = "wK";
+      board[7][7] = "wR";
+
+      renderBoard();
+      renderMoves();
+
+      gameStatus.textContent = "Puzzle: White to move";
+      gameMessage.textContent = "Find the strongest move.";
+    }
+
+    document.getElementById("new-game").addEventListener("click", resetGame);
+    document.getElementById("undo").addEventListener("click", undoMove);
+
+    document.getElementById("flip").addEventListener("click", () => {
+      flipped = !flipped;
+      renderBoard();
+    });
+
+    document.getElementById("reset-clock").addEventListener("click", () => {
+      whiteTime = 600;
+      blackTime = 600;
+      renderClocks();
+    });
+
+    document.querySelectorAll(".tab").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach((tab) => tab.classList.remove("active"));
+        document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.remove("active"));
+
+        button.classList.add("active");
+        document.getElementById(`panel-${button.dataset.tab}`).classList.add("active");
+      });
+    });
+
+    document.querySelectorAll("[data-position]").forEach((button) => {
+      button.addEventListener("click", () => {
+        loadPosition(button.dataset.position);
+      });
+    });
+
+    document.getElementById("load-puzzle").addEventListener("click", loadPuzzle);
+
+    renderBoard();
+    renderMoves();
+    renderClocks();
+    startClock();
+  </script>
+
+  <script src="davidcraft.js"></script>
+</body>
+</html>
