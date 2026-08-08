@@ -1,82 +1,594 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Play DavidCraft</title>
-<link rel="stylesheet" href="davidcraft.css">
-<style>
-:root{--a:#7c3aed;--b:#ec4899;--c:#06b6d4}
-html[data-theme="dark"]{--a:#a78bfa;--b:#f472b6;--c:#22d3ee}
-.page{width:min(100% - 24px,1380px);margin:auto;padding:26px 0 52px}
-.hero{min-height:390px;padding:38px;margin-bottom:24px;display:grid;grid-template-columns:1fr 360px;gap:34px;align-items:center;background:radial-gradient(circle at 90% 15%,color-mix(in srgb,var(--b) 35%,transparent),transparent 21rem),radial-gradient(circle at 10% 100%,color-mix(in srgb,var(--c) 26%,transparent),transparent 28rem),var(--dc-panel);border:1px solid var(--dc-border);border-radius:28px;box-shadow:0 18px 48px var(--dc-shadow)}
-.badge{display:inline-flex;padding:7px 11px;border-radius:999px;background:color-mix(in srgb,var(--a) 13%,var(--dc-panel));color:var(--a);font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
-.hero h1{margin:16px 0 0;font-size:clamp(48px,8vw,84px);line-height:.96;letter-spacing:-.06em}
-.hero p{max-width:700px;margin:20px 0 0;color:var(--dc-muted);font-size:18px;line-height:1.65}
-.actions{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap}
-.primary,.secondary{min-height:48px;padding:0 17px;border-radius:13px;font-weight:850;cursor:pointer}
-.primary{display:inline-flex;align-items:center;border:0;background:linear-gradient(135deg,var(--a),var(--b));color:#fff;text-decoration:none}
-.secondary{border:1px solid var(--dc-border);background:var(--dc-panel);color:var(--dc-text)}
-.console{position:relative;width:100%;aspect-ratio:1.22;display:grid;place-items:center;border-radius:32px;background:linear-gradient(145deg,#111827,#312e81 52%,#7c3aed);color:#fff;box-shadow:0 28px 60px rgba(0,0,0,.32)}
-.screen{width:72%;aspect-ratio:16/10;display:grid;place-items:center;border:7px solid rgba(255,255,255,.16);border-radius:18px;background:#050816;font-size:76px}
-.controls{position:absolute;left:34px;right:34px;bottom:28px;display:flex;justify-content:space-between;font-size:30px}
-.section{margin-top:30px}.head{margin-bottom:14px;display:flex;justify-content:space-between;align-items:end;gap:16px}.head h2{margin:0;font-size:27px}.head p{margin:5px 0 0;color:var(--dc-muted);font-size:13px}
-.pill{padding:7px 10px;border:1px solid var(--dc-border);border-radius:999px;color:var(--dc-muted);font-size:12px;font-weight:800}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.card{min-height:285px;padding:20px;display:flex;flex-direction:column;justify-content:space-between;border:1px solid var(--dc-border);border-radius:22px;background:var(--dc-panel);color:var(--dc-text);text-decoration:none;box-shadow:0 14px 36px var(--dc-shadow);transition:.2s}
-.card:hover{transform:translateY(-5px);border-color:var(--a)}
-.art{min-height:145px;display:grid;place-items:center;border-radius:18px;color:#fff;font-size:62px}
-.chess{background:linear-gradient(145deg,#111827,#334155)} .arcade{background:linear-gradient(145deg,#4c1d95,#7c3aed 55%,#ec4899)} .drive{background:linear-gradient(145deg,#082f49,#0369a1 55%,#06b6d4)} .puzzle{background:linear-gradient(145deg,#14532d,#16a34a 55%,#84cc16)} .build{background:linear-gradient(145deg,#78350f,#ea580c 55%,#f59e0b)} .more{background:linear-gradient(145deg,#334155,#64748b)}
-.card h3{margin:17px 0 7px;font-size:21px}.card p{margin:0;color:var(--dc-muted);font-size:13px;line-height:1.55}
-.foot{margin-top:18px;display:flex;justify-content:space-between;color:var(--dc-muted);font-size:12px;font-weight:800}.go{color:var(--a)}.soon{opacity:.78;pointer-events:none}
-.quick{margin-top:28px;padding:18px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;border:1px solid var(--dc-border);border-radius:20px;background:var(--dc-panel);box-shadow:0 12px 30px var(--dc-shadow)}
-.quick strong{display:block}.quick span{display:block;margin-top:4px;color:var(--dc-muted);font-size:12px}.quick-buttons{display:flex;gap:8px;flex-wrap:wrap}.quick button{min-height:42px;padding:0 13px;border:1px solid var(--dc-border);border-radius:11px;background:var(--dc-panel);color:var(--dc-text);font-weight:750}
-@media(max-width:1000px){.hero{grid-template-columns:1fr}.console{display:none}.grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:620px){.page{width:min(100% - 14px,1380px)}.hero{padding:26px 21px}.grid{grid-template-columns:1fr}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Play DavidCraft</title>
+
+  <link rel="stylesheet" href="davidcraft.css">
+
+  <style>
+    :root {
+      --play-accent: #7c3aed;
+      --play-accent-2: #ec4899;
+      --play-accent-3: #06b6d4;
+    }
+
+    html[data-theme="dark"] {
+      --play-accent: #a78bfa;
+      --play-accent-2: #f472b6;
+      --play-accent-3: #22d3ee;
+    }
+
+    .play-page {
+      width: min(100% - 24px, 1380px);
+      margin: 0 auto;
+      padding: 26px 0 52px;
+    }
+
+    .hero {
+      min-height: 390px;
+      padding: 38px;
+      margin-bottom: 24px;
+
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 34px;
+      align-items: center;
+
+      background:
+        radial-gradient(circle at 90% 15%, color-mix(in srgb, var(--play-accent-2) 35%, transparent), transparent 21rem),
+        radial-gradient(circle at 10% 100%, color-mix(in srgb, var(--play-accent-3) 26%, transparent), transparent 28rem),
+        var(--dc-panel);
+
+      border: 1px solid var(--dc-border);
+      border-radius: 28px;
+
+      box-shadow: 0 18px 48px var(--dc-shadow);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      width: fit-content;
+      padding: 7px 11px;
+
+      border-radius: 999px;
+
+      background: color-mix(in srgb, var(--play-accent) 13%, var(--dc-panel));
+      color: var(--play-accent);
+
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      margin: 16px 0 0;
+
+      font-size: clamp(48px, 8vw, 84px);
+      line-height: .96;
+      letter-spacing: -.06em;
+    }
+
+    .hero p {
+      max-width: 700px;
+      margin: 20px 0 0;
+
+      color: var(--dc-muted);
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    .hero-actions {
+      margin-top: 26px;
+
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .primary-button,
+    .secondary-button {
+      min-height: 48px;
+      padding: 0 17px;
+
+      border-radius: 13px;
+
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .primary-button {
+      display: inline-flex;
+      align-items: center;
+
+      border: 0;
+
+      background: linear-gradient(135deg, var(--play-accent), var(--play-accent-2));
+      color: #fff;
+
+      text-decoration: none;
+    }
+
+    .secondary-button {
+      border: 1px solid var(--dc-border);
+      background: var(--dc-panel);
+      color: var(--dc-text);
+    }
+
+    .hero-console {
+      position: relative;
+
+      width: 100%;
+      aspect-ratio: 1.22;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 32px;
+
+      background:
+        linear-gradient(145deg, #111827, #312e81 52%, #7c3aed);
+
+      color: #fff;
+
+      box-shadow: 0 28px 60px rgba(0, 0, 0, .32);
+    }
+
+    .console-screen {
+      width: 72%;
+      aspect-ratio: 16 / 10;
+
+      display: grid;
+      place-items: center;
+
+      border: 7px solid rgba(255,255,255,.16);
+      border-radius: 18px;
+
+      background: #050816;
+
+      font-size: 76px;
+    }
+
+    .console-controls {
+      position: absolute;
+      left: 34px;
+      right: 34px;
+      bottom: 28px;
+
+      display: flex;
+      justify-content: space-between;
+
+      font-size: 30px;
+    }
+
+    .section {
+      margin-top: 30px;
+    }
+
+    .section-header {
+      margin-bottom: 14px;
+
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 27px;
+    }
+
+    .section-header p {
+      margin: 5px 0 0;
+      color: var(--dc-muted);
+      font-size: 13px;
+    }
+
+    .status-pill {
+      padding: 7px 10px;
+
+      border: 1px solid var(--dc-border);
+      border-radius: 999px;
+
+      color: var(--dc-muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .game-card {
+      min-height: 285px;
+      padding: 20px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      border: 1px solid var(--dc-border);
+      border-radius: 22px;
+
+      background: var(--dc-panel);
+      color: var(--dc-text);
+
+      text-decoration: none;
+
+      box-shadow: 0 14px 36px var(--dc-shadow);
+
+      transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+    }
+
+    .game-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--play-accent);
+      box-shadow: 0 22px 50px var(--dc-shadow);
+    }
+
+    .game-art {
+      min-height: 145px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 18px;
+
+      color: #fff;
+      font-size: 62px;
+    }
+
+    .chess-art {
+      background: linear-gradient(145deg, #111827, #334155);
+    }
+
+    .dark-chess-art {
+      background:
+        radial-gradient(circle at 75% 25%, rgba(124,58,237,.24), transparent 30%),
+        linear-gradient(145deg, #020617, #0f172a 55%, #312e81);
+    }
+
+    .arcade-art {
+      background: linear-gradient(145deg, #4c1d95, #7c3aed 55%, #ec4899);
+    }
+
+    .racing-art {
+      background: linear-gradient(145deg, #082f49, #0369a1 55%, #06b6d4);
+    }
+
+    .puzzle-art {
+      background: linear-gradient(145deg, #14532d, #16a34a 55%, #84cc16);
+    }
+
+    .builder-art {
+      background: linear-gradient(145deg, #78350f, #ea580c 55%, #f59e0b);
+    }
+
+    .game-copy h3 {
+      margin: 17px 0 7px;
+      font-size: 21px;
+    }
+
+    .game-copy p {
+      margin: 0;
+
+      color: var(--dc-muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .game-footer {
+      margin-top: 18px;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+
+      color: var(--dc-muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .play-now {
+      color: var(--play-accent);
+    }
+
+    .coming-soon {
+      opacity: .78;
+      pointer-events: none;
+    }
+
+    .quick-bar {
+      margin-top: 28px;
+      padding: 18px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+
+      border: 1px solid var(--dc-border);
+      border-radius: 20px;
+
+      background: var(--dc-panel);
+      box-shadow: 0 12px 30px var(--dc-shadow);
+    }
+
+    .quick-copy strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .quick-copy span {
+      display: block;
+      margin-top: 4px;
+      color: var(--dc-muted);
+      font-size: 12px;
+    }
+
+    .quick-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .quick-button {
+      min-height: 42px;
+      padding: 0 13px;
+
+      border: 1px solid var(--dc-border);
+      border-radius: 11px;
+
+      background: var(--dc-panel);
+      color: var(--dc-text);
+
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .quick-button:hover {
+      border-color: var(--play-accent);
+      color: var(--play-accent);
+    }
+
+    @media (max-width: 1000px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-console {
+        display: none;
+      }
+
+      .game-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .play-page {
+        width: min(100% - 14px, 1380px);
+      }
+
+      .hero {
+        padding: 26px 21px;
+      }
+
+      .game-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-bar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
+
 <body data-davidcraft-page="play">
-<div id="davidcraft-navbar"></div>
-<main class="page">
-<section class="hero">
-<div>
-<span class="badge">Now Open</span>
-<h1>Play DavidCraft.</h1>
-<p>Welcome to the gaming side of DavidCraft. Play games, solve puzzles, compete for high scores, and discover new experiences as the arcade grows.</p>
-<div class="actions">
-<a class="primary" href="chess.html">♟ Play Chess</a>
-<button id="random-game" class="secondary" type="button">🎲 Surprise Me</button>
-</div>
-</div>
-<div class="console"><div class="screen">🎮</div><div class="controls"><span>✚</span><span>● ●</span></div></div>
-</section>
+  <div id="davidcraft-navbar"></div>
 
-<section class="section">
-<div class="head"><div><h2>Game Library</h2><p>Choose a DavidCraft game to start playing.</p></div><span class="pill">Play V1</span></div>
-<div class="grid">
-<a class="card" href="chess.html"><div><div class="art chess">♟️</div><h3>DavidCraft Chess</h3><p>Play chess, practice positions, and prepare for future puzzles and challenges.</p></div><div class="foot"><span>Strategy</span><span class="go">Play →</span></div></a>
-<a class="card" href="arcade.html"><div><div class="art arcade">🕹️</div><h3>DavidCraft Arcade</h3><p>A home for quick games, high scores, and classic arcade-style challenges.</p></div><div class="foot"><span>Arcade</span><span class="go">Open →</span></div></a>
-<a class="card" href="driving.html"><div><div class="art drive">🏎️</div><h3>Driving</h3><p>Enter the DavidCraft driving world with roads, challenges, and future vehicles.</p></div><div class="foot"><span>Driving</span><span class="go">Drive →</span></div></a>
-<a class="card soon" href="#"><div><div class="art puzzle">🧩</div><h3>Puzzle Center</h3><p>Logic games, daily puzzles, brain teasers, and challenge streaks.</p></div><div class="foot"><span>Puzzles</span><span>Coming Soon</span></div></a>
-<a class="card soon" href="#"><div><div class="art build">🧱</div><h3>Build</h3><p>Create worlds, experiment with blocks, and build your own DavidCraft creations.</p></div><div class="foot"><span>Creative</span><span>Coming Soon</span></div></a>
-<a class="card soon" href="#"><div><div class="art more">＋</div><h3>More Games</h3><p>Play DavidCraft will keep growing with new games and experiences.</p></div><div class="foot"><span>Future</span><span>Coming Soon</span></div></a>
-</div>
-</section>
+  <main class="play-page">
+    <section class="hero">
+      <div>
+        <span class="hero-badge">Now Open</span>
 
-<section class="quick">
-<div><strong>Play DavidCraft is officially open.</strong><span>Version 1 starts with Chess, Arcade, and Driving.</span></div>
-<div class="quick-buttons">
-<button onclick="location.href='chess.html'">♟ Chess</button>
-<button onclick="location.href='arcade.html'">🕹 Arcade</button>
-<button onclick="location.href='driving.html'">🏎 Driving</button>
-</div>
-</section>
-</main>
-<footer class="dc-footer">Play DavidCraft · V1</footer>
-<script>
-const games=["chess.html","arcade.html","driving.html"];
-document.getElementById("random-game").onclick=()=>location.href=games[Math.floor(Math.random()*games.length)];
-</script>
-<script src="davidcraft.js"></script>
+        <h1>Play DavidCraft.</h1>
+
+        <p>
+          Welcome to the gaming side of DavidCraft. Play games, solve puzzles,
+          compete for high scores, and discover new experiences as the arcade grows.
+        </p>
+
+        <div class="hero-actions">
+          <a class="primary-button" href="chess.html">
+            ♟ Play Chess
+          </a>
+
+          <button id="random-game" class="secondary-button" type="button">
+            🎲 Surprise Me
+          </button>
+        </div>
+      </div>
+
+      <div class="hero-console" aria-hidden="true">
+        <div class="console-screen">🎮</div>
+
+        <div class="console-controls">
+          <span>✚</span>
+          <span>● ●</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <h2>Game Library</h2>
+          <p>Choose a DavidCraft game to start playing.</p>
+        </div>
+
+        <span class="status-pill">Play V1</span>
+      </div>
+
+      <div class="game-grid">
+        <a class="game-card" href="chess.html">
+          <div>
+            <div class="game-art chess-art">♟️</div>
+
+            <div class="game-copy">
+              <h3>DavidCraft Chess</h3>
+              <p>
+                Play local chess, practice positions, and solve future puzzles.
+              </p>
+            </div>
+          </div>
+
+          <div class="game-footer">
+            <span>Strategy</span>
+            <span class="play-now">Play →</span>
+          </div>
+        </a>
+
+        <a class="game-card" href="dark_chess_everything_upgraded.html">
+          <div>
+            <div class="game-art dark-chess-art">🌙♟</div>
+
+            <div class="game-copy">
+              <h3>Dark Chess</h3>
+              <p>
+                Open the upgraded Dark Chess experience we built earlier.
+              </p>
+            </div>
+          </div>
+
+          <div class="game-footer">
+            <span>Chess</span>
+            <span class="play-now">Play Dark Chess →</span>
+          </div>
+        </a>
+
+        <a class="game-card" href="arcade.html">
+          <div>
+            <div class="game-art arcade-art">🕹️</div>
+
+            <div class="game-copy">
+              <h3>DavidCraft Arcade</h3>
+              <p>
+                A home for quick games, high scores, and classic arcade-style challenges.
+              </p>
+            </div>
+          </div>
+
+          <div class="game-footer">
+            <span>Arcade</span>
+            <span class="play-now">Open →</span>
+          </div>
+        </a>
+
+        <a class="game-card" href="driving.html">
+          <div>
+            <div class="game-art racing-art">🏎️</div>
+
+            <div class="game-copy">
+              <h3>Driving</h3>
+              <p>
+                Enter the DavidCraft driving world with roads, challenges, and future vehicles.
+              </p>
+            </div>
+          </div>
+
+          <div class="game-footer">
+            <span>Driving</span>
+            <span class="play-now">Drive →</span>
+          </div>
+        </a>
+
+        <a class="game-card coming-soon" href="#">
+          <div>
+            <div class="game-art puzzle-art">🧩</div>
+
+            <div class="game-copy">
+              <h3>Puzzle Center</h3>
+              <p>
+                Logic games, daily puzzles, brain teasers, and challenge streaks.
+              </p>
+            </div>
+          </div>
+
+          <div class="game-footer">
+            <span>Puzzles</span>
+            <span>Coming Soon</span>
+          </div>
+        </a>
+
+        <a class="game-card coming-soon" href="#">
+          <div>
+            <div class="game-art builder-art">🧱</div>
+
+            <div class="game-copy">
+              <h3>Build</h3>
+              <p>
+                Create worlds, experiment with blocks, and build your own DavidCraft creations.
+              </p>
+            </div>
+          </div>
+
+          <div class="game-footer">
+            <span>Creative</span>
+            <span>Coming Soon</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="quick-bar">
+      <div class="quick-copy">
+        <strong>Play DavidCraft is officially open.</strong>
+        <span>Now featuring DavidCraft Chess and Dark Chess.</span>
+      </div>
+
+      <div class="quick-actions">
+        <button class="quick-button" type="button" onclick="location.href='chess.html'">♟ Chess</button>
+        <button class="quick-button" type="button" onclick="location.href='dark_chess_everything_upgraded.html'">🌙 Dark Chess</button>
+        <button class="quick-button" type="button" onclick="location.href='arcade.html'">🕹 Arcade</button>
+        <button class="quick-button" type="button" onclick="location.href='driving.html'">🏎 Driving</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="dc-footer">
+    Play DavidCraft · V1
+  </footer>
+
+  <script>
+    const playableGames = [
+      "chess.html",
+      "dark_chess_everything_upgraded.html",
+      "arcade.html",
+      "driving.html"
+    ];
+
+    document.getElementById("random-game").addEventListener("click", () => {
+      const random =
+        playableGames[Math.floor(Math.random() * playableGames.length)];
+
+      location.href = random;
+    });
+  </script>
+
+  <script src="davidcraft.js"></script>
 </body>
 </html>
