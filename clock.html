@@ -1,0 +1,19 @@
+<!doctype html><html><head><title>DavidCraft Clock</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="davidcraft.css">
+<style>
+*{box-sizing:border-box}.page{width:min(100% - 20px,1200px);margin:auto;padding:26px 0 50px}
+.hero,.panel{background:var(--dc-panel);border:1px solid var(--dc-border);box-shadow:0 14px 34px var(--dc-shadow)}
+.hero{padding:26px;border-radius:24px;margin-bottom:16px}.hero h1{margin:0;font-size:clamp(40px,7vw,68px);letter-spacing:-.05em}.hero p{color:var(--dc-muted);line-height:1.55}
+.panel{border-radius:18px;padding:16px}.btn{min-height:42px;padding:0 13px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-panel);color:var(--dc-text);font-weight:800;cursor:pointer}.primary{border:0;background:linear-gradient(135deg,#2563eb,#06b6d4);color:white}
+input,textarea,select{border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-page);color:var(--dc-text);padding:11px}.grid{display:grid;gap:12px}.cards{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.card{padding:15px;border:1px solid var(--dc-border);border-radius:14px;background:var(--dc-panel)}.muted{color:var(--dc-muted)}
+</style>
+<style>#clock{font-size:clamp(56px,12vw,110px);font-weight:950;letter-spacing:-.06em;text-align:center}#date{text-align:center;font-size:20px}.timer{text-align:center;font-size:48px;font-weight:900}</style></head>
+<body data-davidcraft-page="clock"><div id="davidcraft-navbar"></div><main class="page"><section class="hero"><h1>⏰ Clock</h1><p>Clock, stopwatch, timer, and focus tools.</p></section>
+<div class="grid cards"><section class="panel"><div id="clock"></div><div id="date" class="muted"></div></section>
+<section class="panel"><h2>Stopwatch</h2><div class="timer" id="sw">00:00.0</div><button class="btn primary" id="swgo">Start</button> <button class="btn" id="swreset">Reset</button></section>
+<section class="panel"><h2>Timer</h2><input id="mins" type="number" min="1" value="5"> minutes <div class="timer" id="tm">05:00</div><button class="btn primary" id="tmgo">Start</button> <button class="btn" id="tmreset">Reset</button></section></div></main>
+<script>
+const $=x=>document.getElementById(x);setInterval(()=>{let d=new Date();$("clock").textContent=d.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"});$("date").textContent=d.toLocaleDateString([],{weekday:"long",year:"numeric",month:"long",day:"numeric"})},250);
+let ss=0,si=null;$("swgo").onclick=()=>{if(si){clearInterval(si);si=null;$("swgo").textContent="Start"}else{si=setInterval(()=>{ss++;$("sw").textContent=String(Math.floor(ss/600)).padStart(2,"0")+":"+String(Math.floor(ss/10)%60).padStart(2,"0")+"."+(ss%10)},100);$("swgo").textContent="Pause"}};$("swreset").onclick=()=>{ss=0;$("sw").textContent="00:00.0"};
+let left=300,ti=null;function draw(){$("tm").textContent=String(Math.floor(left/60)).padStart(2,"0")+":"+String(left%60).padStart(2,"0")}$("tmgo").onclick=()=>{if(ti)return;left=Math.max(1,Number($("mins").value)||5)*60;draw();ti=setInterval(()=>{left--;draw();if(left<=0){clearInterval(ti);ti=null;alert("Timer finished!")}},1000)};$("tmreset").onclick=()=>{clearInterval(ti);ti=null;left=(Number($("mins").value)||5)*60;draw()};
+</script><script src="davidcraft.js"></script></body></html>

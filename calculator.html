@@ -1,0 +1,16 @@
+<!doctype html><html><head><title>DavidCraft Calculator</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="davidcraft.css">
+<style>
+*{box-sizing:border-box}.page{width:min(100% - 20px,1200px);margin:auto;padding:26px 0 50px}
+.hero,.panel{background:var(--dc-panel);border:1px solid var(--dc-border);box-shadow:0 14px 34px var(--dc-shadow)}
+.hero{padding:26px;border-radius:24px;margin-bottom:16px}.hero h1{margin:0;font-size:clamp(40px,7vw,68px);letter-spacing:-.05em}.hero p{color:var(--dc-muted);line-height:1.55}
+.panel{border-radius:18px;padding:16px}.btn{min-height:42px;padding:0 13px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-panel);color:var(--dc-text);font-weight:800;cursor:pointer}.primary{border:0;background:linear-gradient(135deg,#2563eb,#06b6d4);color:white}
+input,textarea,select{border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-page);color:var(--dc-text);padding:11px}.grid{display:grid;gap:12px}.cards{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.card{padding:15px;border:1px solid var(--dc-border);border-radius:14px;background:var(--dc-panel)}.muted{color:var(--dc-muted)}
+</style>
+<style>.calc{max-width:520px;margin:auto}#display{width:100%;height:86px;font-size:32px;text-align:right}.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.keys button{min-height:58px;font-size:18px}</style></head>
+<body data-davidcraft-page="calculator"><div id="davidcraft-navbar"></div><main class="page"><section class="hero"><h1>🧮 Calculator</h1><p>Standard and scientific calculations with local history.</p></section><section class="panel calc"><input id="display" readonly value="0"><div class="keys" id="keys"></div><h3>History</h3><div id="history" class="muted"></div></section></main>
+<script>
+const D=document.getElementById("display"),K=document.getElementById("keys"),H=document.getElementById("history");let x="";
+["C","(",")","÷","7","8","9","×","4","5","6","−","1","2","3","+","0",".","√","="].forEach(v=>{let b=document.createElement("button");b.className="btn"+(v==="="?" primary":"");b.textContent=v;b.onclick=()=>press(v);K.appendChild(b)});
+function press(v){if(v==="C")x="";else if(v==="="){try{let e=x.replaceAll("×","*").replaceAll("÷","/").replaceAll("−","-").replace(/√([0-9.]+)/g,"Math.sqrt($1)");let r=Function('"use strict";return ('+e+')')();H.innerHTML="<div>"+x+" = <strong>"+r+"</strong></div>"+H.innerHTML;x=String(r)}catch{x="Error"}}else if(v==="√")x+="√";else x+=v;D.value=x||"0"}
+</script><script src="davidcraft.js"></script></body></html>

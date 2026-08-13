@@ -1,0 +1,17 @@
+<!doctype html><html><head><title>DavidCraft Calendar</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="davidcraft.css">
+<style>
+*{box-sizing:border-box}.page{width:min(100% - 20px,1200px);margin:auto;padding:26px 0 50px}
+.hero,.panel{background:var(--dc-panel);border:1px solid var(--dc-border);box-shadow:0 14px 34px var(--dc-shadow)}
+.hero{padding:26px;border-radius:24px;margin-bottom:16px}.hero h1{margin:0;font-size:clamp(40px,7vw,68px);letter-spacing:-.05em}.hero p{color:var(--dc-muted);line-height:1.55}
+.panel{border-radius:18px;padding:16px}.btn{min-height:42px;padding:0 13px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-panel);color:var(--dc-text);font-weight:800;cursor:pointer}.primary{border:0;background:linear-gradient(135deg,#2563eb,#06b6d4);color:white}
+input,textarea,select{border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-page);color:var(--dc-text);padding:11px}.grid{display:grid;gap:12px}.cards{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.card{padding:15px;border:1px solid var(--dc-border);border-radius:14px;background:var(--dc-panel)}.muted{color:var(--dc-muted)}
+</style>
+<style>.calhead{display:flex;justify-content:space-between;align-items:center}.week,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.week div{text-align:center;color:var(--dc-muted);font-weight:800;padding:8px}.day{min-height:105px;padding:8px;border:1px solid var(--dc-border);border-radius:12px;background:var(--dc-panel);cursor:pointer}.day.today{outline:2px solid #2563eb}.event{margin-top:5px;padding:4px 6px;border-radius:7px;background:var(--dc-soft);font-size:10px;overflow:hidden;text-overflow:ellipsis}</style></head>
+<body data-davidcraft-page="calendar"><div id="davidcraft-navbar"></div><main class="page"><section class="hero"><h1>📅 Calendar</h1><p>Local events, school plans, birthdays, and reminders.</p></section><section class="panel">
+<div class="calhead"><button class="btn" id="prev">←</button><h2 id="month"></h2><button class="btn" id="next">→</button></div><div class="week"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div><div class="days" id="days"></div></section></main>
+<script>
+const $=x=>document.getElementById(x),K="dc_calendar_v1";let events=JSON.parse(localStorage.getItem(K)||"{}"),view=new Date();view.setDate(1);
+function render(){let y=view.getFullYear(),m=view.getMonth(),first=new Date(y,m,1).getDay(),count=new Date(y,m+1,0).getDate();$("month").textContent=view.toLocaleDateString([],{month:"long",year:"numeric"});$("days").innerHTML="";for(let i=0;i<first;i++)$("days").appendChild(document.createElement("div"));for(let d=1;d<=count;d++){let date=new Date(y,m,d),key=y+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0"),c=document.createElement("div");c.className="day"+(new Date().toDateString()===date.toDateString()?" today":"");c.innerHTML="<strong>"+d+"</strong>";(events[key]||[]).forEach(e=>{let s=document.createElement("div");s.className="event";s.textContent=e;c.appendChild(s)});c.onclick=()=>{let e=prompt("Add event on "+key+":");if(e){(events[key]??=[]).push(e);localStorage.setItem(K,JSON.stringify(events));render()}};$("days").appendChild(c)}}
+$("prev").onclick=()=>{view.setMonth(view.getMonth()-1);render()};$("next").onclick=()=>{view.setMonth(view.getMonth()+1);render()};render();
+</script><script src="davidcraft.js"></script></body></html>
