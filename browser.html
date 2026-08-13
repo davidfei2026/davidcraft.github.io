@@ -3,266 +3,313 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#121425">
-<title>DavidCraft Private Browser V3</title>
+<title>DavidCraft Private Browser V3.2</title>
 <link rel="stylesheet" href="davidcraft.css">
 <style>
-:root{--a:#6d4aff;--b:#06b6d4;--ok:#22c55e;--warn:#f59e0b;--danger:#ef4444}
-html[data-theme="dark"]{--a:#9b87ff;--b:#22d3ee}
+:root{
+  --dc-page:#f7f8fc;--dc-panel:#ffffff;--dc-text:#111827;--dc-muted:#6b7280;
+  --dc-border:#dbe0ea;--dc-soft:#f1f4f9;--dc-shadow:rgba(15,23,42,.08);
+  --browser-a:#6d4aff;--browser-b:#06b6d4;--browser-ok:#22c55e
+}
+html[data-theme="dark"]{
+  --dc-page:#0b1020;--dc-panel:#111827;--dc-text:#f8fafc;--dc-muted:#9ca3af;
+  --dc-border:#2a3446;--dc-soft:#182235;--dc-shadow:rgba(0,0,0,.22);
+  --browser-a:#9b87ff;--browser-b:#22d3ee
+}
 *{box-sizing:border-box}
-body{margin:0}
-.page{width:min(100% - 16px,1480px);margin:auto;padding:22px 0 50px}
+body{margin:0;background:var(--dc-page);color:var(--dc-text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.page{width:min(100% - 16px,1400px);margin:auto;padding:22px 0 48px}
 .hero,.panel{background:var(--dc-panel);border:1px solid var(--dc-border);box-shadow:0 14px 36px var(--dc-shadow)}
 .hero{padding:25px;border-radius:24px;margin-bottom:16px;display:flex;justify-content:space-between;gap:20px;align-items:center}
 .hero h1{margin:0;font-size:clamp(42px,7vw,70px);letter-spacing:-.055em;line-height:1}
 .hero p{max-width:820px;margin:12px 0 0;color:var(--dc-muted);line-height:1.55}
-.heroicon{width:108px;height:108px;display:grid;place-items:center;border-radius:26px;background:linear-gradient(135deg,var(--a),var(--b));font-size:48px;color:white}
-.shell{display:grid;grid-template-columns:255px minmax(0,1fr);gap:16px}
-.panel{border-radius:20px}
-.sidebar{padding:14px;position:sticky;top:88px;align-self:start}
-.stitle{margin:0 0 7px;color:var(--dc-muted);font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
-.sidebtn{width:100%;min-height:43px;padding:0 11px;display:flex;align-items:center;justify-content:space-between;gap:7px;border:0;border-radius:10px;background:transparent;color:var(--dc-text);font-weight:780;cursor:pointer}
-.sidebtn:hover,.sidebtn.active{background:var(--dc-soft)}
-.badge{padding:4px 7px;border-radius:999px;background:var(--dc-soft);color:var(--dc-muted);font-size:9px;font-weight:850}.badge.ok{color:var(--ok)}.badge.warn{color:var(--warn)}
-.browser{overflow:hidden}
-.tabs{padding:8px;display:flex;gap:6px;overflow:auto;background:var(--dc-soft);border-bottom:1px solid var(--dc-border)}
-.tab{min-width:145px;max-width:210px;padding:8px 10px;display:flex;justify-content:space-between;gap:7px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--dc-text);cursor:pointer}.tab.active{background:var(--dc-panel);border-color:var(--dc-border)}
-.tab span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:780}
-.toolbar{padding:10px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:7px;border-bottom:1px solid var(--dc-border);align-items:center}
-.nav{display:flex;gap:5px}
-.btn,.iconbtn{min-height:40px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-panel);color:var(--dc-text);font-weight:780;cursor:pointer}.btn{padding:0 12px}.iconbtn{width:40px}
-.primary{border:0;background:linear-gradient(135deg,var(--a),var(--b));color:white}
-.address,.input{min-height:42px;padding:0 12px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-page);color:var(--dc-text);outline:none}
-.address{width:100%}.address:focus,.input:focus{border-color:var(--a)}
-.content{min-height:620px;padding:20px}
-.view{max-width:960px;margin:auto;padding:26px 0}
-.logo{text-align:center;font-size:clamp(38px,7vw,64px);font-weight:950;letter-spacing:-.055em}
-.subtitle{text-align:center;max-width:710px;margin:9px auto 22px;color:var(--dc-muted);line-height:1.5}
-.searchbox{max-width:760px;margin:auto;display:grid;grid-template-columns:1fr auto;gap:7px}.searchbox .input{min-height:52px;font-size:16px}.searchbox .btn{min-height:52px}
-.statusgrid{margin-top:23px;display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.card{padding:14px;border:1px solid var(--dc-border);border-radius:14px;background:var(--dc-panel)}.card p{margin:5px 0 0;color:var(--dc-muted);font-size:11px;line-height:1.4}
-.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--warn)}.dot.ok{background:var(--ok)}.dot.off{background:var(--danger)}
-.quick{margin-top:22px}.quickgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.quicklink{padding:13px;border:1px solid var(--dc-border);border-radius:12px;background:var(--dc-panel);color:var(--dc-text);text-decoration:none;text-align:center;font-weight:780}
-.box{margin-top:18px;padding:15px;border:1px solid var(--dc-border);border-radius:14px;background:var(--dc-soft)}.box h3{margin:0 0 7px}.box p{margin:0;color:var(--dc-muted);font-size:11px;line-height:1.5}.row{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
-.results,.library{margin-top:13px;display:grid;gap:8px}.result,.libitem{padding:13px;border:1px solid var(--dc-border);border-radius:12px;background:var(--dc-panel)}.result:hover,.libitem:hover{border-color:var(--a)}.result h3,.libitem h3{margin:0 0 4px;font-size:14px}.result p,.libitem p{margin:0;color:var(--dc-muted);font-size:11px;line-height:1.45}.meta{margin-top:6px;color:var(--a);font-size:10px;font-weight:800}
-.libactions{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}.small{min-height:33px;padding:0 9px;border:1px solid var(--dc-border);border-radius:8px;background:var(--dc-panel);color:var(--dc-text);cursor:pointer}
-textarea.input{min-height:130px;padding:10px;resize:vertical}
-.form{display:grid;gap:8px}.notice{margin-top:15px;padding:12px;border:1px dashed var(--dc-border);border-radius:12px;color:var(--dc-muted);font-size:11px;line-height:1.5}
-.framewrap{display:none;height:620px}.framewrap.show{display:block}.frame{width:100%;height:100%;border:0;background:white}
-@media(max-width:1000px){.statusgrid{grid-template-columns:repeat(2,1fr)}.quickgrid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:880px){.shell{grid-template-columns:1fr}.sidebar{position:static}}
-@media(max-width:620px){.hero{flex-direction:column;align-items:flex-start}.heroicon{display:none}.toolbar{grid-template-columns:1fr}.statusgrid,.quickgrid,.searchbox{grid-template-columns:1fr}.content{padding:14px}}
+.heroicon{width:108px;height:108px;display:grid;place-items:center;border-radius:26px;background:linear-gradient(135deg,var(--browser-a),var(--browser-b));font-size:48px;color:#fff}
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:16px}
+.panel{border-radius:20px}.side{padding:14px;align-self:start;position:sticky;top:20px}
+.side h3{margin:0 0 8px;color:var(--dc-muted);font-size:10px;text-transform:uppercase;letter-spacing:.1em}
+.side button{width:100%;min-height:43px;margin:3px 0;padding:0 11px;border:0;border-radius:10px;background:transparent;color:var(--dc-text);text-align:left;font-weight:780;cursor:pointer}
+.side button:hover,.side button.active{background:var(--dc-soft)}
+.browser{overflow:hidden}.toolbar{padding:11px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;border-bottom:1px solid var(--dc-border)}
+.nav{display:flex;gap:5px}.dc-btn{min-height:40px;padding:0 12px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-panel);color:var(--dc-text);font-weight:780;cursor:pointer}
+.dc-btn:hover{border-color:var(--browser-a);color:var(--browser-a)}.square{width:40px;padding:0}.primary{border:0;background:linear-gradient(135deg,var(--browser-a),var(--browser-b));color:#fff}
+.dc-input{min-height:42px;padding:0 12px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-page);color:var(--dc-text);outline:none}
+.content{min-height:610px;padding:20px}.view{max-width:920px;margin:auto;padding:28px 0}
+.logo{text-align:center;font-size:clamp(38px,7vw,64px);font-weight:950;letter-spacing:-.055em}.sub{text-align:center;color:var(--dc-muted);max-width:700px;margin:9px auto 22px;line-height:1.5}
+.search{display:grid;grid-template-columns:1fr auto;gap:8px;max-width:760px;margin:auto}.search .dc-input,.search .dc-btn{min-height:52px}
+.cards{margin-top:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.card{padding:15px;border:1px solid var(--dc-border);border-radius:14px;background:var(--dc-panel)}.card p{margin:5px 0 0;color:var(--dc-muted);font-size:11px;line-height:1.45}
+.notice{margin-top:18px;padding:14px;border:1px dashed var(--dc-border);border-radius:13px;background:var(--dc-soft);color:var(--dc-muted);font-size:11px;line-height:1.5}
+.results{margin-top:14px;display:grid;gap:8px}.result{padding:13px;border:1px solid var(--dc-border);border-radius:12px;background:var(--dc-panel)}.result h3{margin:0 0 4px}.result p{margin:0;color:var(--dc-muted);font-size:11px}
+.footer{padding:24px;text-align:center;color:var(--dc-muted);font-size:12px}
+@media(max-width:850px){.shell{grid-template-columns:1fr}.side{position:static}.cards{grid-template-columns:1fr}}
+@media(max-width:620px){.hero{flex-direction:column;align-items:flex-start}.heroicon{display:none}.toolbar,.search{grid-template-columns:1fr}.nav{justify-content:center}}
 </style>
 </head>
 <body data-davidcraft-page="browser">
 <div id="davidcraft-navbar"></div>
+
 <main class="page">
 <section class="hero">
-<div><h1>DavidCraft Private Browser V3.1</h1><p>Private tabs, Proton launch support, a real offline library, local search, and an app shell that can keep loading after it has been cached.</p></div>
-<div class="heroicon">🛡️</div>
+  <div>
+    <h1>DavidCraft Private Browser V3.2</h1>
+    <p>Private web search plus a limited offline search mode. This version is simplified so every button works reliably.</p>
+  </div>
+  <div class="heroicon">🛡️</div>
 </section>
 
 <section class="shell">
-<aside class="panel sidebar">
-<p class="stitle">Browser</p>
-<button class="sidebtn active" data-mode="home"><span>🏠 Start Page</span><span class="badge">Private</span></button>
-<button class="sidebtn" data-mode="offline"><span>📴 Offline Search</span><span class="badge ok">Local</span></button>
-<button class="sidebtn" data-mode="library"><span>📚 Offline Library</span><span id="library-count" class="badge">0</span></button>
-<button class="sidebtn" data-mode="bookmarks"><span>🔖 Bookmarks</span><span id="bookmark-count" class="badge">0</span></button>
-<button class="sidebtn" id="vpn"><span>🛡 Proton VPN</span><span id="vpn-badge" class="badge warn">Not verified</span></button>
-<button class="sidebtn" id="clear"><span>🧹 Clear Private Tabs</span><span class="badge">Now</span></button>
+<aside class="panel side">
+  <h3>Browser</h3>
+  <button class="active" id="dc-start">🏠 Start Page</button>
+  <button id="dc-offline">📴 Offline Search</button>
+  <button id="dc-proton">🛡 Proton VPN</button>
+  <button id="dc-clear">🧹 Clear Session</button>
 
-<p class="stitle" style="margin-top:15px">Search</p>
-<select id="engine" class="address">
-<option value="duck">DuckDuckGo</option>
-<option value="brave">Brave Search</option>
-<option value="google">Google</option>
-</select>
-
-<p class="stitle" style="margin-top:15px">Status</p>
-<button class="sidebtn"><span>📶 Network</span><span id="network-badge" class="badge ok">Online</span></button>
-<button class="sidebtn"><span>💾 App Shell</span><span id="cache-badge" class="badge warn">Checking</span></button>
+  <h3 style="margin-top:15px">Search Engine</h3>
+  <select id="dc-engine" class="dc-input" style="width:100%">
+    <option value="duck">DuckDuckGo</option>
+    <option value="brave">Brave Search</option>
+    <option value="google">Google</option>
+  </select>
 </aside>
 
 <section class="panel browser">
-<div id="tabs" class="tabs"></div>
-<div class="toolbar">
-<div class="nav">
-<button id="newtab" class="iconbtn">＋</button>
-<button id="homebtn" class="iconbtn">⌂</button>
-<button id="reload" class="iconbtn">↻</button>
-<button id="bookmark" class="iconbtn">☆</button>
-</div>
-<input id="address" class="address" placeholder="Search privately or enter a website">
-<button id="go" class="btn primary">Go</button>
-</div>
+  <div class="toolbar">
+    <div class="nav">
+      <button class="dc-btn square" id="dc-home" title="Home">⌂</button>
+      <button class="dc-btn square" id="dc-new" title="Open another DavidCraft Browser tab">＋</button>
+    </div>
 
-<div class="content">
-<div id="home-view" class="view">
-<div class="logo">Private. Offline-ready. DavidCraft.</div>
-<div class="subtitle">Use online search when connected, then switch to your local offline library when the internet is unavailable.</div>
-<div class="searchbox"><input id="home-search" class="input" placeholder="Search the web"><button id="home-go" class="btn primary">Search</button></div>
+    <input id="dc-address" class="dc-input" placeholder="Search or enter a website">
 
-<div class="statusgrid">
-<div class="card"><strong><span class="dot ok"></span>Private Tabs</strong><p>Open tabs and searches are kept only in memory for this session.</p></div>
-<div class="card"><strong><span id="net-dot" class="dot ok"></span>Connection</strong><p id="net-text">Internet connection detected.</p></div>
-<div class="card"><strong><span id="vpn-dot" class="dot"></span>Proton VPN</strong><p id="vpn-text">VPN must be connected in Proton itself.</p></div>
-<div class="card"><strong><span class="dot ok"></span>Offline Library</strong><p>Save your own text articles and notes for offline searching.</p></div>
-</div>
+    <button class="dc-btn primary" id="dc-go">Go</button>
+  </div>
 
-<div class="quick"><h2>Quick Access</h2><div class="quickgrid">
-<a class="quicklink" href="https://duckduckgo.com" target="_blank" rel="noopener">🦆 DuckDuckGo</a>
-<a class="quicklink" href="https://search.brave.com" target="_blank" rel="noopener">🦁 Brave</a>
-<a class="quicklink" href="https://www.wikipedia.org" target="_blank" rel="noopener">📚 Wikipedia</a>
-<a class="quicklink" href="https://protonvpn.com/download" target="_blank" rel="noopener">🛡 Proton</a>
-<a class="quicklink" href="home.html">◆ DavidCraft</a>
-</div></div>
+  <div class="content">
+    <div id="dc-start-view" class="view">
+      <div class="logo">Private. Simple. DavidCraft.</div>
+      <div class="sub">Search the live web when you are online. If you lose internet access, use the built-in offline search.</div>
 
-<div class="box"><h3>Make something available offline</h3><p>Because ordinary webpages cannot freely download and store arbitrary websites, V3 lets you save text, notes, reference material, or copied article content into a searchable offline library.</p><div class="row"><button class="btn primary" id="add-offline">＋ Add Offline Page</button><button class="btn" id="open-library">Open Library</button></div></div>
+      <div class="search">
+        <input id="dc-search" class="dc-input" placeholder="Search the web">
+        <button id="dc-search-go" class="dc-btn primary">Search</button>
+      </div>
 
-<div class="notice"><strong>Search fix:</strong> live searches now open in a normal browser tab because search engines often block embedded display. Direct website addresses can still try the built-in viewer. Offline Search stays fully inside DavidCraft. Proton VPN remains separate from this webpage.</div>
-</div>
+      <div class="cards">
+        <div class="card">
+          <strong>🛡 Proton VPN</strong>
+          <p>Press the Proton button to open Proton's setup page. The VPN itself must run separately.</p>
+        </div>
+        <div class="card">
+          <strong>📴 Offline Search</strong>
+          <p>Search a small built-in local DavidCraft index with no internet.</p>
+        </div>
+        <div class="card">
+          <strong>🚫 No History List</strong>
+          <p>This page does not create its own browsing-history list.</p>
+        </div>
+      </div>
 
-<div id="offline-view" class="view" hidden>
-<div class="logo">Offline Search</div><div class="subtitle">Search built-in references plus everything you saved in the Offline Library.</div>
-<div class="searchbox"><input id="offline-search" class="input" placeholder="Search offline"><button id="offline-go" class="btn primary">Search</button></div>
-<div id="offline-results" class="results"></div>
-</div>
+      <div class="notice">
+        Live search results open in the same browser tab. This is more reliable than trying to display Google, Brave, or DuckDuckGo inside an iframe.
+      </div>
+    </div>
 
-<div id="library-view" class="view" hidden>
-<div class="logo">Offline Library</div><div class="subtitle">Your saved local pages remain on this device until you delete them.</div>
-<div class="box"><div class="form"><input id="lib-title" class="input" placeholder="Title"><input id="lib-url" class="input" placeholder="Original URL (optional)"><textarea id="lib-text" class="input" placeholder="Paste or write the text you want available offline"></textarea><button id="lib-save" class="btn primary">Save Offline Page</button></div></div>
-<div id="library-list" class="library"></div>
-</div>
+    <div id="dc-offline-view" class="view" hidden>
+      <div class="logo">Offline Search</div>
+      <div class="sub">Search DavidCraft's built-in local information without internet.</div>
 
-<div id="bookmarks-view" class="view" hidden>
-<div class="logo">Bookmarks</div><div class="subtitle">Bookmarks persist on this device. Private browsing history does not.</div>
-<div id="bookmark-list" class="library"></div>
-</div>
+      <div class="search">
+        <input id="dc-offline-search" class="dc-input" placeholder="Try: DavidCraft, files, chess, math, science, privacy">
+        <button id="dc-offline-go" class="dc-btn primary">Search Offline</button>
+      </div>
 
-<div id="frame-view" class="framewrap"><iframe id="frame" class="frame" sandbox="allow-forms allow-scripts allow-same-origin allow-popups"></iframe></div>
-</div>
+      <div id="dc-results" class="results"></div>
+    </div>
+  </div>
 </section>
 </section>
 </main>
-<footer class="dc-footer">DavidCraft Private Browser · V3.1</footer>
+
+<div class="footer">DavidCraft Private Browser · V3.2</div>
 
 <script>
-const $=id=>document.getElementById(id);
-const LIB="dc_private_browser_library_v3",BM="dc_private_browser_bookmarks_v3";
-let library=JSON.parse(localStorage.getItem(LIB)||"[]"),bookmarks=JSON.parse(localStorage.getItem(BM)||"[]");
-let tabs=[{id:1,title:"Start Page",mode:"home",value:""}],active=1,next=2,vpnMarked=false;
+(function(){
+  "use strict";
 
-const builtIn=[
-{title:"DavidCraft Home",text:"Open Maps Music Shows Photos Files Settings Calendar and other DavidCraft apps.",url:"home.html",tag:"DavidCraft"},
-{title:"DavidCraft Files",text:"Browse organize preview tag copy move and manage files.",url:"files.html",tag:"DavidCraft"},
-{title:"Play DavidCraft",text:"Open DavidCraft games including chess Dark Chess and arcade projects.",url:"play.html",tag:"Games"},
-{title:"Calendar",text:"Plan days weeks months years events and holidays.",url:"calendar.html",tag:"DavidCraft"},
-{title:"Private Browsing Basics",text:"Private browsing reduces local history but does not make you anonymous to websites networks schools employers internet providers or VPN providers.",tag:"Privacy"},
-{title:"VPN Basics",text:"A VPN encrypts traffic between your device and the VPN service and changes the public IP websites see.",tag:"Privacy"},
-{title:"Math Reference",text:"Arithmetic fractions percentages geometry and introductory algebra.",tag:"Reference"},
-{title:"Science Reference",text:"Biology chemistry physics Earth science cells atoms forces matter and energy.",tag:"Reference"}
-];
+  function get(id){
+    return document.getElementById(id);
+  }
 
-function cur(){return tabs.find(t=>t.id===active)}
-function renderTabs(){
- $("tabs").innerHTML="";
- tabs.forEach(t=>{
-  let b=document.createElement("button");b.className="tab"+(t.id===active?" active":"");
-  let n=document.createElement("span");n.textContent=t.title;
-  let x=document.createElement("span");x.textContent="×";x.onclick=e=>{e.stopPropagation();closeTab(t.id)};
-  b.onclick=()=>{active=t.id;renderTabs();show()};b.append(n,x);$("tabs").appendChild(b)
- })
-}
-function closeTab(id){
- if(tabs.length===1){tabs=[{id:next++,title:"Start Page",mode:"home",value:""}];active=tabs[0].id}
- else{let i=tabs.findIndex(t=>t.id===id);tabs.splice(i,1);if(active===id)active=tabs[Math.max(0,i-1)].id}
- renderTabs();show()
-}
-function show(){
- let t=cur();
- ["home","offline","library","bookmarks"].forEach(m=>$(m+"-view").hidden=t.mode!==m);
- $("frame-view").classList.toggle("show",t.mode==="frame");
- $("address").value=t.value||"";
- if(t.mode==="frame")$("frame").src=t.value
-}
-function mode(m){let t=cur();t.mode=m;t.title=m==="home"?"Start Page":m==="offline"?"Offline Search":m==="library"?"Offline Library":"Bookmarks";t.value=m==="offline"?"offline://search":m==="library"?"offline://library":m==="bookmarks"?"private://bookmarks":"";renderTabs();show();if(m==="library")renderLibrary();if(m==="bookmarks")renderBookmarks()}
-function searchURL(q){let e=$("engine").value;return e==="brave"?"https://search.brave.com/search?q="+encodeURIComponent(q):e==="google"?"https://www.google.com/search?q="+encodeURIComponent(q):"https://duckduckgo.com/?q="+encodeURIComponent(q)}
-function normalize(v){v=v.trim();if(!v)return null;if(/^https?:\\/\\//i.test(v))return v;if(/^[\\w.-]+\\.[a-z]{2,}(\\/.*)?$/i.test(v))return"https://"+v;return searchURL(v)}
-function navigate(v){
- if(!navigator.onLine){
-   mode("offline");
-   $("offline-search").value=v;
-   offlineSearch();
-   return;
- }
- const raw=(v||"").trim();
- if(!raw)return mode("home");
- const looksLikeUrl=/^https?:\/\//i.test(raw) || /^[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(raw);
- if(!looksLikeUrl){
-   window.open(searchURL(raw),"_blank","noopener,noreferrer");
-   return;
- }
- let u=normalize(raw);
- let t=cur();
- t.mode="frame";
- t.value=u;
- t.title=raw.length>25?raw.slice(0,25)+"…":raw;
- renderTabs();
- show();
-}
-function saveLibrary(){localStorage.setItem(LIB,JSON.stringify(library));$("library-count").textContent=library.length;renderLibrary()}
-function renderLibrary(){
- $("library-list").innerHTML="";$("library-count").textContent=library.length;
- if(!library.length){$("library-list").innerHTML='<div class="notice">Nothing saved offline yet.</div>';return}
- library.slice().sort((a,b)=>b.saved-a.saved).forEach(item=>{
-  let d=document.createElement("div");d.className="libitem";let h=document.createElement("h3");h.textContent=item.title;let p=document.createElement("p");p.textContent=item.text.slice(0,220)+(item.text.length>220?"…":"");let m=document.createElement("div");m.className="meta";m.textContent="Saved "+new Date(item.saved).toLocaleString();let a=document.createElement("div");a.className="libactions";
-  let read=document.createElement("button");read.className="small";read.textContent="Read";read.onclick=()=>alert(item.title+"\\n\\n"+item.text);
-  let del=document.createElement("button");del.className="small";del.textContent="Delete";del.onclick=()=>{library=library.filter(x=>x.id!==item.id);saveLibrary()};
-  a.append(read,del);d.append(h,p,m,a);$("library-list").appendChild(d)
- })
-}
-function saveBookmarks(){localStorage.setItem(BM,JSON.stringify(bookmarks));$("bookmark-count").textContent=bookmarks.length;renderBookmarks()}
-function renderBookmarks(){
- $("bookmark-list").innerHTML="";$("bookmark-count").textContent=bookmarks.length;
- if(!bookmarks.length){$("bookmark-list").innerHTML='<div class="notice">No bookmarks yet.</div>';return}
- bookmarks.forEach((item,i)=>{
-  let d=document.createElement("div");d.className="libitem";d.innerHTML="<h3></h3><p></p>";d.querySelector("h3").textContent=item.title;d.querySelector("p").textContent=item.url;let a=document.createElement("div");a.className="libactions";
-  let o=document.createElement("button");o.className="small";o.textContent="Open";o.onclick=()=>{mode("home");navigate(item.url)};
-  let x=document.createElement("button");x.className="small";x.textContent="Delete";x.onclick=()=>{bookmarks.splice(i,1);saveBookmarks()};
-  a.append(o,x);d.appendChild(a);$("bookmark-list").appendChild(d)
- })
-}
-function offlineSearch(){
- let q=$("offline-search").value.trim().toLowerCase(),box=$("offline-results");box.innerHTML="";
- let all=[...builtIn,...library.map(x=>({title:x.title,text:x.text,url:x.url||"",tag:"Saved Offline"}))];
- let hits=all.filter(x=>!q||(x.title+" "+x.text+" "+(x.tag||"")).toLowerCase().includes(q));
- if(!hits.length){box.innerHTML='<div class="result"><h3>No offline results</h3><p>Try a broader search.</p></div>';return}
- hits.forEach(x=>{let d=document.createElement("div");d.className="result";let h=document.createElement("h3");h.textContent=x.title;let p=document.createElement("p");p.textContent=x.text.slice(0,300);let m=document.createElement("div");m.className="meta";m.textContent=x.tag||"Offline";d.append(h,p,m);if(x.url)d.onclick=()=>{if(x.url.startsWith("http"))navigator.onLine?navigate(x.url):alert("This link needs internet access.");else location.href=x.url};$("offline-results").appendChild(d)})
-}
-function updateNetwork(){
- let on=navigator.onLine;$("network-badge").textContent=on?"Online":"Offline";$("network-badge").className="badge "+(on?"ok":"warn");$("net-dot").className="dot "+(on?"ok":"off");$("net-text").textContent=on?"Internet connection detected.":"Offline mode active.";
- if(!on)mode("offline")
-}
+  var localIndex = [
+    {title:"DavidCraft Home",text:"Open DavidCraft Home and its apps.",url:"home.html"},
+    {title:"DavidCraft Files",text:"Manage files, folders, tags, favorites, and trash.",url:"files.html"},
+    {title:"Play DavidCraft",text:"Open Chess, Dark Chess, Nova Arcade, and other games.",url:"play.html"},
+    {title:"DavidCraft Chess",text:"Play and practice chess.",url:"chess.html"},
+    {title:"Math Reference",text:"Arithmetic, fractions, percentages, geometry, and introductory algebra."},
+    {title:"Science Reference",text:"Biology, chemistry, physics, Earth science, cells, atoms, forces, and energy."},
+    {title:"Privacy Basics",text:"Private browsing reduces local history but does not make someone anonymous online."},
+    {title:"VPN Basics",text:"A VPN encrypts traffic between a device and the VPN service and changes the public IP websites see."}
+  ];
 
-$("go").onclick=()=>navigate($("address").value);$("address").onkeydown=e=>{if(e.key==="Enter")navigate(e.target.value)};
-$("home-go").onclick=()=>navigate($("home-search").value);$("home-search").onkeydown=e=>{if(e.key==="Enter")navigate(e.target.value)};
-$("newtab").onclick=()=>{let t={id:next++,title:"Start Page",mode:"home",value:""};tabs.push(t);active=t.id;renderTabs();show()};
-$("homebtn").onclick=()=>mode("home");$("reload").onclick=()=>{if(cur().mode==="frame")$("frame").src=cur().value};
-$("bookmark").onclick=()=>{let t=cur();if(!/^https?:\\/\\//.test(t.value||""))return alert("Open a website first.");if(!bookmarks.some(x=>x.url===t.value)){bookmarks.push({title:t.title,url:t.value});saveBookmarks()}};
-$("offline-go").onclick=offlineSearch;$("offline-search").onkeydown=e=>{if(e.key==="Enter")offlineSearch()};
-$("lib-save").onclick=()=>{let title=$("lib-title").value.trim(),text=$("lib-text").value.trim();if(!title||!text)return alert("Add a title and some text.");library.push({id:Date.now()+"-"+Math.random(),title,url:$("lib-url").value.trim(),text,saved:Date.now()});$("lib-title").value=$("lib-url").value=$("lib-text").value="";saveLibrary()};
-$("add-offline").onclick=()=>mode("library");$("open-library").onclick=()=>mode("library");
-$("vpn").onclick=()=>{window.open("https://protonvpn.com/download","_blank","noopener");vpnMarked=true;$("vpn-badge").textContent="Opened";$("vpn-text").textContent="Proton opened. This page still cannot verify the tunnel."};
-$("clear").onclick=()=>{tabs=[{id:next++,title:"Start Page",mode:"home",value:""}];active=tabs[0].id;renderTabs();show()};
-document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-mode]").forEach(x=>x.classList.remove("active"));b.classList.add("active");mode(b.dataset.mode)});
-window.addEventListener("online",updateNetwork);window.addEventListener("offline",updateNetwork);
+  function searchUrl(query){
+    var engine = get("dc-engine").value;
 
-if("serviceWorker" in navigator){
- navigator.serviceWorker.register("browser-sw.js").then(()=>{$("cache-badge").textContent="Ready";$("cache-badge").className="badge ok"}).catch(()=>{$("cache-badge").textContent="Unavailable";$("cache-badge").className="badge warn"})
-}else{$("cache-badge").textContent="Unsupported"}
+    if(engine === "brave"){
+      return "https://search.brave.com/search?q=" + encodeURIComponent(query);
+    }
 
-renderLibrary();renderBookmarks();renderTabs();show();updateNetwork();
+    if(engine === "google"){
+      return "https://www.google.com/search?q=" + encodeURIComponent(query);
+    }
+
+    return "https://duckduckgo.com/?q=" + encodeURIComponent(query);
+  }
+
+  function openLive(value){
+    var text = String(value || "").trim();
+
+    if(!text){
+      return;
+    }
+
+    if(!navigator.onLine){
+      showOffline();
+      get("dc-offline-search").value = text;
+      runOffline();
+      return;
+    }
+
+    var isFullUrl = /^https?:\/\//i.test(text);
+    var looksLikeDomain = /^[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(text);
+    var url;
+
+    if(isFullUrl){
+      url = text;
+    }else if(looksLikeDomain){
+      url = "https://" + text;
+    }else{
+      url = searchUrl(text);
+    }
+
+    window.location.href = url;
+  }
+
+  function showStart(){
+    get("dc-start-view").hidden = false;
+    get("dc-offline-view").hidden = true;
+    get("dc-start").classList.add("active");
+    get("dc-offline").classList.remove("active");
+  }
+
+  function showOffline(){
+    get("dc-start-view").hidden = true;
+    get("dc-offline-view").hidden = false;
+    get("dc-offline").classList.add("active");
+    get("dc-start").classList.remove("active");
+  }
+
+  function runOffline(){
+    var query = get("dc-offline-search").value.trim().toLowerCase();
+    var results = get("dc-results");
+
+    results.innerHTML = "";
+
+    var hits = localIndex.filter(function(item){
+      if(!query){
+        return true;
+      }
+
+      return (item.title + " " + item.text).toLowerCase().indexOf(query) !== -1;
+    });
+
+    if(!hits.length){
+      var empty = document.createElement("div");
+      empty.className = "result";
+      empty.innerHTML = "<h3>No results</h3><p>Try a broader search.</p>";
+      results.appendChild(empty);
+      return;
+    }
+
+    hits.forEach(function(item){
+      var card = document.createElement("div");
+      card.className = "result";
+
+      var title = document.createElement("h3");
+      title.textContent = item.title;
+
+      var body = document.createElement("p");
+      body.textContent = item.text;
+
+      card.appendChild(title);
+      card.appendChild(body);
+
+      if(item.url){
+        card.style.cursor = "pointer";
+        card.addEventListener("click", function(){
+          window.location.href = item.url;
+        });
+      }
+
+      results.appendChild(card);
+    });
+  }
+
+  get("dc-go").addEventListener("click", function(){
+    openLive(get("dc-address").value);
+  });
+
+  get("dc-address").addEventListener("keydown", function(event){
+    if(event.key === "Enter"){
+      openLive(get("dc-address").value);
+    }
+  });
+
+  get("dc-search-go").addEventListener("click", function(){
+    openLive(get("dc-search").value);
+  });
+
+  get("dc-search").addEventListener("keydown", function(event){
+    if(event.key === "Enter"){
+      openLive(get("dc-search").value);
+    }
+  });
+
+  get("dc-offline-go").addEventListener("click", runOffline);
+
+  get("dc-offline-search").addEventListener("keydown", function(event){
+    if(event.key === "Enter"){
+      runOffline();
+    }
+  });
+
+  get("dc-start").addEventListener("click", showStart);
+  get("dc-home").addEventListener("click", showStart);
+  get("dc-offline").addEventListener("click", showOffline);
+
+  get("dc-new").addEventListener("click", function(){
+    window.open(window.location.href, "_blank");
+  });
+
+  get("dc-proton").addEventListener("click", function(){
+    window.location.href = "https://protonvpn.com/download";
+  });
+
+  get("dc-clear").addEventListener("click", function(){
+    get("dc-address").value = "";
+    get("dc-search").value = "";
+    get("dc-offline-search").value = "";
+    get("dc-results").innerHTML = "";
+    showStart();
+  });
+
+  window.addEventListener("offline", showOffline);
+
+  if(!navigator.onLine){
+    showOffline();
+  }else{
+    showStart();
+  }
+})();
 </script>
-<script src="davidcraft.js"></script>
 </body>
 </html>
