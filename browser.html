@@ -2,314 +2,141 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>DavidCraft Private Browser V3.2</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DavidCraft Private Browser V3.3</title>
 <link rel="stylesheet" href="davidcraft.css">
 <style>
-:root{
-  --dc-page:#f7f8fc;--dc-panel:#ffffff;--dc-text:#111827;--dc-muted:#6b7280;
-  --dc-border:#dbe0ea;--dc-soft:#f1f4f9;--dc-shadow:rgba(15,23,42,.08);
-  --browser-a:#6d4aff;--browser-b:#06b6d4;--browser-ok:#22c55e
-}
-html[data-theme="dark"]{
-  --dc-page:#0b1020;--dc-panel:#111827;--dc-text:#f8fafc;--dc-muted:#9ca3af;
-  --dc-border:#2a3446;--dc-soft:#182235;--dc-shadow:rgba(0,0,0,.22);
-  --browser-a:#9b87ff;--browser-b:#22d3ee
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--dc-page);color:var(--dc-text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+:root{--a:#6d4aff;--b:#06b6d4;--dc-page:#f7f8fc;--dc-panel:#fff;--dc-text:#111827;--dc-muted:#6b7280;--dc-border:#dbe0ea;--dc-soft:#f1f4f9}
+html[data-theme="dark"]{--dc-page:#0b1020;--dc-panel:#111827;--dc-text:#f8fafc;--dc-muted:#9ca3af;--dc-border:#2a3446;--dc-soft:#182235}
+*{box-sizing:border-box}body{margin:0;background:var(--dc-page);color:var(--dc-text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 .page{width:min(100% - 16px,1400px);margin:auto;padding:22px 0 48px}
-.hero,.panel{background:var(--dc-panel);border:1px solid var(--dc-border);box-shadow:0 14px 36px var(--dc-shadow)}
-.hero{padding:25px;border-radius:24px;margin-bottom:16px;display:flex;justify-content:space-between;gap:20px;align-items:center}
-.hero h1{margin:0;font-size:clamp(42px,7vw,70px);letter-spacing:-.055em;line-height:1}
-.hero p{max-width:820px;margin:12px 0 0;color:var(--dc-muted);line-height:1.55}
-.heroicon{width:108px;height:108px;display:grid;place-items:center;border-radius:26px;background:linear-gradient(135deg,var(--browser-a),var(--browser-b));font-size:48px;color:#fff}
-.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:16px}
-.panel{border-radius:20px}.side{padding:14px;align-self:start;position:sticky;top:20px}
-.side h3{margin:0 0 8px;color:var(--dc-muted);font-size:10px;text-transform:uppercase;letter-spacing:.1em}
-.side button{width:100%;min-height:43px;margin:3px 0;padding:0 11px;border:0;border-radius:10px;background:transparent;color:var(--dc-text);text-align:left;font-weight:780;cursor:pointer}
+.hero,.panel{background:var(--dc-panel);border:1px solid var(--dc-border);border-radius:20px}
+.hero{padding:24px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:18px}
+.hero h1{margin:0;font-size:clamp(40px,7vw,68px);letter-spacing:-.05em}.hero p{color:var(--dc-muted)}
+.heroicon{width:100px;height:100px;display:grid;place-items:center;border-radius:24px;background:linear-gradient(135deg,var(--a),var(--b));font-size:44px;color:#fff}
+.shell{display:grid;grid-template-columns:250px 1fr;gap:16px}
+.side{padding:14px}.side h3{margin:0 0 8px;color:var(--dc-muted);font-size:10px;text-transform:uppercase;letter-spacing:.1em}
+.side button{width:100%;min-height:42px;margin:3px 0;border:0;border-radius:10px;background:transparent;color:var(--dc-text);font-weight:800;text-align:left;padding:0 10px;cursor:pointer}
 .side button:hover,.side button.active{background:var(--dc-soft)}
-.browser{overflow:hidden}.toolbar{padding:11px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;border-bottom:1px solid var(--dc-border)}
-.nav{display:flex;gap:5px}.dc-btn{min-height:40px;padding:0 12px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-panel);color:var(--dc-text);font-weight:780;cursor:pointer}
-.dc-btn:hover{border-color:var(--browser-a);color:var(--browser-a)}.square{width:40px;padding:0}.primary{border:0;background:linear-gradient(135deg,var(--browser-a),var(--browser-b));color:#fff}
-.dc-input{min-height:42px;padding:0 12px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-page);color:var(--dc-text);outline:none}
-.content{min-height:610px;padding:20px}.view{max-width:920px;margin:auto;padding:28px 0}
-.logo{text-align:center;font-size:clamp(38px,7vw,64px);font-weight:950;letter-spacing:-.055em}.sub{text-align:center;color:var(--dc-muted);max-width:700px;margin:9px auto 22px;line-height:1.5}
-.search{display:grid;grid-template-columns:1fr auto;gap:8px;max-width:760px;margin:auto}.search .dc-input,.search .dc-btn{min-height:52px}
-.cards{margin-top:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.card{padding:15px;border:1px solid var(--dc-border);border-radius:14px;background:var(--dc-panel)}.card p{margin:5px 0 0;color:var(--dc-muted);font-size:11px;line-height:1.45}
-.notice{margin-top:18px;padding:14px;border:1px dashed var(--dc-border);border-radius:13px;background:var(--dc-soft);color:var(--dc-muted);font-size:11px;line-height:1.5}
-.results{margin-top:14px;display:grid;gap:8px}.result{padding:13px;border:1px solid var(--dc-border);border-radius:12px;background:var(--dc-panel)}.result h3{margin:0 0 4px}.result p{margin:0;color:var(--dc-muted);font-size:11px}
-.footer{padding:24px;text-align:center;color:var(--dc-muted);font-size:12px}
-@media(max-width:850px){.shell{grid-template-columns:1fr}.side{position:static}.cards{grid-template-columns:1fr}}
-@media(max-width:620px){.hero{flex-direction:column;align-items:flex-start}.heroicon{display:none}.toolbar,.search{grid-template-columns:1fr}.nav{justify-content:center}}
+.toolbar{padding:10px;display:grid;grid-template-columns:auto 1fr auto;gap:8px;border-bottom:1px solid var(--dc-border)}
+.btn{min-height:40px;padding:0 12px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-panel);color:var(--dc-text);font-weight:800;cursor:pointer}
+.primary{border:0;background:linear-gradient(135deg,var(--a),var(--b));color:#fff}.input{min-height:42px;padding:0 12px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-page);color:var(--dc-text)}
+.content{min-height:600px;padding:20px}.view{max-width:920px;margin:auto;padding:28px 0}
+.logo{text-align:center;font-size:clamp(38px,7vw,64px);font-weight:950;letter-spacing:-.05em}.sub{text-align:center;color:var(--dc-muted);max-width:700px;margin:8px auto 22px}
+.search{display:grid;grid-template-columns:1fr auto;gap:8px;max-width:760px;margin:auto}.search .input,.search .btn{min-height:52px}
+.cards{margin-top:22px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.card{padding:14px;border:1px solid var(--dc-border);border-radius:14px}.card p{margin:5px 0 0;color:var(--dc-muted);font-size:11px}
+.results{margin-top:18px;display:grid;gap:10px}.result{padding:13px;border:1px solid var(--dc-border);border-radius:12px}.result h3{margin:0 0 4px}.result p{margin:0;color:var(--dc-muted);font-size:11px}
+.google-logo{text-align:center;font-size:72px;font-weight:800;letter-spacing:-.07em;margin-bottom:20px}
+.g1{color:#4285f4}.g2{color:#ea4335}.g3{color:#fbbc05}.g4{color:#4285f4}.g5{color:#34a853}.g6{color:#ea4335}
+.googlebar{max-width:720px;margin:auto}.googlebar input{width:100%;min-height:54px;padding:0 18px;border:1px solid var(--dc-border);border-radius:999px;background:var(--dc-panel);color:var(--dc-text);font-size:16px}
+.googlebuttons{display:flex;justify-content:center;gap:8px;margin-top:14px}
+.googlebuttons button{min-height:38px;padding:0 13px;border:1px solid var(--dc-border);border-radius:8px;background:var(--dc-soft);color:var(--dc-text);cursor:pointer}
+.google-note{max-width:720px;margin:18px auto;text-align:center;color:var(--dc-muted);font-size:11px}
+.google-result{max-width:760px;margin:0 auto 20px}.google-result small{color:var(--dc-muted)}.google-result h3{margin:2px 0 5px;color:#1a0dab;font-size:19px;font-weight:500}.google-result p{margin:0;color:var(--dc-muted);font-size:12px}
+html[data-theme="dark"] .google-result h3{color:#8ab4f8}
+@media(max-width:850px){.shell{grid-template-columns:1fr}.cards{grid-template-columns:1fr}}
+@media(max-width:620px){.hero{flex-direction:column;align-items:flex-start}.heroicon{display:none}.toolbar,.search{grid-template-columns:1fr}}
 </style>
 </head>
 <body data-davidcraft-page="browser">
 <div id="davidcraft-navbar"></div>
-
 <main class="page">
-<section class="hero">
-  <div>
-    <h1>DavidCraft Private Browser V3.2</h1>
-    <p>Private web search plus a limited offline search mode. This version is simplified so every button works reliably.</p>
-  </div>
-  <div class="heroicon">🛡️</div>
-</section>
-
+<section class="hero"><div><h1>DavidCraft Private Browser V3.3</h1><p>Now with a Google-style offline simulator.</p></div><div class="heroicon">🛡️</div></section>
 <section class="shell">
 <aside class="panel side">
-  <h3>Browser</h3>
-  <button class="active" id="dc-start">🏠 Start Page</button>
-  <button id="dc-offline">📴 Offline Search</button>
-  <button id="dc-proton">🛡 Proton VPN</button>
-  <button id="dc-clear">🧹 Clear Session</button>
-
-  <h3 style="margin-top:15px">Search Engine</h3>
-  <select id="dc-engine" class="dc-input" style="width:100%">
-    <option value="duck">DuckDuckGo</option>
-    <option value="brave">Brave Search</option>
-    <option value="google">Google</option>
-  </select>
+<h3>Browser</h3>
+<button id="startBtn" class="active">🏠 Start Page</button>
+<button id="offlineBtn">📴 Offline Search</button>
+<button id="googleBtn">🔎 Google Offline</button>
+<button id="protonBtn">🛡 Proton VPN</button>
+<button id="clearBtn">🧹 Clear Session</button>
+<h3 style="margin-top:15px">Search Engine</h3>
+<select id="engine" class="input" style="width:100%"><option value="duck">DuckDuckGo</option><option value="brave">Brave Search</option><option value="google">Google</option></select>
 </aside>
+<section class="panel">
+<div class="toolbar"><button id="homeBtn" class="btn">⌂</button><input id="address" class="input" placeholder="Search or enter a website"><button id="goBtn" class="btn primary">Go</button></div>
+<div class="content">
+<div id="startView" class="view">
+<div class="logo">Private. Simple. DavidCraft.</div><div class="sub">Search the live web online, or use local offline search tools.</div>
+<div class="search"><input id="searchBox" class="input" placeholder="Search the web"><button id="searchGo" class="btn primary">Search</button></div>
+<div class="cards"><div class="card"><strong>🔎 Google Offline</strong><p>A Google-style simulator that searches only DavidCraft's local index.</p></div><div class="card"><strong>📴 Offline Search</strong><p>Simple local search with no internet.</p></div><div class="card"><strong>🛡 Proton VPN</strong><p>Opens Proton separately for VPN connection.</p></div></div>
+</div>
 
-<section class="panel browser">
-  <div class="toolbar">
-    <div class="nav">
-      <button class="dc-btn square" id="dc-home" title="Home">⌂</button>
-      <button class="dc-btn square" id="dc-new" title="Open another DavidCraft Browser tab">＋</button>
-    </div>
+<div id="offlineView" class="view" hidden>
+<div class="logo">Offline Search</div><div class="sub">Search the local DavidCraft index.</div>
+<div class="search"><input id="offlineSearch" class="input" placeholder="Try: chess, files, math, privacy"><button id="offlineGo" class="btn primary">Search Offline</button></div>
+<div id="offlineResults" class="results"></div>
+</div>
 
-    <input id="dc-address" class="dc-input" placeholder="Search or enter a website">
-
-    <button class="dc-btn primary" id="dc-go">Go</button>
-  </div>
-
-  <div class="content">
-    <div id="dc-start-view" class="view">
-      <div class="logo">Private. Simple. DavidCraft.</div>
-      <div class="sub">Search the live web when you are online. If you lose internet access, use the built-in offline search.</div>
-
-      <div class="search">
-        <input id="dc-search" class="dc-input" placeholder="Search the web">
-        <button id="dc-search-go" class="dc-btn primary">Search</button>
-      </div>
-
-      <div class="cards">
-        <div class="card">
-          <strong>🛡 Proton VPN</strong>
-          <p>Press the Proton button to open Proton's setup page. The VPN itself must run separately.</p>
-        </div>
-        <div class="card">
-          <strong>📴 Offline Search</strong>
-          <p>Search a small built-in local DavidCraft index with no internet.</p>
-        </div>
-        <div class="card">
-          <strong>🚫 No History List</strong>
-          <p>This page does not create its own browsing-history list.</p>
-        </div>
-      </div>
-
-      <div class="notice">
-        Live search results open in the same browser tab. This is more reliable than trying to display Google, Brave, or DuckDuckGo inside an iframe.
-      </div>
-    </div>
-
-    <div id="dc-offline-view" class="view" hidden>
-      <div class="logo">Offline Search</div>
-      <div class="sub">Search DavidCraft's built-in local information without internet.</div>
-
-      <div class="search">
-        <input id="dc-offline-search" class="dc-input" placeholder="Try: DavidCraft, files, chess, math, science, privacy">
-        <button id="dc-offline-go" class="dc-btn primary">Search Offline</button>
-      </div>
-
-      <div id="dc-results" class="results"></div>
-    </div>
-  </div>
+<div id="googleView" class="view" hidden>
+<div class="google-logo"><span class="g1">G</span><span class="g2">o</span><span class="g3">o</span><span class="g4">g</span><span class="g5">l</span><span class="g6">e</span></div>
+<div class="googlebar"><input id="googleSearch" placeholder="Search Google Offline"><div class="googlebuttons"><button id="googleGo">Google Search</button><button id="luckyBtn">I'm Feeling Lucky</button></div></div>
+<div class="google-note">Google Offline is a DavidCraft simulator. It does not contact Google or the live internet.</div>
+<div id="googleResults"></div>
+</div>
+</div>
 </section>
 </section>
 </main>
-
-<div class="footer">DavidCraft Private Browser · V3.2</div>
-
 <script>
 (function(){
-  "use strict";
+const data=[
+{title:"DavidCraft Home",text:"Open DavidCraft Home and its apps.",url:"home.html"},
+{title:"DavidCraft Files",text:"Manage files, folders, tags, favorites, previews, and trash.",url:"files.html"},
+{title:"Play DavidCraft",text:"Open Chess, Dark Chess, Nova Arcade, and other games.",url:"play.html"},
+{title:"DavidCraft Chess",text:"Play and practice chess.",url:"chess.html"},
+{title:"Calendar",text:"Plan your day, week, month, and year.",url:"calendar.html"},
+{title:"Math Reference",text:"Arithmetic, fractions, percentages, geometry, and introductory algebra."},
+{title:"Science Reference",text:"Biology, chemistry, physics, cells, atoms, forces, and energy."},
+{title:"Privacy Basics",text:"Private browsing reduces local history but does not make someone anonymous online."},
+{title:"VPN Basics",text:"A VPN encrypts traffic between your device and the VPN service."}
+];
+const $=id=>document.getElementById(id);
 
-  function get(id){
-    return document.getElementById(id);
-  }
+function hideAll(){startView.hidden=true;offlineView.hidden=true;googleView.hidden=true;startBtn.classList.remove("active");offlineBtn.classList.remove("active");googleBtn.classList.remove("active")}
+function showStart(){hideAll();startView.hidden=false;startBtn.classList.add("active")}
+function showOffline(){hideAll();offlineView.hidden=false;offlineBtn.classList.add("active")}
+function showGoogle(){hideAll();googleView.hidden=false;googleBtn.classList.add("active");googleSearch.focus()}
 
-  var localIndex = [
-    {title:"DavidCraft Home",text:"Open DavidCraft Home and its apps.",url:"home.html"},
-    {title:"DavidCraft Files",text:"Manage files, folders, tags, favorites, and trash.",url:"files.html"},
-    {title:"Play DavidCraft",text:"Open Chess, Dark Chess, Nova Arcade, and other games.",url:"play.html"},
-    {title:"DavidCraft Chess",text:"Play and practice chess.",url:"chess.html"},
-    {title:"Math Reference",text:"Arithmetic, fractions, percentages, geometry, and introductory algebra."},
-    {title:"Science Reference",text:"Biology, chemistry, physics, Earth science, cells, atoms, forces, and energy."},
-    {title:"Privacy Basics",text:"Private browsing reduces local history but does not make someone anonymous online."},
-    {title:"VPN Basics",text:"A VPN encrypts traffic between a device and the VPN service and changes the public IP websites see."}
-  ];
+function searchUrl(q){
+ if(engine.value==="brave")return "https://search.brave.com/search?q="+encodeURIComponent(q);
+ if(engine.value==="google")return "https://www.google.com/search?q="+encodeURIComponent(q);
+ return "https://duckduckgo.com/?q="+encodeURIComponent(q);
+}
+function liveSearch(v){
+ v=(v||"").trim(); if(!v)return;
+ if(!navigator.onLine){showOffline();offlineSearch.value=v;runOffline();return}
+ const isUrl=/^https?:\/\//i.test(v)||/^[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(v);
+ location.href=isUrl?(v.match(/^https?:\/\//i)?v:"https://"+v):searchUrl(v);
+}
+function hitsFor(q){
+ q=q.trim().toLowerCase();
+ return data.filter(x=>!q||(x.title+" "+x.text).toLowerCase().includes(q));
+}
+function runOffline(){
+ offlineResults.innerHTML="";
+ const hits=hitsFor(offlineSearch.value);
+ if(!hits.length){offlineResults.innerHTML='<div class="result"><h3>No results</h3><p>Try a broader search.</p></div>';return}
+ hits.forEach(x=>{const d=document.createElement("div");d.className="result";d.innerHTML="<h3></h3><p></p>";d.querySelector("h3").textContent=x.title;d.querySelector("p").textContent=x.text;if(x.url){d.style.cursor="pointer";d.onclick=()=>location.href=x.url}offlineResults.appendChild(d)})
+}
+function runGoogle(lucky){
+ googleResults.innerHTML="";
+ const hits=hitsFor(googleSearch.value);
+ if(!hits.length){googleResults.innerHTML='<div class="google-result"><h3>No offline results</h3><p>Try another search.</p></div>';return}
+ if(lucky){if(hits[0].url)location.href=hits[0].url;else alert(hits[0].title+"\n\n"+hits[0].text);return}
+ hits.forEach(x=>{const d=document.createElement("div");d.className="google-result";const u=document.createElement("small");u.textContent=x.url?"davidcraft.local/"+x.url:"offline.davidcraft/reference";const h=document.createElement("h3");h.textContent=x.title;const p=document.createElement("p");p.textContent=x.text;d.append(u,h,p);if(x.url){d.style.cursor="pointer";d.onclick=()=>location.href=x.url}googleResults.appendChild(d)})
+}
 
-  function searchUrl(query){
-    var engine = get("dc-engine").value;
-
-    if(engine === "brave"){
-      return "https://search.brave.com/search?q=" + encodeURIComponent(query);
-    }
-
-    if(engine === "google"){
-      return "https://www.google.com/search?q=" + encodeURIComponent(query);
-    }
-
-    return "https://duckduckgo.com/?q=" + encodeURIComponent(query);
-  }
-
-  function openLive(value){
-    var text = String(value || "").trim();
-
-    if(!text){
-      return;
-    }
-
-    if(!navigator.onLine){
-      showOffline();
-      get("dc-offline-search").value = text;
-      runOffline();
-      return;
-    }
-
-    var isFullUrl = /^https?:\/\//i.test(text);
-    var looksLikeDomain = /^[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(text);
-    var url;
-
-    if(isFullUrl){
-      url = text;
-    }else if(looksLikeDomain){
-      url = "https://" + text;
-    }else{
-      url = searchUrl(text);
-    }
-
-    window.location.href = url;
-  }
-
-  function showStart(){
-    get("dc-start-view").hidden = false;
-    get("dc-offline-view").hidden = true;
-    get("dc-start").classList.add("active");
-    get("dc-offline").classList.remove("active");
-  }
-
-  function showOffline(){
-    get("dc-start-view").hidden = true;
-    get("dc-offline-view").hidden = false;
-    get("dc-offline").classList.add("active");
-    get("dc-start").classList.remove("active");
-  }
-
-  function runOffline(){
-    var query = get("dc-offline-search").value.trim().toLowerCase();
-    var results = get("dc-results");
-
-    results.innerHTML = "";
-
-    var hits = localIndex.filter(function(item){
-      if(!query){
-        return true;
-      }
-
-      return (item.title + " " + item.text).toLowerCase().indexOf(query) !== -1;
-    });
-
-    if(!hits.length){
-      var empty = document.createElement("div");
-      empty.className = "result";
-      empty.innerHTML = "<h3>No results</h3><p>Try a broader search.</p>";
-      results.appendChild(empty);
-      return;
-    }
-
-    hits.forEach(function(item){
-      var card = document.createElement("div");
-      card.className = "result";
-
-      var title = document.createElement("h3");
-      title.textContent = item.title;
-
-      var body = document.createElement("p");
-      body.textContent = item.text;
-
-      card.appendChild(title);
-      card.appendChild(body);
-
-      if(item.url){
-        card.style.cursor = "pointer";
-        card.addEventListener("click", function(){
-          window.location.href = item.url;
-        });
-      }
-
-      results.appendChild(card);
-    });
-  }
-
-  get("dc-go").addEventListener("click", function(){
-    openLive(get("dc-address").value);
-  });
-
-  get("dc-address").addEventListener("keydown", function(event){
-    if(event.key === "Enter"){
-      openLive(get("dc-address").value);
-    }
-  });
-
-  get("dc-search-go").addEventListener("click", function(){
-    openLive(get("dc-search").value);
-  });
-
-  get("dc-search").addEventListener("keydown", function(event){
-    if(event.key === "Enter"){
-      openLive(get("dc-search").value);
-    }
-  });
-
-  get("dc-offline-go").addEventListener("click", runOffline);
-
-  get("dc-offline-search").addEventListener("keydown", function(event){
-    if(event.key === "Enter"){
-      runOffline();
-    }
-  });
-
-  get("dc-start").addEventListener("click", showStart);
-  get("dc-home").addEventListener("click", showStart);
-  get("dc-offline").addEventListener("click", showOffline);
-
-  get("dc-new").addEventListener("click", function(){
-    window.open(window.location.href, "_blank");
-  });
-
-  get("dc-proton").addEventListener("click", function(){
-    window.location.href = "https://protonvpn.com/download";
-  });
-
-  get("dc-clear").addEventListener("click", function(){
-    get("dc-address").value = "";
-    get("dc-search").value = "";
-    get("dc-offline-search").value = "";
-    get("dc-results").innerHTML = "";
-    showStart();
-  });
-
-  window.addEventListener("offline", showOffline);
-
-  if(!navigator.onLine){
-    showOffline();
-  }else{
-    showStart();
-  }
+startBtn.onclick=showStart;homeBtn.onclick=showStart;offlineBtn.onclick=showOffline;googleBtn.onclick=showGoogle;
+protonBtn.onclick=()=>location.href="https://protonvpn.com/download";
+clearBtn.onclick=()=>{address.value=searchBox.value=offlineSearch.value=googleSearch.value="";offlineResults.innerHTML=googleResults.innerHTML="";showStart()};
+goBtn.onclick=()=>liveSearch(address.value);address.onkeydown=e=>{if(e.key==="Enter")liveSearch(address.value)};
+searchGo.onclick=()=>liveSearch(searchBox.value);searchBox.onkeydown=e=>{if(e.key==="Enter")liveSearch(searchBox.value)};
+offlineGo.onclick=runOffline;offlineSearch.onkeydown=e=>{if(e.key==="Enter")runOffline()};
+googleGo.onclick=()=>runGoogle(false);luckyBtn.onclick=()=>runGoogle(true);googleSearch.onkeydown=e=>{if(e.key==="Enter")runGoogle(false)};
+if(!navigator.onLine)showOffline();else showStart();
 })();
 </script>
+<script src="davidcraft.js"></script>
 </body>
 </html>
