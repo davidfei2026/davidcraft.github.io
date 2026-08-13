@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DavidCraft Private Browser V4</title>
+<link rel="stylesheet" href="davidcraft.css">
+<style>
+:root{--a:#6d4aff;--b:#06b6d4;--dc-page:#f7f8fc;--dc-panel:#fff;--dc-text:#111827;--dc-muted:#6b7280;--dc-border:#dbe0ea;--dc-soft:#f1f4f9}
+html[data-theme="dark"]{--dc-page:#0b1020;--dc-panel:#111827;--dc-text:#f8fafc;--dc-muted:#9ca3af;--dc-border:#2a3446;--dc-soft:#182235}
+*{box-sizing:border-box}body{margin:0;background:var(--dc-page);color:var(--dc-text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.page{width:min(100% - 16px,1400px);margin:auto;padding:22px 0 48px}
+.hero,.panel{background:var(--dc-panel);border:1px solid var(--dc-border);border-radius:20px}
+.hero{padding:24px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:18px}
+.hero h1{margin:0;font-size:clamp(40px,7vw,68px);letter-spacing:-.05em}.hero p{color:var(--dc-muted)}
+.heroicon{width:100px;height:100px;display:grid;place-items:center;border-radius:24px;background:linear-gradient(135deg,var(--a),var(--b));font-size:44px;color:#fff}
+.shell{display:grid;grid-template-columns:250px 1fr;gap:16px}
+.side{padding:14px}.side h3{margin:0 0 8px;color:var(--dc-muted);font-size:10px;text-transform:uppercase;letter-spacing:.1em}
+.side button{width:100%;min-height:42px;margin:3px 0;border:0;border-radius:10px;background:transparent;color:var(--dc-text);font-weight:800;text-align:left;padding:0 10px;cursor:pointer}
+.side button:hover,.side button.active{background:var(--dc-soft)}
+.toolbar{padding:10px;display:grid;grid-template-columns:auto 1fr auto;gap:8px;border-bottom:1px solid var(--dc-border)}
+.btn{min-height:40px;padding:0 12px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-panel);color:var(--dc-text);font-weight:800;cursor:pointer}
+.primary{border:0;background:linear-gradient(135deg,var(--a),var(--b));color:#fff}.input{min-height:42px;padding:0 12px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-page);color:var(--dc-text)}
+.content{min-height:600px;padding:20px}.view{max-width:920px;margin:auto;padding:28px 0}
+.logo{text-align:center;font-size:clamp(38px,7vw,64px);font-weight:950;letter-spacing:-.05em}.sub{text-align:center;color:var(--dc-muted);max-width:700px;margin:8px auto 22px}
+.search{display:grid;grid-template-columns:1fr auto;gap:8px;max-width:760px;margin:auto}.search .input,.search .btn{min-height:52px}
+.cards{margin-top:22px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.card{padding:14px;border:1px solid var(--dc-border);border-radius:14px}.card p{margin:5px 0 0;color:var(--dc-muted);font-size:11px}
+.results{margin-top:18px;display:grid;gap:10px}.result{padding:13px;border:1px solid var(--dc-border);border-radius:12px}.result h3{margin:0 0 4px}.result p{margin:0;color:var(--dc-muted);font-size:11px}
+.google-logo{text-align:center;font-size:72px;font-weight:800;letter-spacing:-.07em;margin-bottom:20px}
+.g1{color:#4285f4}.g2{color:#ea4335}.g3{color:#fbbc05}.g4{color:#4285f4}.g5{color:#34a853}.g6{color:#ea4335}
+.googlebar{max-width:720px;margin:auto}.googlebar input{width:100%;min-height:54px;padding:0 18px;border:1px solid var(--dc-border);border-radius:999px;background:var(--dc-panel);color:var(--dc-text);font-size:16px}
+.googlebuttons{display:flex;justify-content:center;gap:8px;margin-top:14px}
+.googlebuttons button{min-height:38px;padding:0 13px;border:1px solid var(--dc-border);border-radius:8px;background:var(--dc-soft);color:var(--dc-text);cursor:pointer}
+.google-note{max-width:720px;margin:18px auto;text-align:center;color:var(--dc-muted);font-size:11px}
+.google-result{max-width:760px;margin:0 auto 20px}.google-result small{color:var(--dc-muted)}.google-result h3{margin:2px 0 5px;color:#1a0dab;font-size:19px;font-weight:500}.google-result p{margin:0;color:var(--dc-muted);font-size:12px}
+html[data-theme="dark"] .google-result h3{color:#8ab4f8}
+
+.tabs{padding:8px;display:flex;gap:6px;overflow:auto;background:var(--dc-soft);border-bottom:1px solid var(--dc-border)}
+.tab{min-width:145px;max-width:220px;padding:8px 10px;display:flex;justify-content:space-between;gap:7px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--dc-text);cursor:pointer}
+.tab.active{background:var(--dc-panel);border-color:var(--dc-border)}
+.tab span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:800}
+.library{margin-top:16px;display:grid;gap:9px}.libitem{padding:13px;border:1px solid var(--dc-border);border-radius:12px;background:var(--dc-panel)}
+.libitem h3{margin:0 0 4px}.libitem p{margin:0;color:var(--dc-muted);font-size:11px;line-height:1.45}
+.libactions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.small{min-height:34px;padding:0 9px;border:1px solid var(--dc-border);border-radius:8px;background:var(--dc-panel);color:var(--dc-text);cursor:pointer}
+.form{display:grid;gap:8px;margin-top:16px}.form textarea{min-height:140px;padding:10px;resize:vertical}
+
+@media(max-width:850px){.shell{grid-template-columns:1fr}.cards{grid-template-columns:1fr}}
+@media(max-width:620px){.hero{flex-direction:column;align-items:flex-start}.heroicon{display:none}.toolbar,.search{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-davidcraft-page="browser">
+<div id="davidcraft-navbar"></div>
+<main class="page">
+<section class="hero"><div><h1>DavidCraft Private Browser V4</h1><p>Private tabs, bookmarks, reading list, saved offline pages, Google Offline, and smarter offline tools.</p></div><div class="heroicon">🛡️</div></section>
+<section class="shell">
+<aside class="panel side">
+<h3>Browser</h3>
+<button id="startBtn" class="active">🏠 Start Page</button>
+<button id="offlineBtn">📴 Offline Search</button>
+<button id="googleBtn">🔎 Google Offline</button>
+<button id="libraryBtn">📚 Offline Library</button>
+<button id="readingBtn">📖 Reading List</button>
+<button id="bookmarksBtn">🔖 Bookmarks</button>
+<button id="protonBtn">🛡 Proton VPN</button>
+<button id="clearBtn">🧹 Clear Session</button>
+<h3 style="margin-top:15px">Search Engine</h3>
+<select id="engine" class="input" style="width:100%"><option value="duck">DuckDuckGo</option><option value="brave">Brave Search</option><option value="google">Google</option></select>
+</aside>
+<section class="panel">
+<div id="tabs" class="tabs"></div>
+<div class="toolbar"><div style="display:flex;gap:6px;flex-wrap:wrap"><button id="homeBtn" class="btn">⌂</button><button id="newTabBtn" class="btn">＋</button><button id="bookmarkCurrentBtn" class="btn">☆</button><button id="readLaterBtn" class="btn">📖</button></div><input id="address" class="input" placeholder="Search or enter a website"><button id="goBtn" class="btn primary">Go</button></div>
+<div class="content">
+<div id="startView" class="view">
+<div class="logo">Private. Simple. DavidCraft.</div><div class="sub">Search the live web online, or use local offline search tools.</div>
+<div class="search"><input id="searchBox" class="input" placeholder="Search the web"><button id="searchGo" class="btn primary">Search</button></div>
+<div class="cards"><div class="card"><strong>🔎 Google Offline</strong><p>A Google-style simulator that searches only DavidCraft's local index.</p></div><div class="card"><strong>📴 Offline Search</strong><p>Simple local search with no internet.</p></div><div class="card"><strong>🛡 Proton VPN</strong><p>Opens Proton separately for VPN connection.</p></div></div>
+</div>
+
+<div id="offlineView" class="view" hidden>
+<div class="logo">Offline Search</div><div class="sub">Search the local DavidCraft index.</div>
+<div class="search"><input id="offlineSearch" class="input" placeholder="Try: chess, files, math, privacy"><button id="offlineGo" class="btn primary">Search Offline</button></div>
+<div id="offlineResults" class="results"></div>
+</div>
+
+<div id="googleView" class="view" hidden>
+<div class="google-logo"><span class="g1">G</span><span class="g2">o</span><span class="g3">o</span><span class="g4">g</span><span class="g5">l</span><span class="g6">e</span></div>
+<div class="googlebar"><input id="googleSearch" placeholder="Search Google Offline"><div class="googlebuttons"><button id="googleGo">Google Search</button><button id="luckyBtn">I'm Feeling Lucky</button></div></div>
+<div class="google-note">Google Offline is a DavidCraft simulator. It does not contact Google or the live internet.</div>
+<div id="googleResults"></div>
+</div>
+
+<div id="libraryView" class="view" hidden>
+  <div class="logo">Offline Library</div>
+  <div class="sub">Save text, notes, or copied article content so you can search and read it without internet.</div>
+  <div class="form">
+    <input id="libTitle" class="input" placeholder="Title">
+    <input id="libUrl" class="input" placeholder="Original URL (optional)">
+    <textarea id="libText" class="input" placeholder="Paste or write the text you want available offline"></textarea>
+    <button id="saveOfflineBtn" class="btn primary">Save Offline Page</button>
+  </div>
+  <div id="libraryList" class="library"></div>
+</div>
+
+<div id="readingView" class="view" hidden>
+  <div class="logo">Reading List</div>
+  <div class="sub">Save websites you want to return to later.</div>
+  <div id="readingList" class="library"></div>
+</div>
+
+<div id="bookmarksView" class="view" hidden>
+  <div class="logo">Bookmarks</div>
+  <div class="sub">Your saved favorite websites.</div>
+  <div id="bookmarksList" class="library"></div>
+</div>
+
+</div>
+</section>
+</section>
+</main>
+<script>
+(function(){
+const tabsEl=document.getElementById("tabs");
+const data=[
+{title:"DavidCraft Home",text:"Open DavidCraft Home and its apps.",url:"home.html"},
+{title:"DavidCraft Files",text:"Manage files, folders, tags, favorites, previews, and trash.",url:"files.html"},
+{title:"Play DavidCraft",text:"Open Chess, Dark Chess, Nova Arcade, and other games.",url:"play.html"},
+{title:"DavidCraft Chess",text:"Play and practice chess.",url:"chess.html"},
+{title:"Calendar",text:"Plan your day, week, month, and year.",url:"calendar.html"},
+{title:"Math Reference",text:"Arithmetic, fractions, percentages, geometry, and introductory algebra."},
+{title:"Science Reference",text:"Biology, chemistry, physics, cells, atoms, forces, and energy."},
+{title:"Privacy Basics",text:"Private browsing reduces local history but does not make someone anonymous online."},
+{title:"VPN Basics",text:"A VPN encrypts traffic between your device and the VPN service."}
+];
+const $=id=>document.getElementById(id);
+const LIBKEY="dc_browser_v4_library", BMKEY="dc_browser_v4_bookmarks", READKEY="dc_browser_v4_reading";
+let library=JSON.parse(localStorage.getItem(LIBKEY)||"[]");
+let bookmarks=JSON.parse(localStorage.getItem(BMKEY)||"[]");
+let reading=JSON.parse(localStorage.getItem(READKEY)||"[]");
+let tabs=[{id:1,title:"Start Page"}],activeTab=1,nextTab=2;
+
+function hideAll(){
+startView.hidden=true;offlineView.hidden=true;googleView.hidden=true;libraryView.hidden=true;readingView.hidden=true;bookmarksView.hidden=true;
+[startBtn,offlineBtn,googleBtn,libraryBtn,readingBtn,bookmarksBtn].forEach(b=>b.classList.remove("active"))
+}
+function showStart(){hideAll();startView.hidden=false;startBtn.classList.add("active")}
+function showOffline(){hideAll();offlineView.hidden=false;offlineBtn.classList.add("active")}
+function showGoogle(){hideAll();googleView.hidden=false;googleBtn.classList.add("active");googleSearch.focus()}
+function showLibrary(){hideAll();libraryView.hidden=false;libraryBtn.classList.add("active");renderLibrary()}
+function showReading(){hideAll();readingView.hidden=false;readingBtn.classList.add("active");renderReading()}
+function showBookmarks(){hideAll();bookmarksView.hidden=false;bookmarksBtn.classList.add("active");renderBookmarks()}
+
+function searchUrl(q){
+ if(engine.value==="brave")return "https://search.brave.com/search?q="+encodeURIComponent(q);
+ if(engine.value==="google")return "https://www.google.com/search?q="+encodeURIComponent(q);
+ return "https://duckduckgo.com/?q="+encodeURIComponent(q);
+}
+function liveSearch(v){
+ v=(v||"").trim(); if(!v)return;
+ if(!navigator.onLine){showOffline();offlineSearch.value=v;runOffline();return}
+ const isUrl=/^https?:\/\//i.test(v)||/^[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(v);
+ location.href=isUrl?(v.match(/^https?:\/\//i)?v:"https://"+v):searchUrl(v);
+}
+function hitsFor(q){
+ q=q.trim().toLowerCase();
+ const all=data.concat(library.map(x=>({title:x.title,text:x.text,url:x.url||""})));
+ return all.filter(x=>!q||(x.title+" "+x.text).toLowerCase().includes(q));
+}
+function runOffline(){
+ offlineResults.innerHTML="";
+ const hits=hitsFor(offlineSearch.value);
+ if(!hits.length){offlineResults.innerHTML='<div class="result"><h3>No results</h3><p>Try a broader search.</p></div>';return}
+ hits.forEach(x=>{const d=document.createElement("div");d.className="result";d.innerHTML="<h3></h3><p></p>";d.querySelector("h3").textContent=x.title;d.querySelector("p").textContent=x.text;if(x.url){d.style.cursor="pointer";d.onclick=()=>location.href=x.url}offlineResults.appendChild(d)})
+}
+function runGoogle(lucky){
+ googleResults.innerHTML="";
+ const hits=hitsFor(googleSearch.value);
+ if(!hits.length){googleResults.innerHTML='<div class="google-result"><h3>No offline results</h3><p>Try another search.</p></div>';return}
+ if(lucky){if(hits[0].url)location.href=hits[0].url;else alert(hits[0].title+"\n\n"+hits[0].text);return}
+ hits.forEach(x=>{const d=document.createElement("div");d.className="google-result";const u=document.createElement("small");u.textContent=x.url?"davidcraft.local/"+x.url:"offline.davidcraft/reference";const h=document.createElement("h3");h.textContent=x.title;const p=document.createElement("p");p.textContent=x.text;d.append(u,h,p);if(x.url){d.style.cursor="pointer";d.onclick=()=>location.href=x.url}googleResults.appendChild(d)})
+}
+
+
+function saveLocal(){
+ localStorage.setItem(LIBKEY,JSON.stringify(library));
+ localStorage.setItem(BMKEY,JSON.stringify(bookmarks));
+ localStorage.setItem(READKEY,JSON.stringify(reading));
+}
+function renderTabs(){
+ tabsEl.innerHTML="";
+ tabs.forEach(t=>{
+  const b=document.createElement("button");b.className="tab"+(t.id===activeTab?" active":"");
+  const n=document.createElement("span");n.textContent=t.title;
+  const x=document.createElement("span");x.textContent="×";x.onclick=e=>{e.stopPropagation();closeTab(t.id)};
+  b.onclick=()=>{activeTab=t.id;renderTabs();showStart()};
+  b.append(n,x);tabsEl.appendChild(b)
+ })
+}
+function closeTab(id){
+ if(tabs.length===1){tabs=[{id:nextTab++,title:"Start Page"}];activeTab=tabs[0].id}
+ else{const i=tabs.findIndex(t=>t.id===id);tabs.splice(i,1);if(activeTab===id)activeTab=tabs[Math.max(0,i-1)].id}
+ renderTabs()
+}
+function renderLibrary(){
+ libraryList.innerHTML="";
+ if(!library.length){libraryList.innerHTML='<div class="libitem"><p>Nothing saved offline yet.</p></div>';return}
+ library.slice().reverse().forEach(item=>{
+  const d=document.createElement("div");d.className="libitem";
+  const h=document.createElement("h3");h.textContent=item.title;
+  const p=document.createElement("p");p.textContent=item.text.slice(0,260)+(item.text.length>260?"…":"");
+  const a=document.createElement("div");a.className="libactions";
+  const read=document.createElement("button");read.className="small";read.textContent="Read";read.onclick=()=>alert(item.title+"\\n\\n"+item.text);
+  const del=document.createElement("button");del.className="small";del.textContent="Delete";del.onclick=()=>{library=library.filter(x=>x.id!==item.id);saveLocal();renderLibrary()};
+  a.append(read,del);d.append(h,p,a);libraryList.appendChild(d)
+ })
+}
+function renderLinkList(list,box){
+ box.innerHTML="";
+ if(!list.length){box.innerHTML='<div class="libitem"><p>Nothing saved yet.</p></div>';return}
+ list.forEach((item,i)=>{
+  const d=document.createElement("div");d.className="libitem";d.innerHTML="<h3></h3><p></p>";
+  d.querySelector("h3").textContent=item.title;d.querySelector("p").textContent=item.url;
+  const a=document.createElement("div");a.className="libactions";
+  const open=document.createElement("button");open.className="small";open.textContent="Open";open.onclick=()=>location.href=item.url;
+  const del=document.createElement("button");del.className="small";del.textContent="Delete";del.onclick=()=>{list.splice(i,1);saveLocal();renderLinkList(list,box)};
+  a.append(open,del);d.appendChild(a);box.appendChild(d)
+ })
+}
+function renderReading(){renderLinkList(reading,readingList)}
+function renderBookmarks(){renderLinkList(bookmarks,bookmarksList)}
+function currentUrl(){
+ const v=address.value.trim();
+ return /^https?:\/\//i.test(v)?v:"";
+}
+function addLink(target){
+ const url=currentUrl();
+ if(!url)return alert("Enter a full website address first, such as https://example.com");
+ const item={title:url.replace(/^https?:\/\//,""),url};
+ if(target==="bookmark"){if(!bookmarks.some(x=>x.url===url))bookmarks.push(item)}
+ else{if(!reading.some(x=>x.url===url))reading.push(item)}
+ saveLocal()
+}
+
+startBtn.onclick=showStart;homeBtn.onclick=showStart;offlineBtn.onclick=showOffline;googleBtn.onclick=showGoogle;
+libraryBtn.onclick=showLibrary;readingBtn.onclick=showReading;bookmarksBtn.onclick=showBookmarks;
+newTabBtn.onclick=()=>{tabs.push({id:nextTab,title:"Start Page"});activeTab=nextTab;nextTab++;renderTabs();showStart()};
+bookmarkCurrentBtn.onclick=()=>addLink("bookmark");
+readLaterBtn.onclick=()=>addLink("reading");
+saveOfflineBtn.onclick=()=>{const title=libTitle.value.trim(),body=libText.value.trim();if(!title||!body)return alert("Add a title and text.");library.push({id:Date.now()+"-"+Math.random(),title,url:libUrl.value.trim(),text:body});libTitle.value=libUrl.value=libText.value="";saveLocal();renderLibrary()};
+protonBtn.onclick=()=>location.href="https://protonvpn.com/download";
+clearBtn.onclick=()=>{address.value=searchBox.value=offlineSearch.value=googleSearch.value="";offlineResults.innerHTML=googleResults.innerHTML="";tabs=[{id:nextTab++,title:"Start Page"}];activeTab=tabs[0].id;renderTabs();showStart()};
+goBtn.onclick=()=>liveSearch(address.value);address.onkeydown=e=>{if(e.key==="Enter")liveSearch(address.value)};
+searchGo.onclick=()=>liveSearch(searchBox.value);searchBox.onkeydown=e=>{if(e.key==="Enter")liveSearch(searchBox.value)};
+offlineGo.onclick=runOffline;offlineSearch.onkeydown=e=>{if(e.key==="Enter")runOffline()};
+googleGo.onclick=()=>runGoogle(false);luckyBtn.onclick=()=>runGoogle(true);googleSearch.onkeydown=e=>{if(e.key==="Enter")runGoogle(false)};
+renderTabs();if(!navigator.onLine)showOffline();else showStart();
+})();
+</script>
+<script src="davidcraft.js"></script>
+</body>
+</html>
