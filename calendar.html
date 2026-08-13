@@ -1,17 +1,137 @@
-<!doctype html><html><head><title>DavidCraft Calendar</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DavidCraft Calendar V2</title>
 <link rel="stylesheet" href="davidcraft.css">
 <style>
-*{box-sizing:border-box}.page{width:min(100% - 20px,1200px);margin:auto;padding:26px 0 50px}
+*{box-sizing:border-box}.page{width:min(100% - 16px,1450px);margin:auto;padding:24px 0 50px}
 .hero,.panel{background:var(--dc-panel);border:1px solid var(--dc-border);box-shadow:0 14px 34px var(--dc-shadow)}
-.hero{padding:26px;border-radius:24px;margin-bottom:16px}.hero h1{margin:0;font-size:clamp(40px,7vw,68px);letter-spacing:-.05em}.hero p{color:var(--dc-muted);line-height:1.55}
-.panel{border-radius:18px;padding:16px}.btn{min-height:42px;padding:0 13px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-panel);color:var(--dc-text);font-weight:800;cursor:pointer}.primary{border:0;background:linear-gradient(135deg,#2563eb,#06b6d4);color:white}
-input,textarea,select{border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-page);color:var(--dc-text);padding:11px}.grid{display:grid;gap:12px}.cards{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.card{padding:15px;border:1px solid var(--dc-border);border-radius:14px;background:var(--dc-panel)}.muted{color:var(--dc-muted)}
+.hero{padding:26px;border-radius:24px;margin-bottom:18px;display:flex;justify-content:space-between;gap:20px;align-items:center}
+.hero h1{margin:0;font-size:clamp(42px,7vw,68px);letter-spacing:-.05em}.hero p{color:var(--dc-muted)}
+.todaybox{padding:16px;border:1px solid var(--dc-border);border-radius:16px;text-align:right;min-width:250px}
+.todaybox strong{display:block;font-size:22px}.todaybox span{color:var(--dc-muted)}
+.workspace{display:grid;grid-template-columns:1fr 330px;gap:18px}.panel{border-radius:18px}.main{overflow:hidden}.side{padding:16px;align-self:start;position:sticky;top:88px}
+.toolbar{padding:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--dc-border)}
+.group{display:flex;gap:7px;flex-wrap:wrap}.btn{min-height:40px;padding:0 12px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-panel);color:var(--dc-text);font-weight:800;cursor:pointer}
+.btn.active,.btn:hover{border-color:#2563eb;color:#2563eb}.primary{border:0;background:linear-gradient(135deg,#2563eb,#06b6d4);color:white}
+.heading{padding:14px;border-bottom:1px solid var(--dc-border)}.heading h2{margin:0}.heading p{margin:4px 0 0;color:var(--dc-muted);font-size:12px}
+.weekhead,.month{display:grid;grid-template-columns:repeat(7,1fr)}.weekhead div{padding:9px;text-align:center;background:var(--dc-soft);color:var(--dc-muted);font-size:11px;font-weight:800}
+.day{min-height:120px;padding:7px;border-right:1px solid var(--dc-border);border-bottom:1px solid var(--dc-border);cursor:pointer}.day:hover{background:var(--dc-soft)}.day.out{opacity:.4}.day.today{background:color-mix(in srgb,#8b5cf6 10%,var(--dc-panel))}
+.num{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;font-weight:900;font-size:12px}.today .num{background:#8b5cf6;color:white}
+.chip{margin-top:4px;padding:4px 6px;border-radius:7px;background:color-mix(in srgb,#2563eb 12%,var(--dc-soft));font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.holiday{color:#ef4444;background:color-mix(in srgb,#ef4444 12%,var(--dc-soft))}
+.weekgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;padding:14px}.weekcol{min-height:380px;border:1px solid var(--dc-border);border-radius:12px;overflow:hidden}.weekcol header{padding:9px;text-align:center;background:var(--dc-soft)}.weekcol .items{padding:7px}
+.agenda{padding:14px;display:grid;gap:8px}.agenda .item{padding:12px;border:1px solid var(--dc-border);border-radius:11px}.item span{display:block;margin-top:4px;color:var(--dc-muted);font-size:11px}
+.year{padding:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.mini{padding:10px;border:1px solid var(--dc-border);border-radius:12px}.mini h3{margin:0 0 7px}.minigrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;font-size:9px}.minigrid span,.minigrid button{text-align:center}.minigrid button{border:0;background:transparent;color:var(--dc-text);padding:3px;border-radius:4px}.minigrid button.today{background:#8b5cf6;color:white}.minigrid button.has{outline:1px solid #2563eb}
+.side h3{margin:0 0 8px}.muted{color:var(--dc-muted);font-size:11px}.form{display:grid;gap:8px;margin-top:10px}.input{width:100%;min-height:42px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-page);color:var(--dc-text);padding:9px}
+.toggle{margin-top:14px;padding:12px;border:1px solid var(--dc-border);border-radius:12px;display:flex;justify-content:space-between;align-items:center}.switch{width:44px;height:24px;border:0;border-radius:999px;background:#777;position:relative}.switch:after{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:white}.switch.on{background:#2563eb}.switch.on:after{left:23px}
+.upcoming{margin-top:12px;display:grid;gap:7px}.upcoming div{padding:9px;border:1px solid var(--dc-border);border-radius:10px}.upcoming small{display:block;color:var(--dc-muted);margin-top:3px}
+@media(max-width:1000px){.workspace{grid-template-columns:1fr}.side{position:static}.year{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.hero{flex-direction:column;align-items:flex-start}.todaybox{text-align:left}.weekgrid{grid-template-columns:1fr}.year{grid-template-columns:1fr}.day{min-height:85px}.chip{font-size:7px}}
 </style>
-<style>.calhead{display:flex;justify-content:space-between;align-items:center}.week,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.week div{text-align:center;color:var(--dc-muted);font-weight:800;padding:8px}.day{min-height:105px;padding:8px;border:1px solid var(--dc-border);border-radius:12px;background:var(--dc-panel);cursor:pointer}.day.today{outline:2px solid #2563eb}.event{margin-top:5px;padding:4px 6px;border-radius:7px;background:var(--dc-soft);font-size:10px;overflow:hidden;text-overflow:ellipsis}</style></head>
-<body data-davidcraft-page="calendar"><div id="davidcraft-navbar"></div><main class="page"><section class="hero"><h1>📅 Calendar</h1><p>Local events, school plans, birthdays, and reminders.</p></section><section class="panel">
-<div class="calhead"><button class="btn" id="prev">←</button><h2 id="month"></h2><button class="btn" id="next">→</button></div><div class="week"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div><div class="days" id="days"></div></section></main>
+</head>
+<body data-davidcraft-page="calendar">
+<div id="davidcraft-navbar"></div>
+<main class="page">
+<section class="hero">
+<div><h1>DavidCraft Calendar</h1><p>Plan your day, week, month, and year with optional U.S. holidays.</p></div>
+<div class="todaybox"><strong id="realdate"></strong><span id="realyear"></span></div>
+</section>
+<section class="workspace">
+<section class="panel main">
+<div class="toolbar">
+<div class="group"><button class="btn" id="prev">←</button><button class="btn primary" id="today">Today</button><button class="btn" id="next">→</button></div>
+<div class="group" id="views"><button class="btn active" data-v="day">Day</button><button class="btn" data-v="week">Week</button><button class="btn" data-v="month">Month</button><button class="btn" data-v="year">Year</button></div>
+</div>
+<div class="heading"><h2 id="title"></h2><p id="subtitle"></p></div>
+<div id="content"></div>
+</section>
+<aside class="panel side">
+<h3>Organize Your Day</h3>
+<div class="muted" id="selectedlabel"></div>
+<div class="form">
+<input id="ename" class="input" placeholder="Event name">
+<input id="edate" class="input" type="date">
+<input id="etime" class="input" type="time">
+<textarea id="enotes" class="input" placeholder="Notes"></textarea>
+<button class="btn primary" id="add">＋ Add Event</button>
+</div>
+<div class="toggle"><div><strong>U.S. Holidays</strong><div class="muted">Major federal holidays</div></div><button id="holidays" class="switch on"></button></div>
+<h3 style="margin-top:18px">Upcoming</h3><div id="upcoming" class="upcoming"></div>
+</aside>
+</section>
+</main>
+<footer class="dc-footer">DavidCraft Calendar · V2</footer>
 <script>
-const $=x=>document.getElementById(x),K="dc_calendar_v1";let events=JSON.parse(localStorage.getItem(K)||"{}"),view=new Date();view.setDate(1);
-function render(){let y=view.getFullYear(),m=view.getMonth(),first=new Date(y,m,1).getDay(),count=new Date(y,m+1,0).getDate();$("month").textContent=view.toLocaleDateString([],{month:"long",year:"numeric"});$("days").innerHTML="";for(let i=0;i<first;i++)$("days").appendChild(document.createElement("div"));for(let d=1;d<=count;d++){let date=new Date(y,m,d),key=y+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0"),c=document.createElement("div");c.className="day"+(new Date().toDateString()===date.toDateString()?" today":"");c.innerHTML="<strong>"+d+"</strong>";(events[key]||[]).forEach(e=>{let s=document.createElement("div");s.className="event";s.textContent=e;c.appendChild(s)});c.onclick=()=>{let e=prompt("Add event on "+key+":");if(e){(events[key]??=[]).push(e);localStorage.setItem(K,JSON.stringify(events));render()}};$("days").appendChild(c)}}
-$("prev").onclick=()=>{view.setMonth(view.getMonth()-1);render()};$("next").onclick=()=>{view.setMonth(view.getMonth()+1);render()};render();
-</script><script src="davidcraft.js"></script></body></html>
+const $=i=>document.getElementById(i),K="dc_cal_v2",HK="dc_cal_holidays";
+let events=JSON.parse(localStorage.getItem(K)||"[]"),showH=localStorage.getItem(HK)!=="false",view="day",cursor=new Date(),selected=new Date();
+const key=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const same=(a,b)=>key(a)===key(b);
+const nth=(y,m,w,n)=>{let d=new Date(y,m,1),o=(7+w-d.getDay())%7;return new Date(y,m,1+o+(n-1)*7)};
+const last=(y,m,w)=>{let d=new Date(y,m+1,0),o=(7+d.getDay()-w)%7;return new Date(y,m+1,0-o)};
+function holidays(y){return[
+["New Year's Day",new Date(y,0,1)],
+["Martin Luther King Jr. Day",nth(y,0,1,3)],
+["Washington's Birthday",nth(y,1,1,3)],
+["Memorial Day",last(y,4,1)],
+["Juneteenth National Independence Day",new Date(y,5,19)],
+["Independence Day",new Date(y,6,4)],
+["Labor Day",nth(y,8,1,1)],
+["Columbus Day",nth(y,9,1,2)],
+["Veterans Day",new Date(y,10,11)],
+["Thanksgiving Day",nth(y,10,4,4)],
+["Christmas Day",new Date(y,11,25)]
+].map(x=>({title:x[0],date:key(x[1]),holiday:true,time:""}))}
+function items(d){let arr=events.filter(e=>e.date===key(d)).map(e=>({...e,holiday:false}));if(showH)arr=[...holidays(d.getFullYear()).filter(h=>h.date===key(d)),...arr];return arr.sort((a,b)=>(a.time||"99:99").localeCompare(b.time||"99:99"))}
+function label(d){return d.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"})}
+function real(){let d=new Date();$("realdate").textContent=d.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});$("realyear").textContent=d.getFullYear()}
+function updateForm(){$("edate").value=key(selected);$("selectedlabel").textContent=label(selected)}
+function render(){
+document.querySelectorAll("[data-v]").forEach(b=>b.classList.toggle("active",b.dataset.v===view));
+if(view==="day")dayView();if(view==="week")weekView();if(view==="month")monthView();if(view==="year")yearView();
+$("holidays").classList.toggle("on",showH);updateForm();upcoming()
+}
+function dayView(){
+$("title").textContent=label(cursor);$("subtitle").textContent="Your schedule for this day.";
+let box=document.createElement("div");box.className="agenda";let a=items(cursor);
+if(!a.length)box.innerHTML='<div class="item"><strong>No events yet</strong><span>Add something from Organize Your Day.</span></div>';
+a.forEach(e=>{let d=document.createElement("div");d.className="item"+(e.holiday?" holiday":"");d.innerHTML="<strong></strong><span></span>";d.querySelector("strong").textContent=e.title;d.querySelector("span").textContent=e.holiday?"U.S. holiday":(e.time||"All day")+(e.notes?" · "+e.notes:"");if(!e.holiday)d.onclick=()=>{if(confirm("Delete "+e.title+"?")){events=events.filter(x=>x.id!==e.id);save()}};box.appendChild(d)});
+$("content").innerHTML="";$("content").appendChild(box)
+}
+function weekStart(d){let x=new Date(d);x.setDate(x.getDate()-x.getDay());return x}
+function weekView(){
+let s=weekStart(cursor),e=new Date(s);e.setDate(e.getDate()+6);$("title").textContent=s.toLocaleDateString("en-US",{month:"short",day:"numeric"})+" – "+e.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});$("subtitle").textContent="All events in this week.";
+let g=document.createElement("div");g.className="weekgrid";
+for(let i=0;i<7;i++){let d=new Date(s);d.setDate(d.getDate()+i);let c=document.createElement("div");c.className="weekcol";let h=document.createElement("header");h.innerHTML="<strong>"+d.toLocaleDateString("en-US",{weekday:"short"})+"</strong><br><span>"+d.toLocaleDateString("en-US",{month:"short",day:"numeric"})+"</span>";h.onclick=()=>{cursor=new Date(d);selected=new Date(d);view="day";render()};let list=document.createElement("div");list.className="items";items(d).forEach(x=>{let z=document.createElement("div");z.className="chip"+(x.holiday?" holiday":"");z.textContent=(x.time?x.time+" ":"")+x.title;list.appendChild(z)});c.append(h,list);g.appendChild(c)}
+$("content").innerHTML="";$("content").appendChild(g)
+}
+function monthView(){
+$("title").textContent=cursor.toLocaleDateString("en-US",{month:"long",year:"numeric"});$("subtitle").textContent="Month view with events and holidays.";
+let wrap=document.createElement("div"),wh=document.createElement("div");wh.className="weekhead";["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(x=>{let d=document.createElement("div");d.textContent=x;wh.appendChild(d)});let g=document.createElement("div");g.className="month";
+let first=new Date(cursor.getFullYear(),cursor.getMonth(),1),start=new Date(first);start.setDate(1-first.getDay());
+for(let i=0;i<42;i++){let d=new Date(start);d.setDate(start.getDate()+i);let c=document.createElement("div");c.className="day"+(d.getMonth()!==cursor.getMonth()?" out":"")+(same(d,new Date())?" today":"");let n=document.createElement("div");n.className="num";n.textContent=d.getDate();c.appendChild(n);let a=items(d);a.slice(0,3).forEach(x=>{let z=document.createElement("div");z.className="chip"+(x.holiday?" holiday":"");z.textContent=(x.time?x.time+" ":"")+x.title;c.appendChild(z)});c.onclick=()=>{cursor=new Date(d);selected=new Date(d);view="day";render()};g.appendChild(c)}
+wrap.append(wh,g);$("content").innerHTML="";$("content").appendChild(wrap)
+}
+function yearView(){
+let y=cursor.getFullYear();$("title").textContent=y;$("subtitle").textContent="Browse the whole year.";let g=document.createElement("div");g.className="year";
+for(let m=0;m<12;m++){let c=document.createElement("div");c.className="mini";let h=document.createElement("h3");h.textContent=new Date(y,m,1).toLocaleDateString("en-US",{month:"long"});let mg=document.createElement("div");mg.className="minigrid";["S","M","T","W","T","F","S"].forEach(x=>{let s=document.createElement("span");s.textContent=x;mg.appendChild(s)});let f=new Date(y,m,1);for(let i=0;i<f.getDay();i++)mg.appendChild(document.createElement("span"));let count=new Date(y,m+1,0).getDate();for(let d=1;d<=count;d++){let dt=new Date(y,m,d),b=document.createElement("button");b.textContent=d;if(same(dt,new Date()))b.classList.add("today");if(items(dt).length)b.classList.add("has");b.onclick=()=>{cursor=new Date(dt);selected=new Date(dt);view="day";render()};mg.appendChild(b)}c.append(h,mg);g.appendChild(c)}
+$("content").innerHTML="";$("content").appendChild(g)
+}
+function upcoming(){
+let b=$("upcoming");b.innerHTML="";let start=new Date();start.setHours(0,0,0,0),all=[];
+for(let i=0;i<60;i++){let d=new Date(start);d.setDate(d.getDate()+i);items(d).forEach(x=>all.push({d,x}))}
+all.slice(0,8).forEach(o=>{let d=document.createElement("div");d.innerHTML="<strong></strong><small></small>";d.querySelector("strong").textContent=o.x.title;d.querySelector("small").textContent=o.d.toLocaleDateString("en-US",{month:"short",day:"numeric"})+(o.x.time?" · "+o.x.time:"")+(o.x.holiday?" · Holiday":"");d.onclick=()=>{cursor=new Date(o.d);selected=new Date(o.d);view="day";render()};b.appendChild(d)});
+if(!all.length)b.innerHTML="<div><strong>No upcoming events</strong><small>Your next 60 days are clear.</small></div>"
+}
+function save(){localStorage.setItem(K,JSON.stringify(events));render()}
+$("add").onclick=()=>{let t=$("ename").value.trim(),d=$("edate").value;if(!t||!d)return alert("Enter an event name and date.");events.push({id:Date.now()+"-"+Math.random(),title:t,date:d,time:$("etime").value,notes:$("enotes").value.trim()});$("ename").value="";$("etime").value="";$("enotes").value="";save()};
+$("holidays").onclick=()=>{showH=!showH;localStorage.setItem(HK,String(showH));render()};
+document.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{view=b.dataset.v;render()});
+$("today").onclick=()=>{cursor=new Date();selected=new Date();render()};
+$("prev").onclick=()=>{if(view==="day")cursor.setDate(cursor.getDate()-1);if(view==="week")cursor.setDate(cursor.getDate()-7);if(view==="month")cursor.setMonth(cursor.getMonth()-1);if(view==="year")cursor.setFullYear(cursor.getFullYear()-1);selected=new Date(cursor);render()};
+$("next").onclick=()=>{if(view==="day")cursor.setDate(cursor.getDate()+1);if(view==="week")cursor.setDate(cursor.getDate()+7);if(view==="month")cursor.setMonth(cursor.getMonth()+1);if(view==="year")cursor.setFullYear(cursor.getFullYear()+1);selected=new Date(cursor);render()};
+real();render();
+</script>
+<script src="davidcraft.js"></script>
+</body></html>
