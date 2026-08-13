@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DavidCraft Private Browser V5</title>
+<link rel="stylesheet" href="davidcraft.css">
+<style>
+:root{
+  --a:#6d4aff;--b:#06b6d4;--ok:#22c55e;--warn:#f59e0b;--danger:#ef4444;
+  --dc-page:#f7f8fc;--dc-panel:#fff;--dc-text:#111827;--dc-muted:#6b7280;
+  --dc-border:#dbe0ea;--dc-soft:#f1f4f9;--dc-shadow:rgba(15,23,42,.08)
+}
+html[data-theme="dark"]{
+  --dc-page:#0b1020;--dc-panel:#111827;--dc-text:#f8fafc;--dc-muted:#9ca3af;
+  --dc-border:#2a3446;--dc-soft:#182235;--dc-shadow:rgba(0,0,0,.22)
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--dc-page);color:var(--dc-text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
+.page{width:min(100% - 14px,1520px);margin:auto;padding:18px 0 44px}
+.hero,.panel{background:var(--dc-panel);border:1px solid var(--dc-border);box-shadow:0 14px 36px var(--dc-shadow)}
+.hero{padding:22px 24px;border-radius:22px;margin-bottom:14px;display:flex;justify-content:space-between;gap:20px;align-items:center}
+.hero h1{margin:0;font-size:clamp(38px,6vw,64px);letter-spacing:-.05em;line-height:1}
+.hero p{max-width:900px;margin:10px 0 0;color:var(--dc-muted);line-height:1.5}
+.heroicon{width:96px;height:96px;display:grid;place-items:center;border-radius:24px;background:linear-gradient(135deg,var(--a),var(--b));font-size:42px;color:#fff}
+.shell{display:grid;grid-template-columns:245px minmax(0,1fr);gap:14px}
+.panel{border-radius:18px}
+.side{padding:13px;align-self:start;position:sticky;top:16px}
+.stitle{margin:0 0 7px;color:var(--dc-muted);font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.sidebtn{width:100%;min-height:42px;margin:3px 0;padding:0 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;border:0;border-radius:10px;background:transparent;color:var(--dc-text);font-weight:800;cursor:pointer}
+.sidebtn:hover,.sidebtn.active{background:var(--dc-soft)}
+.badge{padding:4px 7px;border-radius:999px;background:var(--dc-soft);color:var(--dc-muted);font-size:9px;font-weight:850}
+.badge.ok{color:var(--ok)}.badge.warn{color:var(--warn)}
+.browser{overflow:hidden}
+.tabs{padding:7px;display:flex;gap:6px;overflow-x:auto;background:var(--dc-soft);border-bottom:1px solid var(--dc-border)}
+.tab{min-width:155px;max-width:220px;padding:8px 9px;display:flex;justify-content:space-between;gap:7px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--dc-text);cursor:pointer}
+.tab.active{background:var(--dc-panel);border-color:var(--dc-border)}
+.tab-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:800}
+.tab-close{color:var(--dc-muted)}
+.toolbar{padding:9px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:7px;border-bottom:1px solid var(--dc-border);align-items:center}
+.nav{display:flex;gap:5px;flex-wrap:wrap}
+.btn,.iconbtn{min-height:39px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-panel);color:var(--dc-text);font-weight:800;cursor:pointer}
+.btn{padding:0 11px}.iconbtn{width:39px}
+.btn:hover,.iconbtn:hover{border-color:var(--a);color:var(--a)}
+.primary{border:0;background:linear-gradient(135deg,var(--a),var(--b));color:#fff}
+.address{min-height:41px;padding:0 12px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-page);color:var(--dc-text);outline:none}
+.address:focus{border-color:var(--a)}
+.content{min-height:650px;position:relative}
+.view{max-width:980px;margin:auto;padding:28px 20px}
+.logo{text-align:center;font-size:clamp(36px,6vw,60px);font-weight:950;letter-spacing:-.05em}
+.sub{text-align:center;max-width:720px;margin:9px auto 22px;color:var(--dc-muted);line-height:1.5}
+.search{display:grid;grid-template-columns:1fr auto;gap:8px;max-width:760px;margin:auto}
+.input{min-height:42px;padding:0 12px;border:1px solid var(--dc-border);border-radius:10px;background:var(--dc-page);color:var(--dc-text);outline:none}
+.search .input,.search .btn{min-height:52px}
+.statusgrid{margin-top:22px;display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.card{padding:14px;border:1px solid var(--dc-border);border-radius:14px;background:var(--dc-panel)}
+.card p{margin:5px 0 0;color:var(--dc-muted);font-size:11px;line-height:1.45}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--warn)}.dot.ok{background:var(--ok)}.dot.off{background:var(--danger)}
+.notice{margin-top:18px;padding:13px;border:1px dashed var(--dc-border);border-radius:12px;background:var(--dc-soft);color:var(--dc-muted);font-size:11px;line-height:1.5}
+.frame-view{position:absolute;inset:0;display:none;background:var(--dc-panel)}
+.frame-view.show{display:block}
+.site-frame{width:100%;height:650px;border:0;background:#fff}
+.frame-topnote{display:none;padding:10px 12px;border-bottom:1px solid var(--dc-border);background:var(--dc-soft);color:var(--dc-muted);font-size:11px}
+.frame-topnote.show{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.results{margin-top:14px;display:grid;gap:9px}.result{padding:13px;border:1px solid var(--dc-border);border-radius:12px;background:var(--dc-panel)}.result h3{margin:0 0 4px}.result p{margin:0;color:var(--dc-muted);font-size:11px}
+.google-logo{text-align:center;font-size:70px;font-weight:800;letter-spacing:-.07em;margin-bottom:18px}.g1{color:#4285f4}.g2{color:#ea4335}.g3{color:#fbbc05}.g4{color:#4285f4}.g5{color:#34a853}.g6{color:#ea4335}
+.googlebar{max-width:720px;margin:auto}.googlebar input{width:100%;min-height:54px;padding:0 18px;border:1px solid var(--dc-border);border-radius:999px;background:var(--dc-panel);color:var(--dc-text);font-size:16px}.googlebuttons{display:flex;justify-content:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+.googlebuttons button{min-height:38px;padding:0 13px;border:1px solid var(--dc-border);border-radius:8px;background:var(--dc-soft);color:var(--dc-text);cursor:pointer}
+.google-result{max-width:760px;margin:0 auto 20px}.google-result small{color:var(--dc-muted)}.google-result h3{margin:2px 0 5px;color:#1a0dab;font-size:19px;font-weight:500}.google-result p{margin:0;color:var(--dc-muted);font-size:12px}html[data-theme="dark"] .google-result h3{color:#8ab4f8}
+@media(max-width:1040px){.statusgrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:880px){.shell{grid-template-columns:1fr}.side{position:static}}
+@media(max-width:620px){.hero{flex-direction:column;align-items:flex-start}.heroicon{display:none}.toolbar,.search{grid-template-columns:1fr}.statusgrid{grid-template-columns:1fr}.site-frame{height:600px}}
+</style>
+</head>
+<body data-davidcraft-page="browser">
+<div id="davidcraft-navbar"></div>
+<main class="page">
+<section class="hero">
+  <div>
+    <h1>DavidCraft Private Browser V5</h1>
+    <p>Type a website address and DavidCraft will try to load that website inside the current browser tab.</p>
+  </div>
+  <div class="heroicon">🌐</div>
+</section>
+
+<section class="shell">
+<aside class="panel side">
+  <p class="stitle">Browser</p>
+  <button class="sidebtn active" data-mode="home"><span>🏠 Start Page</span><span class="badge">Private</span></button>
+  <button class="sidebtn" data-mode="offline"><span>📴 Offline Search</span><span class="badge ok">Local</span></button>
+  <button class="sidebtn" data-mode="google"><span>🔎 Google Offline</span><span class="badge ok">Simulator</span></button>
+  <button class="sidebtn" id="proton"><span>🛡 Proton VPN</span><span class="badge warn">External</span></button>
+
+  <p class="stitle" style="margin-top:14px">Search Engine</p>
+  <select id="engine" class="address" style="width:100%">
+    <option value="duck">DuckDuckGo</option>
+    <option value="brave">Brave Search</option>
+    <option value="google">Google</option>
+  </select>
+
+  <p class="stitle" style="margin-top:14px">Status</p>
+  <div class="card"><strong><span id="net-dot" class="dot ok"></span><span id="net-label">Online</span></strong><p id="net-text">Websites can be loaded.</p></div>
+</aside>
+
+<section class="panel browser">
+  <div id="tabs" class="tabs"></div>
+
+  <div class="toolbar">
+    <div class="nav">
+      <button id="back" class="iconbtn" title="Back">←</button>
+      <button id="forward" class="iconbtn" title="Forward">→</button>
+      <button id="reload" class="iconbtn" title="Reload">↻</button>
+      <button id="homebtn" class="iconbtn" title="Home">⌂</button>
+      <button id="newtab" class="iconbtn" title="New Tab">＋</button>
+    </div>
+
+    <input id="address" class="address" placeholder="Search or enter a website, such as wikipedia.org">
+
+    <button id="go" class="btn primary">Go</button>
+  </div>
+
+  <div class="content">
+    <div id="home-view" class="view">
+      <div class="logo">Browse inside DavidCraft.</div>
+      <div class="sub">Enter a website such as <strong>wikipedia.org</strong>. DavidCraft V5 will try to display it directly inside the current tab.</div>
+
+      <div class="search">
+        <input id="home-search" class="input" placeholder="Search the web or enter a website">
+        <button id="home-go" class="btn primary">Go</button>
+      </div>
+
+      <div class="statusgrid">
+        <div class="card"><strong>🗂 Real Tabs</strong><p>Each DavidCraft tab remembers its own page and navigation history.</p></div>
+        <div class="card"><strong>🌐 Built-in Viewer</strong><p>Direct website addresses try to load inside the DavidCraft tab.</p></div>
+        <div class="card"><strong>🔎 Search</strong><p>Search queries also try to load the selected search engine inside the tab.</p></div>
+        <div class="card"><strong>📴 Offline Tools</strong><p>Offline Search and Google Offline still work locally.</p></div>
+      </div>
+
+      <div class="notice">
+        Some websites deliberately block being displayed inside another webpage using browser security rules. When that happens, use the “Open Externally” button that appears above the website.
+      </div>
+    </div>
+
+    <div id="offline-view" class="view" hidden>
+      <div class="logo">Offline Search</div>
+      <div class="sub">Search DavidCraft's built-in local information without internet.</div>
+      <div class="search">
+        <input id="offline-search" class="input" placeholder="Try: files, chess, calendar, privacy">
+        <button id="offline-go" class="btn primary">Search Offline</button>
+      </div>
+      <div id="offline-results" class="results"></div>
+    </div>
+
+    <div id="google-view" class="view" hidden>
+      <div class="google-logo"><span class="g1">G</span><span class="g2">o</span><span class="g3">o</span><span class="g4">g</span><span class="g5">l</span><span class="g6">e</span></div>
+      <div class="googlebar">
+        <input id="google-search" placeholder="Search Google Offline">
+        <div class="googlebuttons">
+          <button id="google-go">Google Search</button>
+          <button id="lucky">I'm Feeling Lucky</button>
+        </div>
+      </div>
+      <div class="notice">Google Offline is a DavidCraft simulator. It does not contact Google.</div>
+      <div id="google-results"></div>
+    </div>
+
+    <div id="frame-view" class="frame-view">
+      <div id="frame-note" class="frame-topnote">
+        <span>If this website stays blank or shows an error, it may block embedded browsing.</span>
+        <button id="external" class="btn">Open Externally</button>
+      </div>
+      <iframe id="site-frame" class="site-frame" sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-downloads"></iframe>
+    </div>
+  </div>
+</section>
+</section>
+</main>
+
+<footer style="padding:22px;text-align:center;color:var(--dc-muted);font-size:12px">DavidCraft Private Browser · V5</footer>
+
+<script>
+(function(){
+"use strict";
+
+const $=id=>document.getElementById(id);
+
+const offlineData=[
+  {title:"DavidCraft Home",text:"Open DavidCraft Home and its apps.",url:"home.html"},
+  {title:"DavidCraft Files",text:"Manage files, folders, tags, favorites, previews, and trash.",url:"files.html"},
+  {title:"Play DavidCraft",text:"Open Chess, Dark Chess, Nova Arcade, and other games.",url:"play.html"},
+  {title:"DavidCraft Chess",text:"Play and practice chess.",url:"chess.html"},
+  {title:"DavidCraft Calendar",text:"Plan your day, week, month, and year.",url:"calendar.html"},
+  {title:"Math Reference",text:"Arithmetic, fractions, percentages, geometry, and introductory algebra."},
+  {title:"Science Reference",text:"Biology, chemistry, physics, cells, atoms, forces, and energy."},
+  {title:"Privacy Basics",text:"Private browsing reduces local history but does not make someone anonymous online."},
+  {title:"VPN Basics",text:"A VPN encrypts traffic between a device and the VPN provider."}
+];
+
+let tabs=[makeTab(1)];
+let active=1;
+let nextId=2;
+
+function makeTab(id){
+  return {
+    id:id,
+    title:"Start Page",
+    mode:"home",
+    url:"",
+    history:[],
+    historyIndex:-1
+  };
+}
+
+function current(){
+  return tabs.find(tab=>tab.id===active);
+}
+
+function renderTabs(){
+  $("tabs").innerHTML="";
+
+  tabs.forEach(tab=>{
+    const button=document.createElement("button");
+    button.className="tab"+(tab.id===active?" active":"");
+
+    const title=document.createElement("span");
+    title.className="tab-title";
+    title.textContent=tab.title;
+
+    const close=document.createElement("span");
+    close.className="tab-close";
+    close.textContent="×";
+
+    close.addEventListener("click",event=>{
+      event.stopPropagation();
+      closeTab(tab.id);
+    });
+
+    button.addEventListener("click",()=>{
+      active=tab.id;
+      renderTabs();
+      showTab();
+    });
+
+    button.append(title,close);
+    $("tabs").appendChild(button);
+  });
+}
+
+function closeTab(id){
+  if(tabs.length===1){
+    tabs=[makeTab(nextId++)];
+    active=tabs[0].id;
+  }else{
+    const index=tabs.findIndex(tab=>tab.id===id);
+    tabs.splice(index,1);
+
+    if(active===id){
+      active=tabs[Math.max(0,index-1)].id;
+    }
+  }
+
+  renderTabs();
+  showTab();
+}
+
+function setMode(mode){
+  const tab=current();
+  tab.mode=mode;
+
+  if(mode==="home"){
+    tab.title="Start Page";
+    tab.url="";
+  }
+
+  if(mode==="offline"){
+    tab.title="Offline Search";
+    tab.url="";
+  }
+
+  if(mode==="google"){
+    tab.title="Google Offline";
+    tab.url="";
+  }
+
+  renderTabs();
+  showTab();
+}
+
+function showTab(){
+  const tab=current();
+
+  $("home-view").hidden=tab.mode!=="home";
+  $("offline-view").hidden=tab.mode!=="offline";
+  $("google-view").hidden=tab.mode!=="google";
+  $("frame-view").classList.toggle("show",tab.mode==="web");
+
+  document.querySelectorAll("[data-mode]").forEach(button=>{
+    button.classList.toggle("active",button.dataset.mode===tab.mode);
+  });
+
+  $("address").value=tab.url||"";
+
+  if(tab.mode==="web"){
+    $("site-frame").src=tab.url;
+    $("frame-note").classList.add("show");
+  }else{
+    $("site-frame").src="about:blank";
+    $("frame-note").classList.remove("show");
+  }
+
+  updateNavButtons();
+}
+
+function updateNavButtons(){
+  const tab=current();
+  $("back").disabled=tab.historyIndex<=0;
+  $("forward").disabled=tab.historyIndex<0 || tab.historyIndex>=tab.history.length-1;
+}
+
+function searchUrl(query){
+  const engine=$("engine").value;
+
+  if(engine==="brave"){
+    return "https://search.brave.com/search?q="+encodeURIComponent(query);
+  }
+
+  if(engine==="google"){
+    return "https://www.google.com/search?q="+encodeURIComponent(query);
+  }
+
+  return "https://duckduckgo.com/?q="+encodeURIComponent(query);
+}
+
+function normalize(value){
+  const text=String(value||"").trim();
+
+  if(!text){
+    return null;
+  }
+
+  if(/^https?:\/\//i.test(text)){
+    return {url:text,title:text};
+  }
+
+  if(/^[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(text)){
+    return {url:"https://"+text,title:text};
+  }
+
+  return {
+    url:searchUrl(text),
+    title:text
+  };
+}
+
+function navigate(value,addHistory){
+  if(!navigator.onLine){
+    setMode("offline");
+    $("offline-search").value=value;
+    runOffline();
+    return;
+  }
+
+  const target=normalize(value);
+  if(!target)return;
+
+  const tab=current();
+
+  if(addHistory!==false){
+    tab.history=tab.history.slice(0,tab.historyIndex+1);
+    tab.history.push(target.url);
+    tab.historyIndex=tab.history.length-1;
+  }
+
+  tab.mode="web";
+  tab.url=target.url;
+  tab.title=target.title.length>22
+    ? target.title.slice(0,22)+"…"
+    : target.title;
+
+  renderTabs();
+  showTab();
+}
+
+function goBack(){
+  const tab=current();
+  if(tab.historyIndex<=0)return;
+
+  tab.historyIndex--;
+  tab.url=tab.history[tab.historyIndex];
+  tab.mode="web";
+  tab.title=tab.url.replace(/^https?:\/\//,"").slice(0,22);
+  renderTabs();
+  showTab();
+}
+
+function goForward(){
+  const tab=current();
+  if(tab.historyIndex>=tab.history.length-1)return;
+
+  tab.historyIndex++;
+  tab.url=tab.history[tab.historyIndex];
+  tab.mode="web";
+  tab.title=tab.url.replace(/^https?:\/\//,"").slice(0,22);
+  renderTabs();
+  showTab();
+}
+
+function runOffline(){
+  const query=$("offline-search").value.trim().toLowerCase();
+  const box=$("offline-results");
+  box.innerHTML="";
+
+  const hits=offlineData.filter(item=>{
+    if(!query)return true;
+    return (item.title+" "+item.text).toLowerCase().includes(query);
+  });
+
+  if(!hits.length){
+    box.innerHTML='<div class="result"><h3>No offline results</h3><p>Try a broader search.</p></div>';
+    return;
+  }
+
+  hits.forEach(item=>{
+    const card=document.createElement("div");
+    card.className="result";
+
+    const title=document.createElement("h3");
+    title.textContent=item.title;
+
+    const text=document.createElement("p");
+    text.textContent=item.text;
+
+    card.append(title,text);
+
+    if(item.url){
+      card.style.cursor="pointer";
+      card.addEventListener("click",()=>{
+        window.location.href=item.url;
+      });
+    }
+
+    box.appendChild(card);
+  });
+}
+
+function googleHits(query){
+  const q=String(query||"").trim().toLowerCase();
+
+  return offlineData.filter(item=>{
+    if(!q)return true;
+    return (item.title+" "+item.text).toLowerCase().includes(q);
+  });
+}
+
+function runGoogle(lucky){
+  const box=$("google-results");
+  box.innerHTML="";
+
+  const hits=googleHits($("google-search").value);
+
+  if(!hits.length){
+    box.innerHTML='<div class="google-result"><h3>No offline results</h3><p>Try another search.</p></div>';
+    return;
+  }
+
+  if(lucky){
+    const first=hits[0];
+
+    if(first.url){
+      window.location.href=first.url;
+    }else{
+      alert(first.title+"\\n\\n"+first.text);
+    }
+
+    return;
+  }
+
+  hits.forEach(item=>{
+    const card=document.createElement("div");
+    card.className="google-result";
+
+    const url=document.createElement("small");
+    url.textContent=item.url
+      ? "davidcraft.local/"+item.url
+      : "offline.davidcraft/reference";
+
+    const title=document.createElement("h3");
+    title.textContent=item.title;
+
+    const body=document.createElement("p");
+    body.textContent=item.text;
+
+    card.append(url,title,body);
+
+    if(item.url){
+      card.style.cursor="pointer";
+      card.addEventListener("click",()=>{
+        window.location.href=item.url;
+      });
+    }
+
+    box.appendChild(card);
+  });
+}
+
+function updateNetwork(){
+  const online=navigator.onLine;
+
+  $("net-dot").className="dot "+(online?"ok":"off");
+  $("net-label").textContent=online?"Online":"Offline";
+  $("net-text").textContent=online
+    ?"Websites can be loaded."
+    :"Offline Search is available.";
+
+  if(!online && current().mode==="web"){
+    setMode("offline");
+  }
+}
+
+document.querySelectorAll("[data-mode]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    setMode(button.dataset.mode);
+  });
+});
+
+$("newtab").addEventListener("click",()=>{
+  const tab=makeTab(nextId++);
+  tabs.push(tab);
+  active=tab.id;
+  renderTabs();
+  showTab();
+});
+
+$("homebtn").addEventListener("click",()=>setMode("home"));
+$("back").addEventListener("click",goBack);
+$("forward").addEventListener("click",goForward);
+
+$("reload").addEventListener("click",()=>{
+  const tab=current();
+
+  if(tab.mode==="web"){
+    $("site-frame").src="about:blank";
+
+    setTimeout(()=>{
+      $("site-frame").src=tab.url;
+    },30);
+  }
+});
+
+$("go").addEventListener("click",()=>{
+  navigate($("address").value,true);
+});
+
+$("address").addEventListener("keydown",event=>{
+  if(event.key==="Enter"){
+    navigate($("address").value,true);
+  }
+});
+
+$("home-go").addEventListener("click",()=>{
+  navigate($("home-search").value,true);
+});
+
+$("home-search").addEventListener("keydown",event=>{
+  if(event.key==="Enter"){
+    navigate($("home-search").value,true);
+  }
+});
+
+$("external").addEventListener("click",()=>{
+  const tab=current();
+  if(tab.url){
+    window.open(tab.url,"_blank","noopener,noreferrer");
+  }
+});
+
+$("offline-go").addEventListener("click",runOffline);
+
+$("offline-search").addEventListener("keydown",event=>{
+  if(event.key==="Enter"){
+    runOffline();
+  }
+});
+
+$("google-go").addEventListener("click",()=>runGoogle(false));
+$("lucky").addEventListener("click",()=>runGoogle(true));
+
+$("google-search").addEventListener("keydown",event=>{
+  if(event.key==="Enter"){
+    runGoogle(false);
+  }
+});
+
+$("proton").addEventListener("click",()=>{
+  window.open("https://protonvpn.com/download","_blank","noopener,noreferrer");
+});
+
+window.addEventListener("online",updateNetwork);
+window.addEventListener("offline",updateNetwork);
+
+renderTabs();
+showTab();
+updateNetwork();
+})();
+</script>
+<script src="davidcraft.js"></script>
+</body>
+</html>
