@@ -92,11 +92,14 @@ async function sendMessage(text) {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        messages: conversation
-      })
-    });
+ 
+    body: JSON.stringify({
+  assistant: "coding",
+  version: localStorage.getItem("davidcraft-ai-version") || "v1",
+  messages: conversation
+})
 
+   });
     const data = await response.json();
 
     if (!response.ok) {
