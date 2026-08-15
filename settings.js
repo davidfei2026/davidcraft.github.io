@@ -1,4 +1,5 @@
 const THEME_STORAGE_KEY = "davidcraft-theme";
+const AI_VERSION_STORAGE_KEY = "davidcraft-ai-version";
 
 const settingsButton =
   document.getElementById("settings-button");
@@ -15,11 +16,22 @@ const settingsClose =
 const themeOptions =
   document.querySelectorAll("[data-theme-choice]");
 
+const aiVersionOptions =
+  document.querySelectorAll("[data-ai-version]");
+
 const systemThemeQuery =
   window.matchMedia("(prefers-color-scheme: dark)");
 
 let selectedTheme =
   localStorage.getItem(THEME_STORAGE_KEY) || "system";
+
+let selectedAiVersion =
+  localStorage.getItem(AI_VERSION_STORAGE_KEY) || "v1";
+
+
+/* =========================
+   THEME SETTINGS
+========================= */
 
 function getVisibleTheme(themeChoice) {
   if (themeChoice === "system") {
@@ -29,7 +41,7 @@ function getVisibleTheme(themeChoice) {
   return themeChoice;
 }
 
-function updateSelectedOption() {
+function updateSelectedThemeOption() {
   themeOptions.forEach((button) => {
     const active =
       button.dataset.themeChoice === selectedTheme;
@@ -58,8 +70,45 @@ function applyTheme(themeChoice) {
     themeChoice
   );
 
-  updateSelectedOption();
+  updateSelectedThemeOption();
 }
+
+
+/* =========================
+   AI VERSION SETTINGS
+========================= */
+
+function updateSelectedAiVersionOption() {
+  aiVersionOptions.forEach((button) => {
+    const active =
+      button.dataset.aiVersion === selectedAiVersion;
+
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+}
+
+function applyAiVersion(version) {
+  const validVersions = ["v1", "v2"];
+
+  if (!validVersions.includes(version)) {
+    version = "v1";
+  }
+
+  selectedAiVersion = version;
+
+  localStorage.setItem(
+    AI_VERSION_STORAGE_KEY,
+    selectedAiVersion
+  );
+
+  updateSelectedAiVersionOption();
+}
+
+
+/* =========================
+   SETTINGS PANEL
+========================= */
 
 function openSettings() {
   if (!settingsPanel || !settingsOverlay) {
@@ -93,17 +142,32 @@ function closeSettings() {
   settingsButton?.setAttribute("aria-expanded", "false");
 }
 
+
+/* =========================
+   EVENT LISTENERS
+========================= */
+
 settingsButton?.addEventListener("click", () => {
   closeSidebar();
   openSettings();
 });
 
 settingsClose?.addEventListener("click", closeSettings);
-settingsOverlay?.addEventListener("click", closeSettings);
+
+settingsOverlay?.addEventListener(
+  "click",
+  closeSettings
+);
 
 themeOptions.forEach((button) => {
   button.addEventListener("click", () => {
     applyTheme(button.dataset.themeChoice);
+  });
+});
+
+aiVersionOptions.forEach((button) => {
+  button.addEventListener("click", () => {
+    applyAiVersion(button.dataset.aiVersion);
   });
 });
 
@@ -122,4 +186,10 @@ systemThemeQuery.addEventListener("change", () => {
   }
 });
 
+
+/* =========================
+   INITIALIZE
+========================= */
+
 applyTheme(selectedTheme);
+applyAiVersion(selectedAiVersion);
