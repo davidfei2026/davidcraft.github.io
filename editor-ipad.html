@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>NOVA Code</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0b0d12;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  touch-action: manipulation;
+}
+
+.app {
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: 58px 1fr;
+}
+
+/* TOP BAR */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding:
+    8px
+    max(10px, env(safe-area-inset-right))
+    8px
+    max(10px, env(safe-area-inset-left));
+
+  background: #11141b;
+  border-bottom: 1px solid #282d38;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 18px;
+  margin-right: 8px;
+}
+
+.logo span {
+  color: #5b9cff;
+}
+
+.top-btn {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 0 13px;
+  border-radius: 8px;
+  background: #1c212b;
+  border: 1px solid #303642;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.top-btn:active {
+  transform: scale(.97);
+  background: #303744;
+}
+
+.run-btn {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+/* MAIN */
+
+.workspace {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 170px minmax(300px, 1fr) 320px;
+}
+
+/* FILES */
+
+.files {
+  min-width: 0;
+  overflow-y: auto;
+  background: #10131a;
+  border-right: 1px solid #282d38;
+  padding: 12px 8px;
+}
+
+.files-title {
+  padding: 5px 9px 10px;
+  color: #8992a3;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.file {
+  width: 100%;
+  min-height: 42px;
+  margin-bottom: 3px;
+  padding: 0 10px;
+  text-align: left;
+  border-radius: 7px;
+  background: transparent;
+  color: #bfc7d5;
+  font-size: 14px;
+}
+
+.file:active {
+  background: #29303c;
+}
+
+.file.active {
+  background: #242a35;
+  color: white;
+}
+
+/* EDITOR */
+
+.editor-area {
+  min-width: 0;
+  min-height: 0;
+
+  display: grid;
+  grid-template-rows: 40px minmax(0, 1fr) 40%;
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  background: #151922;
+  border-bottom: 1px solid #282d38;
+}
+
+.tab {
+  padding: 0 15px;
+  font-size: 13px;
+  color: white;
+}
+
+.editor-wrap {
+  min-height: 0;
+}
+
+#editor {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  resize: none;
+  outline: none;
+  border: 0;
+
+  padding: 16px;
+
+  background: #0b0d12;
+  color: #dbe3f0;
+
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace;
+
+  font-size: 15px;
+  line-height: 1.6;
+
+  tab-size: 2;
+
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* PREVIEW */
+
+.preview {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: 36px minmax(0, 1fr);
+  border-top: 1px solid #282d38;
+}
+
+.preview-title {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+
+  background: #151922;
+  color: #929baa;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+#preview {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: white;
+}
+
+/* AI */
+
+.ai {
+  min-width: 0;
+  min-height: 0;
+
+  display: grid;
+  grid-template-rows: 46px minmax(0, 1fr) auto;
+
+  background: #10131a;
+  border-left: 1px solid #282d38;
+}
+
+.ai-header {
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+
+  border-bottom: 1px solid #282d38;
+
+  font-weight: 700;
+}
+
+.messages {
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.message {
+  padding: 10px 12px;
+  margin-bottom: 9px;
+  border-radius: 9px;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  white-space: pre-wrap;
+}
+
+.message.ai {
+  background: #1b2029;
+}
+
+.message.user {
+  background: #2456c4;
+}
+
+.ai-input {
+  padding: 10px;
+  border-top: 1px solid #282d38;
+}
+
+#prompt {
+  display: block;
+
+  width: 100%;
+  min-height: 80px;
+
+  resize: vertical;
+
+  border: 1px solid #343a46;
+  border-radius: 8px;
+
+  outline: none;
+
+  padding: 10px;
+
+  background: #0b0d12;
+  color: white;
+
+  font-size: 15px;
+}
+
+.ai-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.ai-actions button {
+  min-height: 42px;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-weight: 700;
+}
+
+.ai-actions button:active {
+  transform: scale(.98);
+}
+
+.ai-actions .secondary {
+  background: #292f3a;
+}
+
+/* STATUS */
+
+.status {
+  position: fixed;
+
+  left: 10px;
+  bottom: max(8px, env(safe-area-inset-bottom));
+
+  color: #7e8797;
+
+  font-size: 11px;
+
+  pointer-events: none;
+}
+
+/* MOBILE / IPAD */
+
+@media (max-width: 1000px) {
+
+  .workspace {
+    grid-template-columns: 150px minmax(0, 1fr);
+  }
+
+  .ai {
+    display: none;
+  }
+}
+
+@media (max-width: 650px) {
+
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .files {
+    display: none;
+  }
+
+  .editor-area {
+    grid-template-rows:
+      40px
+      minmax(0, 1fr)
+      42%;
+  }
+
+  .logo {
+    font-size: 16px;
+  }
+
+  .top-btn {
+    padding: 0 11px;
+  }
+}
+
+/* LANDSCAPE IPAD */
+
+@media (min-width: 651px) and (max-width: 1100px) {
+
+  .workspace {
+    grid-template-columns: 150px minmax(0, 1fr);
+  }
+
+  .ai {
+    display: none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header class="topbar">
+
+    <div class="logo">
+      NOVA <span>Code</span>
+    </div>
+
+    <button
+      type="button"
+      class="top-btn"
+      id="newFileBtn">
+      ＋ New
+    </button>
+
+    <button
+      type="button"
+      class="top-btn"
+      id="saveBtn">
+      💾 Save
+    </button>
+
+    <button
+      type="button"
+      class="top-btn"
+      id="downloadBtn">
+      ↓ Download
+    </button>
+
+    <button
+      type="button"
+      class="top-btn run-btn"
+      id="runBtn">
+      ▶ Run
+    </button>
+
+  </header>
+
+  <main class="workspace">
+
+    <!-- FILES -->
+
+    <aside class="files">
+
+      <div class="files-title">
+        FILES
+      </div>
+
+      <button
+        type="button"
+        class="file active"
+        data-file="index.html">
+        📄 index.html
+      </button>
+
+      <button
+        type="button"
+        class="file"
+        data-file="style.css">
+        🎨 style.css
+      </button>
+
+      <button
+        type="button"
+        class="file"
+        data-file="script.js">
+        ⚡ script.js
+      </button>
+
+    </aside>
+
+
+    <!-- EDITOR -->
+
+    <section class="editor-area">
+
+      <div class="tabs">
+        <div
+          class="tab"
+          id="currentTab">
+          index.html
+        </div>
+      </div>
+
+      <div class="editor-wrap">
+
+        <textarea
+          id="editor"
+          spellcheck="false"
+          autocapitalize="off"
+          autocomplete="off"
+          autocorrect="off"></textarea>
+
+      </div>
+
+
+      <!-- PREVIEW -->
+
+      <div class="preview">
+
+        <div class="preview-title">
+          LIVE PREVIEW
+        </div>
+
+        <iframe
+          id="preview"
+          sandbox="allow-scripts"></iframe>
+
+      </div>
+
+    </section>
+
+
+    <!-- AI -->
+
+    <aside class="ai">
+
+      <div class="ai-header">
+        🤖 NOVA AI
+      </div>
+
+      <div
+        class="messages"
+        id="messages">
+
+        <div class="message ai">
+          Hi! I'm NOVA AI.
+
+          Ask me to build, explain,
+          or fix your code.
+        </div>
+
+      </div>
+
+      <div class="ai-input">
+
+        <textarea
+          id="prompt"
+          placeholder="Ask NOVA AI..."
+          autocapitalize="sentences"></textarea>
+
+        <div class="ai-actions">
+
+          <button
+            type="button"
+            id="askBtn">
+            Ask AI
+          </button>
+
+          <button
+            type="button"
+            class="secondary"
+            id="fixBtn">
+            Fix Code
+          </button>
+
+        </div>
+
+      </div>
+
+    </aside>
+
+  </main>
+
+</div>
+
+<div
+  class="status"
+  id="status">
+  Ready
+</div>
+
+<script src="editor.js"></script>
+
+</body>
+</html>
