@@ -1,34 +1,37 @@
 "use strict";
 
 /*
-==================================================
-NOVA CODE V2
-==================================================
+===========================================
+NOVA CODE
+No external libraries.
+iPad-safe buttons.
+===========================================
 */
 
 
-/* ================================================
+/* ==========================================
    PROJECT
-================================================ */
+========================================== */
 
-const project = {
+const files = {
   "index.html": `<!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>NOVA Project</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-  <main class="card">
+  <div class="card">
     <h1>Hello from NOVA</h1>
-    <p>Edit this project and press Run.</p>
+    <p>Edit the code and press Run.</p>
 
     <button id="helloButton">
       Click Me
     </button>
-  </main>
+  </div>
 
   <script src="script.js"><\/script>
 </body>
@@ -37,51 +40,71 @@ const project = {
   "style.css": `body {
   margin: 0;
   min-height: 100vh;
+
   display: grid;
   place-items: center;
+
   font-family: Arial, sans-serif;
+
   background: #eef2f7;
 }
 
 .card {
-  background: white;
+  width: min(500px, 85%);
   padding: 40px;
-  border-radius: 18px;
-  box-shadow: 0 15px 40px rgba(0,0,0,.12);
+
   text-align: center;
+
+  background: white;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 15px 40px rgba(0,0,0,.12);
 }
 
 button {
-  border: 0;
   padding: 12px 18px;
+
+  border: 0;
   border-radius: 9px;
+
   background: #2563eb;
   color: white;
+
   font-weight: 700;
 }`,
 
   "script.js": `document
   .getElementById("helloButton")
-  .addEventListener("click", () => {
+  .addEventListener("click", function () {
+
     alert("NOVA is working!");
+
   });`
 };
 
 
+/* ==========================================
+   STATE
+========================================== */
+
 let currentFile = "index.html";
 
-let editor = null;
-
-const openTabs = [
+let openTabs = [
   "index.html"
 ];
 
-const editorHistory = [];
 
-
-/* ================================================
+/* ==========================================
    ELEMENTS
-================================================ */
+========================================== */
+
+const editor =
+  document.getElementById("editor");
+
+const lineNumbers =
+  document.getElementById("lineNumbers");
 
 const fileList =
   document.getElementById("fileList");
@@ -89,14 +112,11 @@ const fileList =
 const tabs =
   document.getElementById("tabs");
 
-const editorHost =
-  document.getElementById("editorHost");
+const preview =
+  document.getElementById("preview");
 
 const status =
   document.getElementById("status");
-
-const preview =
-  document.getElementById("preview");
 
 const bottomContent =
   document.getElementById("bottomContent");
@@ -104,305 +124,344 @@ const bottomContent =
 const messages =
   document.getElementById("messages");
 
+const explorer =
+  document.getElementById("explorer");
 
-/* ================================================
-   TOUCH-SAFE BUTTONS
-================================================ */
 
-function tap(element, fn) {
+/* ==========================================
+   BUTTON HELPER
 
-  if (!element) return;
+   We deliberately use ONE click handler.
+   Modern iPad browsers convert touch taps
+   into click events correctly.
+========================================== */
 
-  let lastTouch = 0;
+function onButton(id, fn) {
 
-  element.addEventListener(
-    "touchend",
-    event => {
+  const element =
+    document.getElementById(id);
 
-      event.preventDefault();
-
-      lastTouch = Date.now();
-
-      fn(event);
-    },
-    { passive: false }
-  );
+  if (!element) {
+    console.error("Missing button:", id);
+    return;
+  }
 
   element.addEventListener(
     "click",
-    event => {
+    function (event) {
 
-      if (
-        Date.now() - lastTouch < 650
-      ) {
-        return;
-      }
+      event.preventDefault();
 
       fn(event);
-    }
+
+    },
+    false
   );
+
 }
 
 
-/* ================================================
+/* ==========================================
    STATUS
-================================================ */
+========================================== */
 
 function setStatus(text) {
 
-  status.textContent = text;
+  status.textContent =
+    text;
 
 }
 
 
-/* ================================================
-   CODEMIRROR
-================================================ */
+/* ==========================================
+   LINE NUMBERS
+========================================== */
 
-function modeForFile(filename) {
+function updateLineNumbers() {
 
-  if (filename.endsWith(".html")) {
-    return "htmlmixed";
+  const count =
+    editor.value.split("\n").length;
+
+  let html = "";
+
+  for (let i = 1; i <= count; i++) {
+
+    html +=
+      `<div>${i}</div>`;
+
   }
 
-  if (filename.endsWith(".css")) {
-    return "css";
-  }
-
-  if (
-    filename.endsWith(".js") ||
-    filename.endsWith(".json")
-  ) {
-    return "javascript";
-  }
-
-  return "text/plain";
-}
-
-
-function createEditor() {
-
-  editor = CodeMirror(
-    editorHost,
-    {
-      value: project[currentFile] || "",
-
-      mode: modeForFile(currentFile),
-
-      theme: "material-darker",
-
-      lineNumbers: true,
-
-      lineWrapping: false,
-
-      tabSize: 2,
-
-      indentUnit: 2,
-
-      smartIndent: true,
-
-      autoCloseBrackets: true,
-
-      matchBrackets: true,
-
-      foldGutter: true,
-
-      gutters: [
-        "CodeMirror-linenumbers",
-        "CodeMirror-foldgutter"
-      ],
-
-      styleActiveLine: true,
-
-      autofocus: true,
-
-      viewportMargin: Infinity,
-
-      extraKeys: {
-
-        "Cmd-S": saveProject,
-        "Ctrl-S": saveProject,
-
-        "Cmd-Enter": runProject,
-        "Ctrl-Enter": runProject,
-
-        "Cmd-F": openSearch,
-        "Ctrl-F": openSearch
-
-      }
-    }
-  );
-
-
-  editor.on(
-    "change",
-    () => {
-
-      project[currentFile] =
-        editor.getValue();
-
-      setStatus(
-        currentFile + " • Unsaved"
-      );
-
-    }
-  );
+  lineNumbers.innerHTML =
+    html;
 
 }
 
 
-/* ================================================
-   FILE ICON
-================================================ */
+/* ==========================================
+   EDITOR
+========================================== */
 
-function iconFor(filename) {
+function loadCurrentFile() {
 
-  if (filename.endsWith(".html")) {
-    return "📄";
-  }
+  editor.value =
+    files[currentFile] || "";
 
-  if (filename.endsWith(".css")) {
-    return "🎨";
-  }
-
-  if (filename.endsWith(".js")) {
-    return "⚡";
-  }
-
-  if (filename.endsWith(".json")) {
-    return "🧩";
-  }
-
-  return "📄";
-}
-
-
-/* ================================================
-   RENDER EXPLORER
-================================================ */
-
-function renderFiles() {
-
-  fileList.innerHTML = "";
-
-  Object.keys(project)
-    .forEach(filename => {
-
-      const button =
-        document.createElement("button");
-
-      button.className =
-        "file" +
-        (filename === currentFile
-          ? " active"
-          : "");
-
-      button.dataset.file =
-        filename;
-
-      button.textContent =
-        iconFor(filename) +
-        " " +
-        filename;
-
-      fileList.appendChild(
-        button
-      );
-
-
-      tap(
-        button,
-        () => openFile(filename)
-      );
-
-    });
-
-}
-
-
-/* ================================================
-   OPEN FILE
-================================================ */
-
-function openFile(filename) {
-
-  if (!project[filename]) {
-    project[filename] = "";
-  }
-
-
-  if (
-    !openTabs.includes(filename)
-  ) {
-
-    openTabs.push(filename);
-
-  }
-
-
-  currentFile =
-    filename;
-
-
-  editor.setValue(
-    project[currentFile]
-  );
-
-
-  editor.setOption(
-    "mode",
-    modeForFile(currentFile)
-  );
-
-
-  renderFiles();
-  renderTabs();
+  updateLineNumbers();
 
   setStatus(
     "Editing " + currentFile
   );
 
+}
 
-  setTimeout(
-    () => editor.refresh(),
-    0
+
+editor.addEventListener(
+  "input",
+  function () {
+
+    files[currentFile] =
+      editor.value;
+
+    updateLineNumbers();
+
+    setStatus(
+      currentFile + " • Unsaved"
+    );
+
+  }
+);
+
+
+/* ==========================================
+   TAB KEY
+========================================== */
+
+editor.addEventListener(
+  "keydown",
+  function (event) {
+
+    if (event.key !== "Tab") {
+      return;
+    }
+
+    event.preventDefault();
+
+    const start =
+      editor.selectionStart;
+
+    const end =
+      editor.selectionEnd;
+
+    const value =
+      editor.value;
+
+    editor.value =
+      value.substring(0, start) +
+      "  " +
+      value.substring(end);
+
+    editor.selectionStart =
+      editor.selectionEnd =
+      start + 2;
+
+    files[currentFile] =
+      editor.value;
+
+    updateLineNumbers();
+
+  }
+);
+
+
+/* ==========================================
+   SCROLL LINE NUMBERS WITH EDITOR
+========================================== */
+
+editor.addEventListener(
+  "scroll",
+  function () {
+
+    lineNumbers.scrollTop =
+      editor.scrollTop;
+
+  }
+);
+
+
+/* ==========================================
+   FILE ICON
+========================================== */
+
+function fileIcon(name) {
+
+  if (name.endsWith(".html")) {
+    return "📄";
+  }
+
+  if (name.endsWith(".css")) {
+    return "🎨";
+  }
+
+  if (name.endsWith(".js")) {
+    return "⚡";
+  }
+
+  if (name.endsWith(".json")) {
+    return "🧩";
+  }
+
+  return "📄";
+
+}
+
+
+/* ==========================================
+   RENDER FILES
+========================================== */
+
+function renderFiles() {
+
+  fileList.innerHTML = "";
+
+  Object.keys(files).forEach(
+    function (name) {
+
+      const button =
+        document.createElement("button");
+
+      button.type =
+        "button";
+
+      button.className =
+        "file";
+
+      if (
+        name === currentFile
+      ) {
+
+        button.classList.add(
+          "active"
+        );
+
+      }
+
+      button.textContent =
+        fileIcon(name) +
+        " " +
+        name;
+
+      button.addEventListener(
+        "click",
+        function () {
+
+          openFile(name);
+
+        }
+      );
+
+      fileList.appendChild(
+        button
+      );
+
+    }
   );
 
 }
 
 
-/* ================================================
+/* ==========================================
+   OPEN FILE
+========================================== */
+
+function openFile(name) {
+
+  if (
+    !Object.prototype.hasOwnProperty.call(
+      files,
+      name
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  files[currentFile] =
+    editor.value;
+
+
+  currentFile =
+    name;
+
+
+  if (
+    !openTabs.includes(name)
+  ) {
+
+    openTabs.push(name);
+
+  }
+
+
+  loadCurrentFile();
+
+  renderFiles();
+
+  renderTabs();
+
+}
+
+
+/* ==========================================
    TABS
-================================================ */
+========================================== */
 
 function renderTabs() {
 
   tabs.innerHTML = "";
 
   openTabs.forEach(
-    filename => {
+    function (name) {
 
       const tab =
         document.createElement("div");
 
       tab.className =
-        "tab" +
-        (filename === currentFile
-          ? " active"
-          : "");
+        "tab";
+
+      if (
+        name === currentFile
+      ) {
+
+        tab.classList.add(
+          "active"
+        );
+
+      }
 
 
-      const name =
-        document.createElement("span");
+      const nameSpan =
+        document.createElement(
+          "span"
+        );
 
-      name.textContent =
-        iconFor(filename) +
+      nameSpan.className =
+        "tab-name";
+
+      nameSpan.textContent =
+        fileIcon(name) +
         " " +
-        filename;
+        name;
 
 
       const close =
-        document.createElement("button");
+        document.createElement(
+          "button"
+        );
+
+      close.type =
+        "button";
 
       close.className =
         "tab-close";
@@ -411,27 +470,39 @@ function renderTabs() {
         "×";
 
 
-      tab.appendChild(name);
-      tab.appendChild(close);
+      tab.appendChild(
+        nameSpan
+      );
 
-      tabs.appendChild(tab);
-
-
-      tap(
-        name,
-        () => openFile(filename)
+      tab.appendChild(
+        close
       );
 
 
-      tap(
-        close,
-        event => {
+      nameSpan.addEventListener(
+        "click",
+        function () {
+
+          openFile(name);
+
+        }
+      );
+
+
+      close.addEventListener(
+        "click",
+        function (event) {
 
           event.stopPropagation();
 
-          closeTab(filename);
+          closeTab(name);
 
         }
+      );
+
+
+      tabs.appendChild(
+        tab
       );
 
     }
@@ -440,15 +511,18 @@ function renderTabs() {
 }
 
 
-function closeTab(filename) {
+/* ==========================================
+   CLOSE TAB
+========================================== */
+
+function closeTab(name) {
 
   const index =
-    openTabs.indexOf(filename);
+    openTabs.indexOf(name);
 
   if (index === -1) {
     return;
   }
-
 
   openTabs.splice(
     index,
@@ -457,18 +531,17 @@ function closeTab(filename) {
 
 
   if (
-    currentFile === filename
+    currentFile === name
   ) {
 
     const next =
       openTabs[index] ||
-      openTabs[index - 1] ||
-      openTabs[0];
-
+      openTabs[index - 1];
 
     if (next) {
 
-      openFile(next);
+      currentFile =
+        next;
 
     } else {
 
@@ -476,161 +549,51 @@ function closeTab(filename) {
         "index.html"
       );
 
-      openFile(
-        "index.html"
-      );
+      currentFile =
+        "index.html";
 
     }
+
+    loadCurrentFile();
 
   }
 
 
   renderTabs();
 
-}
-
-
-/* ================================================
-   NEW FILE
-================================================ */
-
-function newFile() {
-
-  const name =
-    window.prompt(
-      "New file name:",
-      "new-file.js"
-    );
-
-
-  if (!name) {
-    return;
-  }
-
-
-  if (
-    project[name]
-  ) {
-
-    alert(
-      "That file already exists."
-    );
-
-    return;
-  }
-
-
-  project[name] =
-    "";
-
-
   renderFiles();
 
-  openFile(name);
-
 }
 
 
-tap(
-  document.getElementById("newFileBtn"),
-  newFile
-);
+/* ==========================================
+   RUN
+========================================== */
 
-
-/* ================================================
-   SAVE
-================================================ */
-
-function saveProject() {
-
-  project[currentFile] =
-    editor.getValue();
-
-
-  localStorage.setItem(
-    "nova-code-project-v2",
-    JSON.stringify(project)
-  );
-
-
-  setStatus(
-    "Project saved"
-  );
-
-}
-
-
-tap(
-  document.getElementById("saveBtn"),
-  saveProject
-);
-
-
-/* ================================================
-   LOAD
-================================================ */
-
-function loadProject() {
-
-  const saved =
-    localStorage.getItem(
-      "nova-code-project-v2"
-    );
-
-
-  if (!saved) {
-    return;
-  }
-
-
-  try {
-
-    const parsed =
-      JSON.parse(saved);
-
-
-    Object.assign(
-      project,
-      parsed
-    );
-
-  } catch (error) {
-
-    console.error(error);
-
-  }
-
-}
-
-
-/* ================================================
-   RUN PROJECT
-================================================ */
-
-function runProject() {
-
-  project[currentFile] =
-    editor.getValue();
-
+function buildPreview() {
 
   let html =
-    project["index.html"] || "";
-
+    files["index.html"] || "";
 
   const css =
-    project["style.css"] || "";
-
+    files["style.css"] || "";
 
   const js =
-    project["script.js"] || "";
+    files["script.js"] || "";
 
+
+  /* CSS */
 
   html =
     html.replace(
-      /<link[^>]*href=["']style\.css["'][^>]*>/gi,
-      `<style>${css}</style>`
+      /<link[^>]+href=["']style\.css["'][^>]*>/gi,
+      "<style>" +
+        css +
+      "</style>"
     );
 
+
+  /* JS */
 
   const safeJS =
     js.replace(
@@ -641,54 +604,29 @@ function runProject() {
 
   html =
     html.replace(
-      /<script[^>]*src=["']script\.js["'][^>]*><\/script>/gi,
-      `<script>
-${safeJS}
-<\/script>`
+      /<script[^>]+src=["']script\.js["'][^>]*><\/script>/gi,
+      "<script>" +
+        safeJS +
+      "<\/script>"
     );
 
 
-  const errors = [];
+  return html;
+
+}
 
 
-  const srcdoc =
-`<!DOCTYPE html>
-<html>
-<head>
+function runProject() {
 
-${html.includes("<meta charset")
-  ? ""
-  : '<meta charset="UTF-8">'}
-
-<script>
-window.addEventListener("error", event => {
-
-  parent.postMessage(
-    {
-      type: "nova-error",
-      message: event.message,
-      line: event.lineno
-    },
-    "*"
-  );
-
-});
-<\/script>
-
-</head>
-<body>
-
-${html}
-
-</body>
-</html>`;
+  files[currentFile] =
+    editor.value;
 
 
   preview.srcdoc =
-    srcdoc;
+    buildPreview();
 
 
-  showBottomPanel(
+  showPanel(
     "preview"
   );
 
@@ -700,63 +638,54 @@ ${html}
 }
 
 
-/* ================================================
-   PREVIEW ERRORS
-================================================ */
+/* ==========================================
+   SAVE
+========================================== */
 
-window.addEventListener(
-  "message",
-  event => {
+function saveProject() {
 
-    if (
-      !event.data ||
-      event.data.type !== "nova-error"
-    ) {
-      return;
-    }
+  files[currentFile] =
+    editor.value;
 
 
-    addConsoleLine(
-      "Error: " +
-      event.data.message +
-      (
-        event.data.line
-          ? " (line " +
-            event.data.line +
-            ")"
-          : ""
-      ),
-      true
+  try {
+
+    localStorage.setItem(
+      "nova-code-project",
+      JSON.stringify(files)
     );
 
 
-    showBottomPanel(
-      "console"
+    setStatus(
+      "Project saved"
     );
+
+  } catch (error) {
+
+    setStatus(
+      "Save failed"
+    );
+
+    console.error(error);
 
   }
-);
+
+}
 
 
-tap(
-  document.getElementById("runBtn"),
-  runProject
-);
-
-
-/* ================================================
+/* ==========================================
    DOWNLOAD
-================================================ */
+========================================== */
 
 function downloadFile() {
 
-  project[currentFile] =
-    editor.getValue();
+  files[currentFile] =
+    editor.value;
 
 
   const blob =
     new Blob(
-      [project[currentFile]],
+      [files[currentFile]],
       {
         type:
           "text/plain;charset=utf-8"
@@ -765,36 +694,37 @@ function downloadFile() {
 
 
   const url =
-    URL.createObjectURL(
-      blob
-    );
+    URL.createObjectURL(blob);
 
 
-  const a =
-    document.createElement(
-      "a"
-    );
+  const link =
+    document.createElement("a");
 
-
-  a.href =
+  link.href =
     url;
 
-  a.download =
+  link.download =
     currentFile;
 
-
   document.body.appendChild(
-    a
+    link
   );
 
-  a.click();
+  link.click();
 
-  a.remove();
+  document.body.removeChild(
+    link
+  );
 
 
   setTimeout(
-    () =>
-      URL.revokeObjectURL(url),
+    function () {
+
+      URL.revokeObjectURL(
+        url
+      );
+
+    },
     1000
   );
 
@@ -807,27 +737,103 @@ function downloadFile() {
 }
 
 
-tap(
-  document.getElementById("downloadBtn"),
-  downloadFile
-);
+/* ==========================================
+   NEW FILE MODAL
+========================================== */
 
-
-/* ================================================
-   SEARCH
-================================================ */
-
-const searchOverlay =
+const fileModal =
   document.getElementById(
-    "searchOverlay"
+    "fileModal"
   );
 
+const fileNameInput =
+  document.getElementById(
+    "fileNameInput"
+  );
+
+
+function showFileModal() {
+
+  fileNameInput.value =
+    "";
+
+  fileModal.style.display =
+    "flex";
+
+  setTimeout(
+    function () {
+
+      fileNameInput.focus();
+
+    },
+    100
+  );
+
+}
+
+
+function hideFileModal() {
+
+  fileModal.style.display =
+    "none";
+
+}
+
+
+function createNewFile() {
+
+  const name =
+    fileNameInput.value.trim();
+
+  if (!name) {
+
+    return;
+
+  }
+
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      files,
+      name
+    )
+  ) {
+
+    setStatus(
+      "That file already exists"
+    );
+
+    return;
+
+  }
+
+
+  files[name] =
+    "";
+
+
+  hideFileModal();
+
+  renderFiles();
+
+  openFile(name);
+
+}
+
+
+/* ==========================================
+   SEARCH
+========================================== */
+
+const searchModal =
+  document.getElementById(
+    "searchModal"
+  );
 
 const searchInput =
   document.getElementById(
     "searchInput"
   );
-
 
 const searchResults =
   document.getElementById(
@@ -837,22 +843,22 @@ const searchResults =
 
 function openSearch() {
 
-  searchOverlay.style.display =
+  searchModal.style.display =
     "flex";
-
 
   searchInput.value =
     "";
 
-
   searchResults.innerHTML =
     "";
 
-
   setTimeout(
-    () =>
-      searchInput.focus(),
-    50
+    function () {
+
+      searchInput.focus();
+
+    },
+    100
   );
 
 }
@@ -860,170 +866,146 @@ function openSearch() {
 
 function closeSearch() {
 
-  searchOverlay.style.display =
+  searchModal.style.display =
     "none";
 
 }
 
 
-tap(
-  document.getElementById("searchBtn"),
-  openSearch
-);
+function escapeHtml(text) {
+
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
 
 
-searchOverlay.addEventListener(
-  "touchend",
-  event => {
+function searchProject() {
 
-    if (
-      event.target ===
-      searchOverlay
-    ) {
-
-      event.preventDefault();
-
-      closeSearch();
-
-    }
-
-  },
-  { passive: false }
-);
+  const term =
+    searchInput.value
+      .trim()
+      .toLowerCase();
 
 
-searchOverlay.addEventListener(
-  "click",
-  event => {
+  searchResults.innerHTML =
+    "";
 
-    if (
-      event.target ===
-      searchOverlay
-    ) {
 
-      closeSearch();
-
-    }
-
+  if (!term) {
+    return;
   }
-);
+
+
+  Object.keys(files).forEach(
+    function (name) {
+
+      const lines =
+        files[name].split("\n");
+
+
+      lines.forEach(
+        function (line, index) {
+
+          if (
+            line
+              .toLowerCase()
+              .includes(term)
+          ) {
+
+            const result =
+              document.createElement(
+                "button"
+              );
+
+            result.type =
+              "button";
+
+            result.style =
+              `
+              display:block;
+              width:100%;
+              padding:10px;
+              margin-bottom:5px;
+              text-align:left;
+              border:1px solid #303846;
+              border-radius:7px;
+              background:#202733;
+              color:white;
+              `;
+
+            result.innerHTML =
+              escapeHtml(line) +
+              `<br><small style="color:#8792a3">${name} • line ${index + 1}</small>`;
+
+
+            result.addEventListener(
+              "click",
+              function () {
+
+                openFile(name);
+
+                const linesBefore =
+                  files[name]
+                    .split("\n")
+                    .slice(
+                      0,
+                      index
+                    )
+                    .join("\n");
+
+
+                editor.focus();
+
+                editor.setSelectionRange(
+                  linesBefore.length,
+                  linesBefore.length
+                );
+
+
+                closeSearch();
+
+              }
+            );
+
+
+            searchResults.appendChild(
+              result
+            );
+
+          }
+
+        }
+      );
+
+    }
+  );
+
+}
 
 
 searchInput.addEventListener(
   "input",
-  () => {
-
-    const term =
-      searchInput.value
-        .toLowerCase()
-        .trim();
-
-
-    searchResults.innerHTML =
-      "";
-
-
-    if (!term) {
-      return;
-    }
-
-
-    Object.entries(
-      project
-    ).forEach(
-      ([filename, content]) => {
-
-        const lines =
-          content.split("\n");
-
-
-        lines.forEach(
-          (line, index) => {
-
-            if (
-              line
-                .toLowerCase()
-                .includes(term)
-            ) {
-
-              const result =
-                document.createElement(
-                  "button"
-                );
-
-
-              result.className =
-                "search-result";
-
-
-              result.innerHTML =
-                escapeHtml(line) +
-                `<small>${filename} • line ${index + 1}</small>`;
-
-
-              searchResults.appendChild(
-                result
-              );
-
-
-              tap(
-                result,
-                () => {
-
-                  openFile(
-                    filename
-                  );
-
-
-                  const lineNumber =
-                    index;
-
-
-                  editor.setCursor(
-                    {
-                      line:
-                        lineNumber,
-
-                      ch:
-                        0
-                    }
-                  );
-
-
-                  editor.focus();
-
-
-                  closeSearch();
-
-                }
-              );
-
-            }
-
-          }
-        );
-
-      }
-    );
-
-  }
+  searchProject
 );
 
 
-/* ================================================
-   CONSOLE
-================================================ */
+/* ==========================================
+   BOTTOM PANELS
+========================================== */
 
-function showBottomPanel(
-  name
-) {
+function showPanel(name) {
 
   document
     .querySelectorAll(
       ".bottom-tab"
     )
     .forEach(
-      button => {
+      function (button) {
 
         button.classList.toggle(
           "active",
@@ -1040,33 +1022,18 @@ function showBottomPanel(
   ) {
 
     bottomContent.innerHTML =
-      `
-      <iframe
-        id="preview"
-        style="
-          width:100%;
-          height:100%;
-          border:0;
-          background:white;
-          display:block;
-        ">
-      </iframe>
-      `;
+      '<iframe id="preview" sandbox="allow-scripts"></iframe>';
 
-
-    /*
-      Reconnect iframe reference.
-    */
-
-    window.preview =
+    const frame =
       document.getElementById(
         "preview"
       );
 
-
-    runProjectToFrame();
+    frame.srcdoc =
+      buildPreview();
 
     return;
+
   }
 
 
@@ -1075,9 +1042,10 @@ function showBottomPanel(
   ) {
 
     bottomContent.innerHTML =
-      `<div id="consoleOutput"></div>`;
+      '<div id="console">Console is ready.</div>';
 
     return;
+
   }
 
 
@@ -1087,7 +1055,10 @@ function showBottomPanel(
 
     bottomContent.innerHTML =
       `
-      <div style="color:#8f99a8">
+      <div style="
+        padding:12px;
+        color:#8994a5;
+      ">
         No problems detected.
       </div>
       `;
@@ -1097,319 +1068,52 @@ function showBottomPanel(
 }
 
 
-function addConsoleLine(
-  text,
-  isError = false
-) {
-
-  let output =
-    document.getElementById(
-      "consoleOutput"
-    );
-
-
-  if (!output) {
-
-    showBottomPanel(
-      "console"
-    );
-
-    output =
-      document.getElementById(
-        "consoleOutput"
-      );
-
-  }
-
-
-  const line =
-    document.createElement(
-      "div"
-    );
-
-
-  line.className =
-    "console-line" +
-    (isError
-      ? " error"
-      : "");
-
-
-  line.textContent =
-    text;
-
-
-  output.appendChild(
-    line
-  );
-
-}
-
-
-function runProjectToFrame() {
-
-  const frame =
-    document.getElementById(
-      "preview"
-    );
-
-
-  if (!frame) {
-    return;
-  }
-
-
-  let html =
-    project["index.html"] ||
-    "";
-
-
-  const css =
-    project["style.css"] ||
-    "";
-
-
-  const js =
-    project["script.js"] ||
-    "";
-
-
-  html =
-    html.replace(
-      /<link[^>]*href=["']style\.css["'][^>]*>/gi,
-      `<style>${css}</style>`
-    );
-
-
-  html =
-    html.replace(
-      /<script[^>]*src=["']script\.js["'][^>]*><\/script>/gi,
-      `<script>${js.replace(
-        /<\/script>/gi,
-        "<\\/script>"
-      )}<\/script>`
-    );
-
-
-  frame.srcdoc =
-    html;
-
-}
-
-
-/* ================================================
-   BOTTOM TABS
-================================================ */
-
-document
-  .querySelectorAll(
-    ".bottom-tab"
-  )
-  .forEach(
-    button => {
-
-      tap(
-        button,
-        () =>
-          showBottomPanel(
-            button.dataset.panel
-          )
-      );
-
-    }
-  );
-
-
-/* ================================================
-   AI
-================================================ */
+/* ==========================================
+   AI UI
+========================================== */
 
 function addMessage(
   type,
   text
 ) {
 
-  const div =
+  const element =
     document.createElement(
       "div"
     );
 
+  element.className =
+    "message " + type;
 
-  div.className =
-    "msg " + type;
-
-
-  div.textContent =
+  element.textContent =
     text;
 
-
   messages.appendChild(
-    div
+    element
   );
-
 
   messages.scrollTop =
     messages.scrollHeight;
 
-
-  return div;
-
-}
-
-
-async function askAI() {
-
-  const box =
-    document.getElementById(
-      "aiPrompt"
-    );
-
-
-  const prompt =
-    box.value.trim();
-
-
-  if (!prompt) {
-    return;
-  }
-
-
-  project[currentFile] =
-    editor.getValue();
-
-
-  addMessage(
-    "user",
-    prompt
-  );
-
-
-  box.value =
-    "";
-
-
-  const response =
-    addMessage(
-      "ai",
-      "Thinking..."
-    );
-
-
-  try {
-
-    const text =
-      await callAI(
-        prompt
-      );
-
-
-    response.textContent =
-      text;
-
-
-  } catch (error) {
-
-    response.textContent =
-      "AI error: " +
-      error.message;
-
-  }
+  return element;
 
 }
 
 
-tap(
-  document.getElementById("askBtn"),
-  askAI
-);
-
-
-/* ================================================
-   AI FIX
-================================================ */
-
-async function fixCode() {
-
-  const currentCode =
-    editor.getValue();
-
-
-  addMessage(
-    "user",
-    "Fix the current file."
-  );
-
-
-  const answer =
-    addMessage(
-      "ai",
-      "Analyzing..."
-    );
-
-
-  try {
-
-    const text =
-      await callAI(
-`
-Fix ${currentFile}.
-
-Return ONLY the corrected complete file.
-Do not use markdown fences.
-
-Current code:
-
-${currentCode}
-`
-      );
-
-
-    const cleaned =
-      cleanCode(text);
-
-
-    editor.setValue(
-      cleaned
-    );
-
-
-    project[currentFile] =
-      cleaned;
-
-
-    answer.textContent =
-      "Fixed and applied the code.";
-
-  } catch (error) {
-
-    answer.textContent =
-      "AI error: " +
-      error.message;
-
-  }
-
-}
-
-
-tap(
-  document.getElementById("fixBtn"),
-  fixCode
-);
-
-
-/* ================================================
-   GROQ BACKEND
-================================================ */
+/* ==========================================
+   AI ENDPOINT
+========================================== */
 
 async function callAI(
   userPrompt
 ) {
 
   /*
-    Connect this to the backend you already
-    use for Groq.
+    Replace this with your existing
+    Groq backend endpoint.
 
-    Never place the private Groq key here.
+    DO NOT put the secret API
+    key in editor.js.
   */
 
   const AI_ENDPOINT =
@@ -1417,16 +1121,20 @@ async function callAI(
 
 
   const context =
-Object.entries(project)
-  .map(
-    ([filename, content]) =>
-`
---- ${filename} ---
+    Object.keys(files)
+      .map(
+        function (name) {
 
-${content}
-`
-  )
-  .join("\n");
+          return (
+            "\n--- " +
+            name +
+            " ---\n" +
+            files[name]
+          );
+
+        }
+      )
+      .join("\n");
 
 
   const response =
@@ -1448,39 +1156,28 @@ ${content}
               role: "system",
 
               content:
-`
-You are NOVA AI, an expert
-web development assistant.
-
-The user is working inside an
-online code editor.
-
-You can help with:
-
-HTML
-CSS
-JavaScript
-debugging
-UI
-responsive design
-project architecture
-
-Current project:
-
-${context}
-`
+                "You are NOVA AI, an expert web development assistant."
             },
 
             {
               role: "user",
 
               content:
-                userPrompt
+                `
+PROJECT:
+
+${context}
+
+USER REQUEST:
+
+${userPrompt}
+`
             }
 
           ]
 
         })
+
       }
     );
 
@@ -1488,7 +1185,7 @@ ${context}
   if (!response.ok) {
 
     throw new Error(
-      "AI request failed: " +
+      "AI server error: " +
       response.status
     );
 
@@ -1524,118 +1221,154 @@ ${context}
 
 
   throw new Error(
-    "Invalid AI response."
+    "Invalid AI response"
   );
 
 }
 
 
-function cleanCode(
-  value
-) {
+/* ==========================================
+   AI ASK
+========================================== */
 
-  return value
-    .replace(
-      /^```[a-zA-Z0-9_-]*\s*/,
-      ""
-    )
-    .replace(
-      /\s*```$/,
-      ""
-    )
-    .trim();
+async function askAI() {
 
-}
-
-
-/* ================================================
-   COMMAND PALETTE
-================================================ */
-
-function openCommands() {
-
-  const commands = [
-
-    {
-      name: "Run Project",
-      action: runProject
-    },
-
-    {
-      name: "Save Project",
-      action: saveProject
-    },
-
-    {
-      name: "Search Project",
-      action: openSearch
-    },
-
-    {
-      name: "New File",
-      action: newFile
-    },
-
-    {
-      name: "Download File",
-      action: downloadFile
-    },
-
-    {
-      name: "Toggle Explorer",
-      action: toggleExplorer
-    }
-
-  ];
-
-
-  const choice =
-    window.prompt(
-      "NOVA Commands:\n\n" +
-      commands
-        .map(
-          (cmd, i) =>
-            `${i + 1}. ${cmd.name}`
-        )
-        .join("\n") +
-      "\n\nEnter a number:"
+  const input =
+    document.getElementById(
+      "aiPrompt"
     );
 
 
-  const index =
-    Number(choice) - 1;
+  const prompt =
+    input.value.trim();
 
 
-  if (
-    commands[index]
-  ) {
+  if (!prompt) {
+    return;
+  }
 
-    commands[index].action();
+
+  files[currentFile] =
+    editor.value;
+
+
+  addMessage(
+    "user",
+    prompt
+  );
+
+
+  input.value =
+    "";
+
+
+  const response =
+    addMessage(
+      "ai",
+      "Thinking..."
+    );
+
+
+  try {
+
+    const answer =
+      await callAI(
+        prompt
+      );
+
+
+    response.textContent =
+      answer;
+
+  } catch (error) {
+
+    response.textContent =
+      "AI error: " +
+      error.message;
 
   }
 
 }
 
 
-tap(
-  document.getElementById(
-    "commandBtn"
-  ),
-  openCommands
-);
+/* ==========================================
+   AI FIX
+========================================== */
+
+async function fixCode() {
+
+  const code =
+    editor.value;
 
 
-/* ================================================
-   EXPLORER TOGGLE
-================================================ */
-
-function toggleExplorer() {
-
-  const explorer =
-    document.getElementById(
-      "explorer"
+  const response =
+    addMessage(
+      "ai",
+      "Checking the code..."
     );
 
+
+  try {
+
+    const answer =
+      await callAI(
+        `
+Fix the current file.
+
+File:
+${currentFile}
+
+Code:
+${code}
+
+Return the complete corrected file.
+Do not use markdown fences.
+`
+      );
+
+
+    const cleaned =
+      answer
+        .replace(
+          /^```[a-zA-Z0-9_-]*\s*/,
+          ""
+        )
+        .replace(
+          /\s*```$/,
+          ""
+        )
+        .trim();
+
+
+    editor.value =
+      cleaned;
+
+    files[currentFile] =
+      cleaned;
+
+    updateLineNumbers();
+
+
+    response.textContent =
+      "Done. The corrected code is now in the editor.";
+
+
+  } catch (error) {
+
+    response.textContent =
+      "AI error: " +
+      error.message;
+
+  }
+
+}
+
+
+/* ==========================================
+   EXPLORER TOGGLE
+========================================== */
+
+function toggleExplorer() {
 
   if (
     explorer.style.display ===
@@ -1648,114 +1381,231 @@ function toggleExplorer() {
   } else {
 
     explorer.style.display =
-      "block";
+      "none";
 
   }
-
-
-  setTimeout(
-    () => {
-
-      if (editor) {
-        editor.refresh();
-      }
-
-    },
-    100
-  );
 
 }
 
 
-tap(
-  document.getElementById(
-    "explorerBtn"
-  ),
-  toggleExplorer
-);
-
-
-/* ================================================
-   CLEAR PROJECT
-================================================ */
+/* ==========================================
+   CLEAR SAVED PROJECT
+========================================== */
 
 function clearProject() {
 
-  const ok =
+  const confirmed =
     window.confirm(
-      "Clear the saved NOVA project?"
+      "Delete the saved NOVA project?"
     );
 
 
-  if (!ok) {
+  if (!confirmed) {
     return;
   }
 
 
   localStorage.removeItem(
-    "nova-code-project-v2"
+    "nova-code-project"
   );
 
 
-  location.reload();
+  window.location.reload();
 
 }
 
 
-tap(
-  document.getElementById(
-    "clearBtn"
-  ),
+/* ==========================================
+   LOAD SAVED PROJECT
+========================================== */
+
+function loadSavedProject() {
+
+  try {
+
+    const saved =
+      localStorage.getItem(
+        "nova-code-project"
+      );
+
+
+    if (!saved) {
+      return;
+    }
+
+
+    const loaded =
+      JSON.parse(saved);
+
+
+    Object.assign(
+      files,
+      loaded
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Could not load project:",
+      error
+    );
+
+  }
+
+}
+
+
+/* ==========================================
+   ALL BUTTONS
+========================================== */
+
+onButton(
+  "explorerBtn",
+  toggleExplorer
+);
+
+onButton(
+  "newFileBtn",
+  showFileModal
+);
+
+onButton(
+  "newFileSideBtn",
+  showFileModal
+);
+
+onButton(
+  "createFileBtn",
+  createNewFile
+);
+
+onButton(
+  "cancelFileBtn",
+  hideFileModal
+);
+
+onButton(
+  "searchBtn",
+  openSearch
+);
+
+onButton(
+  "closeSearchBtn",
+  closeSearch
+);
+
+onButton(
+  "saveBtn",
+  saveProject
+);
+
+onButton(
+  "downloadBtn",
+  downloadFile
+);
+
+onButton(
+  "runBtn",
+  runProject
+);
+
+onButton(
+  "clearBtn",
   clearProject
 );
 
+onButton(
+  "askBtn",
+  askAI
+);
 
-/* ================================================
-   ESCAPE HTML
-================================================ */
-
-function escapeHtml(
-  value
-) {
-
-  return value
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
-
-}
+onButton(
+  "fixBtn",
+  fixCode
+);
 
 
-/* ================================================
+/* ==========================================
+   BOTTOM BUTTONS
+========================================== */
+
+document
+  .querySelectorAll(
+    ".bottom-tab"
+  )
+  .forEach(
+    function (button) {
+
+      button.addEventListener(
+        "click",
+        function () {
+
+          showPanel(
+            button.dataset.panel
+          );
+
+        }
+      );
+
+    }
+  );
+
+
+/* ==========================================
+   MODAL BACKDROPS
+========================================== */
+
+document
+  .getElementById("fileModal")
+  .addEventListener(
+    "click",
+    function (event) {
+
+      if (
+        event.target ===
+        this
+      ) {
+
+        hideFileModal();
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("searchModal")
+  .addEventListener(
+    "click",
+    function (event) {
+
+      if (
+        event.target ===
+        this
+      ) {
+
+        closeSearch();
+
+      }
+
+    }
+  );
+
+
+/* ==========================================
    KEYBOARD
-================================================ */
+========================================== */
 
 document.addEventListener(
   "keydown",
-  event => {
+  function (event) {
 
     if (
       (event.metaKey ||
        event.ctrlKey) &&
-      event.key.toLowerCase() ===
-        "s"
+      event.key.toLowerCase() === "s"
     ) {
 
       event.preventDefault();
@@ -1768,8 +1618,7 @@ document.addEventListener(
     if (
       (event.metaKey ||
        event.ctrlKey) &&
-      event.key.toLowerCase() ===
-        "f"
+      event.key.toLowerCase() === "f"
     ) {
 
       event.preventDefault();
@@ -1782,8 +1631,7 @@ document.addEventListener(
     if (
       (event.metaKey ||
        event.ctrlKey) &&
-      event.key ===
-        "Enter"
+      event.key === "Enter"
     ) {
 
       event.preventDefault();
@@ -1797,6 +1645,8 @@ document.addEventListener(
       event.key === "Escape"
     ) {
 
+      hideFileModal();
+
       closeSearch();
 
     }
@@ -1805,20 +1655,29 @@ document.addEventListener(
 );
 
 
-/* ================================================
+/* ==========================================
    START
-================================================ */
+========================================== */
 
-loadProject();
+loadSavedProject();
 
 renderFiles();
 
 renderTabs();
 
-createEditor();
+loadCurrentFile();
 
 runProject();
 
 setStatus(
-  "NOVA Code v2 ready"
+  "NOVA Code ready"
+);
+
+
+/* ==========================================
+   DEBUG MESSAGE
+========================================== */
+
+console.log(
+  "NOVA Code loaded successfully."
 );
