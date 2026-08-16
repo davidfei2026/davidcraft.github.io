@@ -1,637 +1,738 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover">
-
-<title>NOVA Code</title>
-
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/codemirror.min.css">
-
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/theme/material-darker.min.css">
-
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/addon/fold/foldgutter.min.css">
-
-<style>
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
-
-html,
-body {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #0d1117;
-  color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-button,
-input,
-textarea {
-  font: inherit;
-}
-
-button {
-  -webkit-appearance: none;
-  appearance: none;
-  touch-action: manipulation;
-}
-
-.app {
-  height: 100dvh;
-  display: grid;
-  grid-template-rows: 52px 1fr 28px;
-}
-
-/* TOP */
-
-.topbar {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding:
-    6px
-    max(8px, env(safe-area-inset-right))
-    6px
-    max(8px, env(safe-area-inset-left));
-
-  background: #11161d;
-  border-bottom: 1px solid #2a3039;
-  overflow-x: auto;
-  white-space: nowrap;
-}
-
-.logo {
-  font-size: 17px;
-  font-weight: 800;
-  padding: 0 8px;
-}
-
-.logo span {
-  color: #4f9cff;
-}
-
-.tool {
-  min-height: 38px;
-  padding: 0 11px;
-  border-radius: 7px;
-  border: 1px solid #303744;
-  background: #1a2029;
-  color: #e9edf4;
-  font-weight: 600;
-}
-
-.tool:active {
-  transform: scale(.97);
-}
-
-.tool.primary {
-  background: #2563eb;
-  border-color: #2563eb;
-}
-
-/* MAIN */
-
-.main {
-  min-height: 0;
-  display: grid;
-  grid-template-columns: 210px minmax(0,1fr) 330px;
-}
-
-/* EXPLORER */
-
-.explorer {
-  min-width: 0;
-  min-height: 0;
-  overflow-y: auto;
-  background: #0f141a;
-  border-right: 1px solid #2a3039;
-}
-
-.panel-title {
-  padding: 13px 13px 9px;
-  color: #8c97a8;
-  font-size: 11px;
-  letter-spacing: .08em;
-  font-weight: 800;
-}
-
-.explorer-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  padding: 0 8px 10px;
-}
-
-.small-btn {
-  min-height: 34px;
-  border-radius: 6px;
-  border: 1px solid #303744;
-  background: #181e26;
-  color: #dbe2ec;
-}
-
-.file {
-  width: calc(100% - 10px);
-  margin: 2px 5px;
-  min-height: 38px;
-  padding: 0 9px;
-  text-align: left;
-  border: 0;
-  border-radius: 6px;
-  background: transparent;
-  color: #b8c1ce;
-}
-
-.file.active {
-  background: #202733;
-  color: #fff;
-}
-
-/* CENTER */
-
-.center {
-  min-width: 0;
-  min-height: 0;
-  display: grid;
-  grid-template-rows: 38px minmax(0,1fr) 185px;
-}
-
-/* TABS */
-
-.tabs {
-  display: flex;
-  align-items: stretch;
-  overflow-x: auto;
-  background: #141922;
-  border-bottom: 1px solid #2a3039;
-}
-
-.tab {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  flex: 0 0 auto;
-  padding: 0 11px;
-  min-width: 120px;
-  border-right: 1px solid #2a3039;
-  color: #9ba6b7;
-  background: #151a22;
-}
-
-.tab.active {
-  color: #fff;
-  background: #0d1117;
-}
-
-.tab-close {
-  margin-left: auto;
-  color: #788292;
-}
-
-/* EDITOR */
-
-.editor {
-  min-height: 0;
-  overflow: hidden;
-}
-
-.CodeMirror {
-  height: 100%;
-  font-size: 14px;
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    monospace;
-}
-
-.CodeMirror-scroll {
-  -webkit-overflow-scrolling: touch;
-}
-
-.CodeMirror-foldgutter {
-  width: 14px;
-}
-
-/* BOTTOM */
-
-.bottom {
-  min-height: 0;
-  display: grid;
-  grid-template-rows: 36px 1fr;
-  border-top: 1px solid #2a3039;
-  background: #0f141a;
-}
-
-.bottom-tabs {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0 10px;
-  border-bottom: 1px solid #2a3039;
-}
-
-.bottom-tab {
-  height: 28px;
-  padding: 0 10px;
-  border: 0;
-  border-radius: 5px;
-  background: transparent;
-  color: #8994a5;
-}
-
-.bottom-tab.active {
-  background: #202733;
-  color: #fff;
-}
-
-.bottom-content {
-  min-height: 0;
-  overflow: auto;
-  padding: 10px;
-  font: 12px/1.5 ui-monospace, monospace;
-  white-space: pre-wrap;
-}
-
-.console-line {
-  padding: 2px 0;
-}
-
-.console-line.error {
-  color: #ff7777;
-}
-
-/* AI */
-
-.ai {
-  min-width: 0;
-  min-height: 0;
-  display: grid;
-  grid-template-rows: 44px minmax(0,1fr) auto;
-  background: #10151c;
-  border-left: 1px solid #2a3039;
-}
-
-.ai-header {
-  display: flex;
-  align-items: center;
-  padding: 0 13px;
-  border-bottom: 1px solid #2a3039;
-  font-weight: 800;
-}
-
-.messages {
-  min-height: 0;
-  overflow-y: auto;
-  padding: 10px;
-}
-
-.msg {
-  margin-bottom: 9px;
-  padding: 9px 10px;
-  border-radius: 8px;
-  font-size: 13px;
-  line-height: 1.45;
-  white-space: pre-wrap;
-}
-
-.msg.ai {
-  background: #1b222c;
-}
-
-.msg.user {
-  background: #2455bd;
-}
-
-.ai-box {
-  padding: 9px;
-  border-top: 1px solid #2a3039;
-}
-
-#aiPrompt {
-  width: 100%;
-  min-height: 76px;
-  resize: none;
-  padding: 9px;
-  border: 1px solid #353d49;
-  border-radius: 7px;
-  background: #0b0f14;
-  color: white;
-  outline: none;
-}
-
-.ai-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  margin-top: 7px;
-}
-
-.ai-buttons button {
-  min-height: 40px;
-  border: 0;
-  border-radius: 7px;
-  background: #2563eb;
-  color: white;
-  font-weight: 700;
-}
-
-.ai-buttons .secondary {
-  background: #29313d;
-}
-
-/* SEARCH */
-
-.search-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 5000;
-  display: none;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 70px 15px 15px;
-  background: rgba(0,0,0,.6);
-}
-
-.search-box {
-  width: min(620px, 100%);
-  background: #171d25;
-  border: 1px solid #353d49;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.search-box input {
-  width: 100%;
-  height: 50px;
-  padding: 0 14px;
-  border: 0;
-  outline: none;
-  background: #0c1016;
-  color: white;
-}
-
-.search-results {
-  max-height: 55vh;
-  overflow: auto;
-}
-
-.search-result {
-  width: 100%;
-  display: block;
-  padding: 11px 14px;
-  text-align: left;
-  border: 0;
-  border-bottom: 1px solid #2c333e;
-  background: transparent;
-  color: #dce3ed;
-}
-
-.search-result small {
-  display: block;
-  margin-top: 3px;
-  color: #7f8a9b;
-}
-
-/* STATUS */
-
-.statusbar {
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  background: #151b23;
-  color: #8c96a5;
-  font-size: 11px;
-}
-
-/* MOBILE */
-
-@media (max-width: 1100px) {
-  .main {
-    grid-template-columns: 185px minmax(0,1fr);
-  }
-
-  .ai {
-    display: none;
-  }
-}
-
-@media (max-width: 700px) {
-  .main {
-    grid-template-columns: 1fr;
-  }
-
-  .explorer {
-    display: none;
-  }
-
-  .center {
-    grid-template-rows: 38px minmax(0,1fr) 170px;
-  }
-
-  .logo {
-    padding-left: 3px;
-  }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <title>NOVA Code</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #0b0f14;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      touch-action: manipulation;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+      touch-action: manipulation;
+    }
+
+    .app {
+      width: 100%;
+      height: 100dvh;
+      display: grid;
+      grid-template-rows: 56px 1fr 28px;
+    }
+
+    /* TOP BAR */
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      background: #11161d;
+      border-bottom: 1px solid #29313c;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .logo {
+      flex: 0 0 auto;
+      font-size: 18px;
+      font-weight: 800;
+      padding: 0 7px;
+    }
+
+    .logo span {
+      color: #4f9cff;
+    }
+
+    .toolbar-btn {
+      flex: 0 0 auto;
+      min-height: 40px;
+      padding: 0 13px;
+      border: 1px solid #343d49;
+      border-radius: 8px;
+      background: #1a2028;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .toolbar-btn:active {
+      transform: scale(.97);
+      background: #29313d;
+    }
+
+    .toolbar-btn.run {
+      background: #2563eb;
+      border-color: #2563eb;
+    }
+
+    /* MAIN */
+
+    .workspace {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 210px minmax(0, 1fr) 320px;
+    }
+
+    /* EXPLORER */
+
+    .explorer {
+      min-width: 0;
+      min-height: 0;
+      overflow-y: auto;
+      background: #0f141a;
+      border-right: 1px solid #29313c;
+    }
+
+    .panel-title {
+      padding: 14px 13px 9px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      color: #8792a3;
+    }
+
+    .explorer-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 0 8px 10px;
+    }
+
+    .small-btn {
+      min-height: 38px;
+      border: 1px solid #343d49;
+      border-radius: 7px;
+      background: #191f27;
+      color: #fff;
+    }
+
+    .file {
+      display: block;
+      width: calc(100% - 10px);
+      min-height: 42px;
+      margin: 2px 5px;
+      padding: 0 10px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: #b8c2d0;
+      text-align: left;
+    }
+
+    .file.active {
+      background: #232b36;
+      color: #fff;
+    }
+
+    /* CENTER */
+
+    .center {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: 40px minmax(0, 1fr) 190px;
+    }
+
+    /* TABS */
+
+    .tabs {
+      display: flex;
+      min-width: 0;
+      overflow-x: auto;
+      background: #141922;
+      border-bottom: 1px solid #29313c;
+    }
+
+    .tab {
+      flex: 0 0 auto;
+      min-width: 120px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      padding: 0 11px;
+      border-right: 1px solid #29313c;
+      color: #9ba5b5;
+      background: #151a22;
+    }
+
+    .tab.active {
+      color: #fff;
+      background: #0b0f14;
+    }
+
+    .tab-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tab-close {
+      margin-left: auto;
+      border: 0;
+      background: transparent;
+      color: #86909f;
+      padding: 7px;
+    }
+
+    /* EDITOR */
+
+    .editor-area {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr);
+      background: #0b0f14;
+    }
+
+    .line-numbers {
+      overflow: hidden;
+      padding-top: 15px;
+      background: #0b0f14;
+      border-right: 1px solid #202731;
+      color: #596273;
+      font: 14px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      text-align: right;
+      user-select: none;
+    }
+
+    .line-numbers div {
+      padding-right: 10px;
+      height: 22.4px;
+    }
+
+    #editor {
+      width: 100%;
+      height: 100%;
+      resize: none;
+      outline: none;
+      border: 0;
+      padding: 15px;
+      background: #0b0f14;
+      color: #dce4ef;
+      font: 14px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      tab-size: 2;
+      white-space: pre;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* BOTTOM */
+
+    .bottom {
+      min-height: 0;
+      display: grid;
+      grid-template-rows: 38px minmax(0, 1fr);
+      border-top: 1px solid #29313c;
+      background: #0f141a;
+    }
+
+    .bottom-tabs {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 8px;
+      border-bottom: 1px solid #29313c;
+    }
+
+    .bottom-tab {
+      min-height: 30px;
+      padding: 0 11px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #8792a3;
+    }
+
+    .bottom-tab.active {
+      background: #222a35;
+      color: #fff;
+    }
+
+    .bottom-content {
+      min-height: 0;
+      overflow: auto;
+      background: #0d1218;
+    }
+
+    #preview {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      background: #fff;
+    }
+
+    #console {
+      padding: 10px;
+      font: 12px/1.5 ui-monospace, monospace;
+      white-space: pre-wrap;
+    }
+
+    .console-line {
+      margin-bottom: 4px;
+      color: #c9d1dc;
+    }
+
+    .console-line.error {
+      color: #ff7373;
+    }
+
+    /* AI */
+
+    .ai {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: 45px minmax(0, 1fr) auto;
+      background: #10151c;
+      border-left: 1px solid #29313c;
+    }
+
+    .ai-header {
+      display: flex;
+      align-items: center;
+      padding: 0 13px;
+      border-bottom: 1px solid #29313c;
+      font-weight: 800;
+    }
+
+    .messages {
+      min-height: 0;
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    .message {
+      margin-bottom: 9px;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    .message.ai {
+      background: #1b222c;
+    }
+
+    .message.user {
+      background: #2458c4;
+    }
+
+    .ai-input {
+      padding: 9px;
+      border-top: 1px solid #29313c;
+    }
+
+    #aiPrompt {
+      display: block;
+      width: 100%;
+      min-height: 78px;
+      resize: none;
+      padding: 10px;
+      border: 1px solid #343d49;
+      border-radius: 8px;
+      outline: none;
+      background: #0b0f14;
+      color: #fff;
+      font-size: 15px;
+    }
+
+    .ai-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-top: 7px;
+    }
+
+    .ai-buttons button {
+      min-height: 42px;
+      border: 0;
+      border-radius: 8px;
+      background: #2563eb;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .ai-buttons .secondary {
+      background: #29313d;
+    }
+
+    /* MODAL */
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(0,0,0,.72);
+    }
+
+    .modal {
+      width: min(420px, 100%);
+      padding: 18px;
+      border: 1px solid #384250;
+      border-radius: 13px;
+      background: #171d25;
+      box-shadow: 0 20px 70px rgba(0,0,0,.5);
+    }
+
+    .modal h3 {
+      margin: 0 0 12px;
+    }
+
+    .modal input {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px;
+      border: 1px solid #384250;
+      border-radius: 8px;
+      outline: none;
+      background: #0c1117;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    .modal-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .modal-buttons button {
+      min-height: 44px;
+      border: 0;
+      border-radius: 8px;
+      background: #2a323e;
+      color: white;
+      font-weight: 700;
+    }
+
+    .modal-buttons .primary {
+      background: #2563eb;
+    }
+
+    /* STATUS */
+
+    .statusbar {
+      display: flex;
+      align-items: center;
+      padding: 0 9px;
+      background: #151b23;
+      color: #8c96a5;
+      font-size: 11px;
+    }
+
+    /* IPAD */
+
+    @media (max-width: 1050px) {
+      .workspace {
+        grid-template-columns: 180px minmax(0, 1fr);
+      }
+
+      .ai {
+        display: none;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .explorer {
+        display: none;
+      }
+
+      .center {
+        grid-template-rows: 40px minmax(0, 1fr) 180px;
+      }
+
+      .logo {
+        font-size: 16px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="app">
+  <div class="app">
 
-  <header class="topbar">
+    <header class="topbar">
 
-    <div class="logo">
-      NOVA <span>Code</span>
-    </div>
-
-    <button class="tool" id="explorerBtn">Explorer</button>
-    <button class="tool" id="searchBtn">Search</button>
-    <button class="tool" id="commandBtn">⌘ Commands</button>
-    <button class="tool" id="saveBtn">Save</button>
-    <button class="tool" id="downloadBtn">Download</button>
-    <button class="tool primary" id="runBtn">▶ Run</button>
-
-  </header>
-
-
-  <main class="main">
-
-    <!-- EXPLORER -->
-
-    <aside class="explorer" id="explorer">
-
-      <div class="panel-title">
-        EXPLORER
+      <div class="logo">
+        NOVA <span>Code</span>
       </div>
 
-      <div class="explorer-actions">
+      <button type="button" class="toolbar-btn" id="explorerBtn">
+        Explorer
+      </button>
 
-        <button class="small-btn" id="newFileBtn">
-          + File
-        </button>
+      <button type="button" class="toolbar-btn" id="newFileBtn">
+        + File
+      </button>
 
-        <button class="small-btn" id="clearBtn">
-          Clear
-        </button>
+      <button type="button" class="toolbar-btn" id="searchBtn">
+        Search
+      </button>
 
-      </div>
+      <button type="button" class="toolbar-btn" id="saveBtn">
+        Save
+      </button>
 
-      <div id="fileList"></div>
+      <button type="button" class="toolbar-btn" id="downloadBtn">
+        Download
+      </button>
 
-    </aside>
+      <button type="button" class="toolbar-btn run" id="runBtn">
+        ▶ Run
+      </button>
 
-
-    <!-- CENTER -->
-
-    <section class="center">
-
-      <div class="tabs" id="tabs"></div>
-
-      <div class="editor" id="editorHost"></div>
+    </header>
 
 
-      <section class="bottom">
+    <main class="workspace">
 
-        <div class="bottom-tabs">
+      <aside class="explorer" id="explorer">
 
-          <button class="bottom-tab active" data-panel="preview">
-            Preview
+        <div class="panel-title">
+          EXPLORER
+        </div>
+
+        <div class="explorer-buttons">
+
+          <button type="button" class="small-btn" id="newFileSideBtn">
+            + File
           </button>
 
-          <button class="bottom-tab" data-panel="console">
-            Console
-          </button>
-
-          <button class="bottom-tab" data-panel="problems">
-            Problems
+          <button type="button" class="small-btn" id="clearBtn">
+            Clear
           </button>
 
         </div>
 
-        <div class="bottom-content" id="bottomContent">
+        <div id="fileList"></div>
 
-          <iframe
-            id="preview"
-            style="
-              width:100%;
-              height:100%;
-              border:0;
-              background:white;
-              display:block;
-            ">
-          </iframe>
+      </aside>
+
+
+      <section class="center">
+
+        <div class="tabs" id="tabs"></div>
+
+        <div class="editor-area">
+
+          <div class="line-numbers" id="lineNumbers"></div>
+
+          <textarea
+            id="editor"
+            spellcheck="false"
+            autocorrect="off"
+            autocapitalize="off"
+            autocomplete="off"
+          ></textarea>
 
         </div>
+
+
+        <section class="bottom">
+
+          <div class="bottom-tabs">
+
+            <button
+              type="button"
+              class="bottom-tab active"
+              data-panel="preview">
+              Preview
+            </button>
+
+            <button
+              type="button"
+              class="bottom-tab"
+              data-panel="console">
+              Console
+            </button>
+
+            <button
+              type="button"
+              class="bottom-tab"
+              data-panel="problems">
+              Problems
+            </button>
+
+          </div>
+
+          <div class="bottom-content" id="bottomContent">
+
+            <iframe
+              id="preview"
+              sandbox="allow-scripts">
+            </iframe>
+
+          </div>
+
+        </section>
 
       </section>
 
-    </section>
 
+      <aside class="ai">
 
-    <!-- AI -->
-
-    <aside class="ai">
-
-      <div class="ai-header">
-        🤖 NOVA AI
-      </div>
-
-      <div class="messages" id="messages">
-
-        <div class="msg ai">
-          I'm ready.
-
-          Ask me to create features,
-          fix code, explain code,
-          or modify your project.
+        <div class="ai-header">
+          🤖 NOVA AI
         </div>
 
-      </div>
+        <div class="messages" id="messages">
 
-      <div class="ai-box">
+          <div class="message ai">
+            NOVA AI is ready.
 
-        <textarea
-          id="aiPrompt"
-          placeholder="Ask NOVA AI to change your project..."></textarea>
-
-        <div class="ai-buttons">
-
-          <button id="askBtn">
-            Ask AI
-          </button>
-
-          <button class="secondary" id="fixBtn">
-            Fix Code
-          </button>
+            Ask me to build, explain,
+            or fix your project.
+          </div>
 
         </div>
 
-      </div>
+        <div class="ai-input">
 
-    </aside>
+          <textarea
+            id="aiPrompt"
+            placeholder="Ask NOVA AI..."
+          ></textarea>
 
-  </main>
+          <div class="ai-buttons">
+
+            <button type="button" id="askBtn">
+              Ask AI
+            </button>
+
+            <button
+              type="button"
+              class="secondary"
+              id="fixBtn">
+              Fix Code
+            </button>
+
+          </div>
+
+        </div>
+
+      </aside>
+
+    </main>
 
 
-  <footer class="statusbar" id="status">
-    Ready
-  </footer>
-
-</div>
-
-
-<!-- SEARCH -->
-
-<div class="search-overlay" id="searchOverlay">
-
-  <div class="search-box">
-
-    <input
-      id="searchInput"
-      placeholder="Search project...">
-
-    <div
-      class="search-results"
-      id="searchResults"></div>
+    <footer class="statusbar" id="status">
+      Ready
+    </footer>
 
   </div>
 
-</div>
+
+  <!-- NEW FILE MODAL -->
+
+  <div class="modal-backdrop" id="fileModal">
+
+    <div class="modal">
+
+      <h3>New File</h3>
+
+      <input
+        id="fileNameInput"
+        type="text"
+        placeholder="example.js"
+      >
+
+      <div class="modal-buttons">
+
+        <button type="button" id="cancelFileBtn">
+          Cancel
+        </button>
+
+        <button type="button" class="primary" id="createFileBtn">
+          Create
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/codemirror.min.js"></script>
+  <!-- SEARCH MODAL -->
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/mode/xml/xml.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/mode/javascript/javascript.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/mode/css/css.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/mode/htmlmixed/htmlmixed.min.js"></script>
+  <div class="modal-backdrop" id="searchModal">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/addon/edit/closebrackets.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/addon/edit/matchbrackets.min.js"></script>
+    <div class="modal">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/addon/fold/foldcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/addon/fold/foldgutter.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/addon/fold/brace-fold.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/addon/fold/xml-fold.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.8/addon/fold/comment-fold.min.js"></script>
+      <h3>Search Project</h3>
 
-<script src="editor.js"></script>
+      <input
+        id="searchInput"
+        type="text"
+        placeholder="Search for code..."
+      >
+
+      <div id="searchResults" style="
+        margin-top:12px;
+        max-height:45vh;
+        overflow:auto;
+      "></div>
+
+      <div class="modal-buttons">
+
+        <button type="button" id="closeSearchBtn">
+          Close
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <script src="editor.js"></script>
 
 </body>
 </html>
