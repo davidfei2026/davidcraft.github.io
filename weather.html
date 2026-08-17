@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>🌦️ Weather Platform</h1>
+
+        <div class="search">
+            <input
+                id="locationInput"
+                type="text"
+                placeholder="Search for a city..."
+            >
+            <button onclick="searchWeather()">Search</button>
+        </div>
+    </header>
+
+    <main>
+
+        <section class="current-weather">
+            <h2 id="location">Miami, FL</h2>
+
+            <div class="temperature">
+                <span id="temperature">--°</span>
+                <span id="weatherIcon">☀️</span>
+            </div>
+
+            <p id="condition">Loading weather...</p>
+            <p id="feelsLike">Feels like --°</p>
+
+            <div class="weather-details">
+                <div>
+                    <strong>💧</strong>
+                    <span>Humidity</span>
+                    <b id="humidity">--%</b>
+                </div>
+
+                <div>
+                    <strong>💨</strong>
+                    <span>Wind</span>
+                    <b id="wind">-- mph</b>
+                </div>
+
+                <div>
+                    <strong>🌧️</strong>
+                    <span>Rain</span>
+                    <b id="rain">--%</b>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>📅 20-Day Forecast</h2>
+
+            <div id="forecast" class="forecast">
+                <div class="loading">Forecast will appear here.</div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🗺️ Weather Radar</h2>
+
+            <div class="radar">
+                <div class="radar-placeholder">
+                    <div class="radar-circle">📡</div>
+                    <h3>Radar</h3>
+                    <p>Interactive radar coming next!</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Weather Platform</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
