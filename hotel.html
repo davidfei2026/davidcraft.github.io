@@ -6,43 +6,48 @@
 
   <style>
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
+      font-family: Arial, sans-serif;
       background: #e9eef5;
-      color: #172033;
     }
 
     header {
       background: #17324d;
       color: white;
-      padding: 15px;
+      padding: 20px;
       text-align: center;
     }
 
     #money {
       font-size: 20px;
-      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    #guests {
+      font-size: 18px;
+      margin-top: 5px;
     }
 
     #tools {
-      padding: 10px;
+      background: white;
+      padding: 12px;
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      background: white;
     }
 
     button {
       padding: 12px;
-      border: 0;
+      border: none;
       border-radius: 10px;
+      background: #1976d2;
+      color: white;
       font-weight: bold;
     }
 
     #game {
       display: grid;
       grid-template-columns: repeat(10, 50px);
-      grid-template-rows: repeat(8, 50px);
       gap: 2px;
       padding: 15px;
       overflow: auto;
@@ -56,11 +61,10 @@
       align-items: center;
       justify-content: center;
       font-size: 24px;
-      cursor: pointer;
     }
 
     .room {
-      background: #ffffff;
+      background: white;
     }
 
     .hall {
@@ -81,21 +85,44 @@
 
 <header>
   <h1>🏨 My Hotel</h1>
-  <div id="money">$10,000</div>
+
+  <div id="money">
+    💰 $25,000
+  </div>
+
+  <div id="guests">
+    👥 Guests: 0
+  </div>
 </header>
 
 <div id="tools">
-  <button onclick="selectTool('room')">🛏️ Room $1,000</button>
-  <button onclick="selectTool('hall')">🚶 Hall $100</button>
-  <button onclick="selectTool('wall')">🧱 Wall $50</button>
-  <button onclick="selectTool('door')">🚪 Door $75</button>
+
+  <button onclick="selectTool('room')">
+    🛏️ Room — $1,000
+  </button>
+
+  <button onclick="selectTool('hall')">
+    🚶 Hall — $100
+  </button>
+
+  <button onclick="selectTool('wall')">
+    🧱 Wall — $50
+  </button>
+
+  <button onclick="selectTool('door')">
+    🚪 Door — $75
+  </button>
+
 </div>
 
 <div id="game"></div>
 
 <script>
 
-let money = 10000;
+let money = 25000;
+
+let guests = 0;
+
 let selectedTool = "room";
 
 const costs = {
@@ -112,9 +139,13 @@ const emojis = {
   door: "🚪"
 };
 
+
 function selectTool(tool) {
+
   selectedTool = tool;
+
 }
+
 
 function createMap() {
 
@@ -127,36 +158,65 @@ function createMap() {
     tile.className = "tile";
 
     tile.onclick = function() {
+
       build(tile);
+
     };
 
     game.appendChild(tile);
+
   }
+
 }
+
 
 function build(tile) {
 
   const cost = costs[selectedTool];
 
   if (money < cost) {
+
     alert("You don't have enough money!");
+
     return;
+
   }
 
   if (tile.dataset.built === "true") {
+
     alert("This space is already occupied!");
+
     return;
+
   }
 
   money -= cost;
 
   tile.dataset.built = "true";
+
   tile.classList.add(selectedTool);
+
   tile.textContent = emojis[selectedTool];
 
   document.getElementById("money").textContent =
-    "$" + money.toLocaleString();
+    "💰 $" + money.toLocaleString();
+
+
+  if (selectedTool === "room") {
+
+    setTimeout(function() {
+
+      guests++;
+
+      document.getElementById("guests").textContent =
+        "👥 Guests: " + guests;
+
+    }, 1000);
+
+  }
+
 }
+
 
 createMap();
 
