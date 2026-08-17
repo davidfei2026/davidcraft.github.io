@@ -333,27 +333,159 @@
     </footer>
 
 
-    <script>
+  <script>
 
-        function searchWeather() {
+async function searchWeather() {
 
-            const input =
-                document.getElementById("locationInput");
+    const input = document.getElementById("locationInput");
+    const city = input.value.trim();
 
-            const location =
-                document.getElementById("location");
+    if (city === "") {
+        alert("Please enter a city.");
+        return;
+    }
 
-            if (input.value.trim() === "") {
-                alert("Please enter a city.");
-                return;
-            }
+    try {
 
-            location.textContent =
-                input.value.trim();
+        // Find the city's coordinates
+        const geoResponse = await fetch(
+            `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`
+        );
 
+        const geoData = await geoResponse.json();
+
+        if (!geoData.results || geoData.results.length === 0) {
+            alert("City not found.");
+            return;
         }
 
-    </script>
+        const place = geoData.results[0];
+
+        const latitude = place.latitude;
+        const longitude = place.longitude;
+
+        document.getElementById("location").textContent =
+            `${place.name}, ${place.country}`;
+
+        // Get weather
+        const weatherResponse = await fetch(
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&temperature_unit=fahrenheit&wind_speed_unit=mph&forecast_days=16&timezone=auto`
+        );
+
+        const weather = await weatherResponse.json();
+
+        // Current weather
+        const current = weather.current;
+
+        document.getElementById("temperature").textContent =
+            `${Math.round(current.temperature_2m)}°`;
+
+        document.getElementById("feelsLike").textContent =
+            `Feels like ${Math.round(current.apparent_temperature)}°`;
+
+        document.getElementById("humidity").textContent =
+            `${current.relative_humidity_2m}%`;
+
+        document.getElementById("wind").textContent =
+            `${Math.round(current.wind_speed_10m)} mph`;
+
+        document.getElementById("rain").textContent =
+            `${current.precipitation}%`;
+
+        document.getElementById("condition").textContent =
+            weatherDescription(current.weather_code);
+
+        document.getElementById("weatherIcon").textContent =
+            weatherIcon(current.weather_code);
+
+        // Forecast
+        const forecast = document.getElementById("forecast");
+
+        forecast.innerHTML = "";
+
+        const days = weather.daily.time;
+
+        days.forEach((date, index) => {
+
+            const card = document.createElement("div");
+
+            card.className = "forecast-card";
+
+            const dayName = new Date(date + "T12:00:00")
+                .toLocaleDateString("en-US", {
+                    weekday: "short"
+                });
+
+            card.innerHTML = `
+                <div class="day">${dayName}</div>
+
+                <div class="icon">
+                    ${weatherIcon(weather.daily.weather_code[index])}
+                </div>
+
+                <div class="temps">
+                    ${Math.round(weather.daily.temperature_2m_max[index])}°
+                    /
+                    ${Math.round(weather.daily.temperature_2m_min[index])}°
+                </div>
+
+                <div>
+                    🌧️
+                    ${weather.daily.precipitation_probability_max[index] ?? 0}%
+                </div>
+            `;
+
+            forecast.appendChild(card);
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Something went wrong while getting the weather."
+        );
+
+    }
+
+}
+
+
+// Weather descriptions
+function weatherDescription(code) {
+
+    if (code === 0) return "Clear sky";
+    if (code <= 3) return "Partly cloudy";
+    if (code <= 48) return "Foggy";
+    if (code <= 57) return "Drizzle";
+    if (code <= 67) return "Rain";
+    if (code <= 77) return "Snow";
+    if (code <= 82) return "Rain showers";
+    if (code <= 86) return "Snow showers";
+    if (code >= 95) return "Thunderstorm";
+
+    return "Unknown";
+}
+
+
+// Weather icons
+function weatherIcon(code) {
+
+    if (code === 0) return "☀️";
+    if (code <= 3) return "🌤️";
+    if (code <= 48) return "🌫️";
+    if (code <= 57) return "🌦️";
+    if (code <= 67) return "🌧️";
+    if (code <= 77) return "❄️";
+    if (code <= 82) return "🌦️";
+    if (code <= 86) return "🌨️";
+    if (code >= 95) return "⛈️";
+
+    return "🌡️";
+}
+
+</script>
 
 </body>
 </html>
