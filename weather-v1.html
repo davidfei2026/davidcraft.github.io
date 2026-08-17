@@ -1679,6 +1679,295 @@ setInterval(
     10 * 60 * 1000
 );
 
+    /* =====================================
+   FAVORITE CITIES
+===================================== */
+
+let favoriteCities =
+    JSON.parse(
+        localStorage.getItem("favoriteCities") || "[]"
+    );
+
+
+function saveFavoriteCity(
+    name,
+    latitude,
+    longitude
+) {
+
+    const exists =
+        favoriteCities.some(
+            city =>
+                city.name.toLowerCase() ===
+                name.toLowerCase()
+        );
+
+    if (exists) {
+        return;
+    }
+
+
+    favoriteCities.push({
+        name: name,
+        latitude: latitude,
+        longitude: longitude
+    });
+
+
+    localStorage.setItem(
+        "favoriteCities",
+        JSON.stringify(
+            favoriteCities
+        )
+    );
+
+
+    displayFavoriteCities();
+
+}
+
+
+function removeFavoriteCity(
+    index
+) {
+
+    favoriteCities.splice(
+        index,
+        1
+    );
+
+
+    localStorage.setItem(
+        "favoriteCities",
+        JSON.stringify(
+            favoriteCities
+        )
+    );
+
+
+    displayFavoriteCities();
+
+}
+
+
+function displayFavoriteCities() {
+
+    const bar =
+        document.getElementById(
+            "favoritesBar"
+        );
+
+
+    if (!bar) {
+        return;
+    }
+
+
+    bar.innerHTML =
+        "<span>⭐ Favorites:</span>";
+
+
+    favoriteCities.forEach(
+        (city, index) => {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.className =
+                "favorite-city";
+
+
+            button.textContent =
+                city.name;
+
+
+            button.onclick =
+                function() {
+
+                    loadWeather(
+                        city.latitude,
+                        city.longitude,
+                        city.name
+                    );
+
+
+                    if (radarMap) {
+
+                        radarMap.setView(
+                            [
+                                city.latitude,
+                                city.longitude
+                            ],
+                            7
+                        );
+
+                    }
+
+                };
+
+
+            const remove =
+                document.createElement(
+                    "span"
+                );
+
+
+            remove.className =
+                "remove-favorite";
+
+
+            remove.textContent =
+                " ×";
+
+
+            remove.onclick =
+                function(event) {
+
+                    event.stopPropagation();
+
+                    removeFavoriteCity(
+                        index
+                    );
+
+                };
+
+
+            button.appendChild(
+                remove
+            );
+
+
+            bar.appendChild(
+                button
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================
+   ADD FAVORITE BUTTON
+===================================== */
+
+function addCurrentCityToFavorites() {
+
+    const location =
+        document.getElementById(
+            "location"
+        );
+
+
+    if (!location) {
+        return;
+    }
+
+
+    const name =
+        location.textContent;
+
+
+    /*
+       Find the current map center.
+       This lets us save the city
+       currently being displayed.
+    */
+
+    if (!radarMap) {
+        return;
+    }
+
+
+    const center =
+        radarMap.getCenter();
+
+
+    saveFavoriteCity(
+        name,
+        center.lat,
+        center.lng
+    );
+
+
+    alert(
+        "⭐ " +
+        name +
+        " was added to your favorites!"
+    );
+
+}
+
+
+/* =====================================
+   CREATE FAVORITE BUTTON
+===================================== */
+
+function createFavoriteButton() {
+
+    const location =
+        document.getElementById(
+            "location"
+        );
+
+
+    if (!location) {
+        return;
+    }
+
+
+    if (
+        document.getElementById(
+            "favoriteButton"
+        )
+    ) {
+        return;
+    }
+
+
+    const button =
+        document.createElement(
+            "button"
+        );
+
+
+    button.id =
+        "favoriteButton";
+
+
+    button.textContent =
+        "⭐ Add to Favorites";
+
+
+    button.className =
+        "location-button";
+
+
+    button.style.marginTop =
+        "10px";
+
+
+    button.onclick =
+        addCurrentCityToFavorites;
+
+
+    location.parentElement.appendChild(
+        button
+    );
+
+}
+
+
+/* =====================================
+   START FAVORITES
+===================================== */
+
+displayFavoriteCities();
+
+createFavoriteButton();
 </script>
 
 </body>
