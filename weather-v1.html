@@ -313,7 +313,34 @@ footer {
         height: 400px;
     }
 }
+.favorites-bar {
+    max-width: 700px;
+    margin: 15px auto 0;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
 
+.favorite-city {
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.favorite-city:hover {
+    background: rgba(255,255,255,0.35);
+}
+
+.remove-favorite {
+    margin-left: 5px;
+    cursor: pointer;
+}
 </style>
 </head>
 
@@ -352,7 +379,9 @@ footer {
         </button>
 
     </div>
-
+<div id="favoritesBar" class="favorites-bar">
+    <span>⭐ Favorites:</span>
+</div>
 </header>
 
 
