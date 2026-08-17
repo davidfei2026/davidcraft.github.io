@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hotel Simulator</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #e9eef5;
+      color: #172033;
+    }
+
+    header {
+      background: #17324d;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+
+    #money {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    #tools {
+      padding: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      background: white;
+    }
+
+    button {
+      padding: 12px;
+      border: 0;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    #game {
+      display: grid;
+      grid-template-columns: repeat(10, 50px);
+      grid-template-rows: repeat(8, 50px);
+      gap: 2px;
+      padding: 15px;
+      overflow: auto;
+    }
+
+    .tile {
+      width: 50px;
+      height: 50px;
+      background: #d8d0c3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .room {
+      background: #ffffff;
+    }
+
+    .hall {
+      background: #c9bda9;
+    }
+
+    .wall {
+      background: #765f48;
+    }
+
+    .door {
+      background: #b88a54;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>🏨 My Hotel</h1>
+  <div id="money">$10,000</div>
+</header>
+
+<div id="tools">
+  <button onclick="selectTool('room')">🛏️ Room $1,000</button>
+  <button onclick="selectTool('hall')">🚶 Hall $100</button>
+  <button onclick="selectTool('wall')">🧱 Wall $50</button>
+  <button onclick="selectTool('door')">🚪 Door $75</button>
+</div>
+
+<div id="game"></div>
+
+<script>
+
+let money = 10000;
+let selectedTool = "room";
+
+const costs = {
+  room: 1000,
+  hall: 100,
+  wall: 50,
+  door: 75
+};
+
+const emojis = {
+  room: "🛏️",
+  hall: "",
+  wall: "",
+  door: "🚪"
+};
+
+function selectTool(tool) {
+  selectedTool = tool;
+}
+
+function createMap() {
+
+  const game = document.getElementById("game");
+
+  for (let i = 0; i < 80; i++) {
+
+    const tile = document.createElement("div");
+
+    tile.className = "tile";
+
+    tile.onclick = function() {
+      build(tile);
+    };
+
+    game.appendChild(tile);
+  }
+}
+
+function build(tile) {
+
+  const cost = costs[selectedTool];
+
+  if (money < cost) {
+    alert("You don't have enough money!");
+    return;
+  }
+
+  if (tile.dataset.built === "true") {
+    alert("This space is already occupied!");
+    return;
+  }
+
+  money -= cost;
+
+  tile.dataset.built = "true";
+  tile.classList.add(selectedTool);
+  tile.textContent = emojis[selectedTool];
+
+  document.getElementById("money").textContent =
+    "$" + money.toLocaleString();
+}
+
+createMap();
+
+</script>
+
+</body>
+</html>
