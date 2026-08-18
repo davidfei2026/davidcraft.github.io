@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Weather Platform</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <link
   rel="stylesheet"
@@ -2374,7 +2375,15 @@ setInterval(
 loadRadar,
 10 * 60 * 1000
 );
+<script>
+const SUPABASE_URL = "https://vbtbqkvjryytmhlwexoc.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_F2cFR6mn7xkVEaYOtYVTMA_ZkkPnBfi";
 
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+</script>
 </script>
 
 </body>
