@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, viewport-fit=cover"
+>
+
+<meta
+  name="apple-mobile-web-app-capable"
+  content="yes"
+>
+
+<meta
+  name="apple-mobile-web-app-status-bar-style"
+  content="black-translucent"
+>
+
+<title>DavidCraft Code</title>
+
+<style>
+:root {
+  --bg: #0b0f14;
+  --panel: #11161d;
+  --panel2: #151b23;
+  --border: #29313c;
+  --text: #edf2f8;
+  --muted: #8994a5;
+  --blue: #2563eb;
+  --blue2: #3b82f6;
+  --danger: #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+body {
+  touch-action: manipulation;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+button:active {
+  transform: scale(.98);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* APP */
+
+.app {
+  width: 100%;
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: 56px 1fr 30px;
+}
+
+/* TOP BAR */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding:
+    7px
+    max(8px, env(safe-area-inset-right))
+    7px
+    max(8px, env(safe-area-inset-left));
+
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.logo {
+  flex: 0 0 auto;
+  font-size: 18px;
+  font-weight: 800;
+  padding: 0 7px;
+}
+
+.logo span {
+  color: #5b9cff;
+}
+
+.top-btn {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 0 12px;
+
+  border: 1px solid #35404d;
+  border-radius: 8px;
+
+  background: #1a2028;
+  color: white;
+
+  font-weight: 600;
+}
+
+.top-btn.primary {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+/* WORKSPACE */
+
+.workspace {
+  min-width: 0;
+  min-height: 0;
+
+  display: grid;
+  grid-template-columns:
+    205px
+    minmax(0, 1fr)
+    330px;
+}
+
+/* EXPLORER */
+
+.explorer {
+  min-width: 0;
+  min-height: 0;
+
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+
+  background: #0f141a;
+  border-right: 1px solid var(--border);
+}
+
+.panel-heading {
+  padding: 13px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.explorer-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 5px;
+  padding: 0 7px 9px;
+}
+
+.small-btn {
+  min-height: 36px;
+
+  border: 1px solid #35404d;
+  border-radius: 7px;
+
+  background: #181e25;
+  color: white;
+  font-size: 12px;
+}
+
+.file-list {
+  min-height: 0;
+  overflow-y: auto;
+  padding: 2px 5px 10px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.file-btn {
+  width: 100%;
+  min-height: 40px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin: 2px 0;
+  padding: 0 9px;
+
+  border: 0;
+  border-radius: 7px;
+
+  background: transparent;
+  color: #b9c4d1;
+
+  text-align: left;
+}
+
+.file-btn.active {
+  background: #232c38;
+  color: white;
+}
+
+.file-btn-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-btn-delete {
+  margin-left: auto;
+
+  border: 0;
+  background: transparent;
+  color: #7d8796;
+
+  padding: 6px;
+}
+
+/* CENTER */
+
+.center {
+  min-width: 0;
+  min-height: 0;
+
+  display: grid;
+  grid-template-rows:
+    40px
+    minmax(0, 1fr)
+    190px;
+}
+
+/* TABS */
+
+.tabs {
+  min-width: 0;
+
+  display: flex;
+  overflow-x: auto;
+
+  background: #151a22;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab {
+  flex: 0 0 auto;
+
+  min-width: 120px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 0 10px;
+
+  border-right: 1px solid var(--border);
+
+  background: #151a22;
+  color: #98a3b2;
+}
+
+.tab.active {
+  background: var(--bg);
+  color: white;
+}
+
+.tab-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tab-close {
+  margin-left: auto;
+
+  border: 0;
+  background: transparent;
+  color: #788391;
+  padding: 6px;
+}
+
+/* EDITOR */
+
+.editor-wrap {
+  min-width: 0;
+  min-height: 0;
+
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+
+  background: var(--bg);
+}
+
+.line-numbers {
+  min-height: 0;
+  overflow: hidden;
+
+  padding-top: 15px;
+
+  border-right: 1px solid #202731;
+
+  color: #596273;
+
+  font:
+    14px/1.6
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+
+  text-align: right;
+  user-select: none;
+}
+
+.line-numbers div {
+  height: 22.4px;
+  padding-right: 10px;
+}
+
+#editor {
+  width: 100%;
+  height: 100%;
+
+  border: 0;
+  outline: 0;
+  resize: none;
+
+  padding: 15px;
+
+  background: var(--bg);
+  color: #dce4ef;
+
+  font:
+    14px/1.6
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+
+  tab-size: 2;
+
+  white-space: pre;
+  overflow: auto;
+
+  -webkit-overflow-scrolling: touch;
+}
+
+/* BOTTOM PANEL */
+
+.bottom {
+  min-height: 0;
+
+  display: grid;
+  grid-template-rows: 38px minmax(0,1fr);
+
+  border-top: 1px solid var(--border);
+
+  background: #0f141a;
+}
+
+.bottom-tabs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  padding: 4px 8px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.bottom-tab {
+  min-height: 30px;
+
+  padding: 0 11px;
+
+  border: 0;
+  border-radius: 6px;
+
+  background: transparent;
+  color: var(--muted);
+}
+
+.bottom-tab.active {
+  background: #222a35;
+  color: white;
+}
+
+.panel-content {
+  min-height: 0;
+  overflow: auto;
+}
+
+#preview {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  border: 0;
+
+  background: white;
+}
+
+.console {
+  padding: 10px;
+
+  font:
+    12px/1.5
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+
+  white-space: pre-wrap;
+}
+
+.console-line {
+  margin-bottom: 5px;
+}
+
+.console-line.error {
+  color: #ff7575;
+}
+
+.problem {
+  padding: 12px;
+  color: var(--muted);
+}
+
+/* AI */
+
+.ai {
+  min-width: 0;
+  min-height: 0;
+
+  display: grid;
+  grid-template-rows:
+    45px
+    minmax(0,1fr)
+    auto;
+
+  background: #10151c;
+
+  border-left: 1px solid var(--border);
+}
+
+.ai-header {
+  display: flex;
+  align-items: center;
+
+  padding: 0 13px;
+
+  border-bottom: 1px solid var(--border);
+
+  font-weight: 800;
+}
+
+.messages {
+  min-height: 0;
+  overflow-y: auto;
+
+  padding: 10px;
+}
+
+.message {
+  margin-bottom: 9px;
+
+  padding: 10px;
+
+  border-radius: 9px;
+
+  font-size: 13px;
+  line-height: 1.45;
+
+  white-space: pre-wrap;
+}
+
+.message.ai {
+  background: #1b222c;
+}
+
+.message.user {
+  background: #2458c4;
+}
+
+.ai-box {
+  padding: 9px;
+
+  border-top: 1px solid var(--border);
+}
+
+.ai-mode {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+
+  margin-bottom: 7px;
+}
+
+.ai-mode button {
+  min-height: 32px;
+
+  border: 1px solid #343d49;
+  border-radius: 6px;
+
+  background: #171d24;
+  color: #9da7b6;
+
+  font-size: 11px;
+}
+
+.ai-mode button.active {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: white;
+}
+
+#aiPrompt {
+  display: block;
+
+  width: 100%;
+  min-height: 82px;
+
+  resize: none;
+
+  padding: 10px;
+
+  border: 1px solid #35404d;
+  border-radius: 8px;
+
+  outline: 0;
+
+  background: #0b0f14;
+  color: white;
+
+  font-size: 15px;
+}
+
+.ai-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 7px;
+
+  margin-top: 7px;
+}
+
+.ai-buttons button {
+  min-height: 42px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: var(--blue);
+  color: white;
+
+  font-weight: 700;
+}
+
+.ai-buttons .secondary {
+  background: #2b3340;
+}
+
+.pending-change {
+  margin-top: 8px;
+
+  padding: 9px;
+
+  border: 1px solid #355ba8;
+  border-radius: 8px;
+
+  background: #121d32;
+}
+
+.pending-change strong {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 12px;
+}
+
+.pending-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.pending-buttons button {
+  min-height: 38px;
+  border: 0;
+  border-radius: 7px;
+  background: #2563eb;
+  color: white;
+  font-weight: 700;
+}
+
+.pending-buttons button.reject {
+  background: #323b49;
+}
+
+/* MODAL */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: none;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0,0,0,.72);
+}
+
+.modal {
+  width: min(430px, 100%);
+
+  padding: 18px;
+
+  border: 1px solid #3a4553;
+  border-radius: 13px;
+
+  background: #171d25;
+
+  box-shadow:
+    0 20px 70px rgba(0,0,0,.45);
+}
+
+.modal h3 {
+  margin: 0 0 12px;
+}
+
+.modal input {
+  width: 100%;
+  min-height: 46px;
+
+  padding: 10px;
+
+  border: 1px solid #3b4654;
+  border-radius: 8px;
+
+  outline: 0;
+
+  background: #0c1117;
+  color: white;
+
+  font-size: 16px;
+}
+
+.modal-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 8px;
+
+  margin-top: 12px;
+}
+
+.modal-buttons button {
+  min-height: 44px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: #2a323e;
+  color: white;
+
+  font-weight: 700;
+}
+
+.modal-buttons .primary {
+  background: var(--blue);
+}
+
+/* STATUS */
+
+.statusbar {
+  display: flex;
+  align-items: center;
+
+  padding: 0 10px;
+
+  background: #151b23;
+  color: #8b96a6;
+
+  font-size: 11px;
+}
+
+/* MOBILE */
+
+@media (max-width: 1080px) {
+
+  .workspace {
+    grid-template-columns:
+      180px
+      minmax(0,1fr);
+  }
+
+  .ai {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .explorer {
+    display: none;
+  }
+
+  .center {
+    grid-template-rows:
+      40px
+      minmax(0,1fr)
+      180px;
+  }
+
+  .topbar {
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+
+  .logo {
+    font-size: 16px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header class="topbar">
+
+    <div class="logo">
+      DavidCraft <span>Code</span>
+    </div>
+
+    <button class="top-btn" id="explorerBtn">
+      Explorer
+    </button>
+
+    <button class="top-btn" id="newFileBtn">
+      + File
+    </button>
+
+    <button class="top-btn" id="searchBtn">
+      Search
+    </button>
+
+    <button class="top-btn" id="saveBtn">
+      Save
+    </button>
+
+    <button class="top-btn" id="downloadBtn">
+      Download
+    </button>
+
+    <button class="top-btn primary" id="runBtn">
+      ▶ Run
+    </button>
+
+  </header>
+
+
+  <main class="workspace">
+
+    <aside class="explorer" id="explorer">
+
+      <div class="panel-heading">
+        EXPLORER
+      </div>
+
+      <div class="explorer-actions">
+
+        <button class="small-btn" id="newSideBtn">
+          + File
+        </button>
+
+        <button class="small-btn" id="renameBtn">
+          Rename
+        </button>
+
+        <button class="small-btn" id="deleteBtn">
+          Delete
+        </button>
+
+      </div>
+
+      <div class="file-list" id="fileList"></div>
+
+    </aside>
+
+
+    <section class="center">
+
+      <div class="tabs" id="tabs"></div>
+
+
+      <div class="editor-wrap">
+
+        <div class="line-numbers" id="lineNumbers"></div>
+
+        <textarea
+          id="editor"
+          spellcheck="false"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+        ></textarea>
+
+      </div>
+
+
+      <section class="bottom">
+
+        <div class="bottom-tabs">
+
+          <button
+            class="bottom-tab active"
+            data-panel="preview"
+          >
+            Preview
+          </button>
+
+          <button
+            class="bottom-tab"
+            data-panel="console"
+          >
+            Console
+          </button>
+
+          <button
+            class="bottom-tab"
+            data-panel="problems"
+          >
+            Problems
+          </button>
+
+        </div>
+
+        <div class="panel-content" id="panelContent">
+
+          <iframe
+            id="preview"
+            sandbox="allow-scripts"
+          ></iframe>
+
+        </div>
+
+      </section>
+
+    </section>
+
+
+    <aside class="ai">
+
+      <div class="ai-header">
+        🤖 DavidCraft AI
+      </div>
+
+      <div class="messages" id="messages">
+
+        <div class="message ai">
+          I'm ready to help you code.
+
+          Choose a mode and tell me what
+          you want to build.
+        </div>
+
+      </div>
+
+      <div class="ai-box">
+
+        <div class="ai-mode">
+
+          <button
+            class="active"
+            data-ai-mode="build"
+          >
+            Build
+          </button>
+
+          <button
+            data-ai-mode="fix"
+          >
+            Fix
+          </button>
+
+          <button
+            data-ai-mode="explain"
+          >
+            Explain
+          </button>
+
+          <button
+            data-ai-mode="edit"
+          >
+            Edit
+          </button>
+
+        </div>
+
+        <textarea
+          id="aiPrompt"
+          placeholder="Tell DavidCraft AI what to do..."
+        ></textarea>
+
+        <div class="ai-buttons">
+
+          <button id="askBtn">
+            Run AI
+          </button>
+
+          <button
+            class="secondary"
+            id="clearAiBtn"
+          >
+            Clear
+          </button>
+
+        </div>
+
+        <div
+          class="pending-change hidden"
+          id="pendingChange"
+        >
+
+          <strong>
+            AI generated a possible code change.
+          </strong>
+
+          <div class="pending-buttons">
+
+            <button id="applyBtn">
+              Apply
+            </button>
+
+            <button
+              class="reject"
+              id="rejectBtn"
+            >
+              Reject
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </aside>
+
+  </main>
+
+
+  <footer class="statusbar" id="status">
+    Ready
+  </footer>
+
+</div>
+
+
+<!-- NEW FILE -->
+
+<div class="modal-backdrop" id="fileModal">
+
+  <div class="modal">
+
+    <h3>
+      New File
+    </h3>
+
+    <input
+      id="fileNameInput"
+      placeholder="example.js"
+      autocomplete="off"
+    >
+
+    <div class="modal-buttons">
+
+      <button id="cancelFileBtn">
+        Cancel
+      </button>
+
+      <button
+        class="primary"
+        id="createFileBtn"
+      >
+        Create
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- SEARCH -->
+
+<div class="modal-backdrop" id="searchModal">
+
+  <div class="modal">
+
+    <h3>
+      Search Project
+    </h3>
+
+    <input
+      id="searchInput"
+      placeholder="Search your files..."
+      autocomplete="off"
+    >
+
+    <div
+      id="searchResults"
+      style="margin-top:12px;max-height:45vh;overflow:auto;"
+    ></div>
+
+    <div class="modal-buttons">
+
+      <button id="closeSearchBtn">
+        Close
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script src="editor.js"></script>
+
+</body>
+</html>
