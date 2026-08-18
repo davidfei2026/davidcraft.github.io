@@ -2,395 +2,383 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>Weather Platform</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>Weather Platform V4</title>
 
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#1976d2">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Leaflet map -->
 <link
   rel="stylesheet"
   href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
 />
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
 
 <style>
 * {
-  box-sizing: border-box;
+  box-sizing:border-box;
+}
+
+html {
+  scroll-behavior:smooth;
 }
 
 body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #eef6ff;
-  color: #172033;
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#eef6ff;
+  color:#172033;
+  transition:.25s;
 }
 
 body.dark {
-  background: #101827;
-  color: white;
+  background:#101722;
+  color:#f4f7fb;
 }
 
-header {
-  background: linear-gradient(135deg, #1976d2, #42a5f5);
-  color: white;
-  padding: 28px 20px;
-  text-align: center;
+button,input,select {
+  font:inherit;
 }
 
-.header-top {
-  max-width: 1150px;
-  margin: auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
+button {
+  cursor:pointer;
 }
 
-header h1 {
-  margin: 0;
-  font-size: 32px;
+.topbar {
+  position:sticky;
+  top:0;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  padding:14px 18px;
+  background:#1976d2;
+  color:white;
+  box-shadow:0 3px 15px #0003;
 }
 
-.header-buttons button,
-.search button,
-.location-button,
-.radar-controls button {
-  border: none;
-  border-radius: 10px;
-  padding: 12px 16px;
-  cursor: pointer;
-  font-weight: bold;
+.brand {
+  font-size:21px;
+  font-weight:800;
 }
 
-.header-buttons button,
-.search button {
-  background: white;
-  color: #1976d2;
+.top-actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
 }
 
-.search {
-  max-width: 850px;
-  margin: 25px auto 0;
-  display: flex;
-  gap: 10px;
+.top-actions button {
+  border:0;
+  border-radius:10px;
+  padding:9px 12px;
+  background:white;
+  color:#1976d2;
+  font-weight:700;
 }
 
-.search input {
-  flex: 1;
-  padding: 14px;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  outline: none;
-}
-
-.favorites-bar {
-  max-width: 850px;
-  margin: 18px auto 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.favorite-city {
-  border: none;
-  background: rgba(255,255,255,.2);
-  color: white;
-  padding: 9px 13px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.remove-favorite {
-  margin-left: 5px;
-}
-
-main {
-  max-width: 1150px;
-  margin: 30px auto;
-  padding: 0 20px;
-}
-
-section {
-  margin-bottom: 30px;
+.container {
+  width:min(1250px,94%);
+  margin:24px auto;
 }
 
 .card {
-  background: white;
-  border-radius: 22px;
-  padding: 25px;
-  box-shadow: 0 5px 20px rgba(0,0,0,.08);
+  background:white;
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 5px 20px #00000012;
 }
 
-.dark .card,
-.dark .forecast-card,
-.dark .hour-card,
-.dark .extended-card,
-.dark .detail-card {
-  background: #192337;
-  color: white;
+body.dark .card {
+  background:#192332;
+  box-shadow:0 5px 20px #0005;
 }
 
-.current {
-  text-align: center;
+.hidden {
+  display:none !important;
 }
 
-.current h2 {
-  margin: 0;
-  font-size: 30px;
+h1,h2,h3 {
+  margin-top:0;
 }
 
-.temperature {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  margin: 15px 0;
+.primary {
+  border:0;
+  border-radius:11px;
+  padding:11px 16px;
+  background:#1976d2;
+  color:white;
+  font-weight:700;
 }
 
-#temperature {
-  font-size: 76px;
-  font-weight: bold;
+.secondary {
+  border:0;
+  border-radius:11px;
+  padding:11px 16px;
+  background:#e7eef7;
+  color:#172033;
+  font-weight:700;
 }
 
-#weatherIcon {
-  font-size: 65px;
+body.dark .secondary {
+  background:#2a394c;
+  color:white;
 }
 
-#condition {
-  font-size: 21px;
-  font-weight: bold;
+.search {
+  display:flex;
+  gap:9px;
 }
 
-.muted {
-  color: #667085;
+.search input {
+  flex:1;
+  min-width:0;
+  padding:13px;
+  border:1px solid #cbd5e1;
+  border-radius:11px;
+  background:white;
+  color:#172033;
 }
 
-.dark .muted {
-  color: #b8c2d1;
+body.dark .search input {
+  background:#101722;
+  color:white;
+  border-color:#46576b;
 }
 
-.location-button {
-  background: #1976d2;
-  color: white;
-  margin-top: 10px;
+.hero {
+  text-align:center;
+  padding:30px;
 }
 
-.details,
-.extra-grid {
-  display: grid;
-  gap: 14px;
-  margin-top: 25px;
+.location {
+  font-size:28px;
+  font-weight:800;
 }
 
-.details {
-  grid-template-columns: repeat(3,1fr);
+.big-temp {
+  font-size:72px;
+  font-weight:900;
+  margin:8px;
 }
 
-.extra-grid {
-  grid-template-columns: repeat(4,1fr);
+.big-icon {
+  font-size:68px;
 }
 
-.detail-card {
-  background: #f3f8ff;
-  padding: 18px;
-  border-radius: 15px;
-  text-align: center;
+.condition {
+  font-size:23px;
 }
 
-.detail-card .emoji {
-  font-size: 28px;
+.stats {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
 }
 
-.detail-card b {
-  display: block;
-  margin-top: 7px;
-  font-size: 18px;
+.stat {
+  background:#f3f8fd;
+  border-radius:14px;
+  padding:16px;
 }
 
-.hourly,
-.forecast,
-.extended {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding: 5px 2px 15px;
+body.dark .stat {
+  background:#222f40;
 }
 
-.hour-card,
-.forecast-card,
-.extended-card {
-  background: white;
-  padding: 16px;
-  border-radius: 16px;
-  text-align: center;
-  box-shadow: 0 3px 12px rgba(0,0,0,.06);
-  flex-shrink: 0;
+.stat strong {
+  display:block;
+  font-size:23px;
+  margin-top:7px;
 }
 
-.hour-card {
-  min-width: 110px;
+.forecast {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(125px,1fr));
+  gap:12px;
 }
 
 .forecast-card {
-  min-width: 150px;
+  background:#f3f8fd;
+  border-radius:14px;
+  padding:14px;
+  text-align:center;
 }
 
-.extended-card {
-  min-width: 145px;
+body.dark .forecast-card {
+  background:#222f40;
 }
 
-.hour-card .icon,
-.forecast-card .icon,
-.extended-card .icon {
-  font-size: 38px;
-  margin: 10px;
+.forecast-icon {
+  font-size:36px;
+  margin:8px;
 }
 
-.forecast-card .temps,
-.extended-card .temps {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 8px;
+.forecast-temp {
+  font-size:20px;
+  font-weight:800;
 }
 
-#temperatureChart {
-  width: 100%;
-  height: 260px;
+#map {
+  height:430px;
+  width:100%;
+  border-radius:15px;
+  overflow:hidden;
 }
 
-#radarMap {
-  width: 100%;
-  height: 500px;
-  border-radius: 18px;
-  overflow: hidden;
+.map-controls {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:12px;
 }
 
-.radar-panel {
-  background: white;
-  padding: 20px;
-  border-radius: 20px;
-  box-shadow: 0 5px 20px rgba(0,0,0,.08);
+.map-controls button {
+  border:0;
+  border-radius:10px;
+  padding:9px 12px;
+  background:#e7eef7;
+  font-weight:700;
 }
 
-.dark .radar-panel {
-  background: #192337;
+.map-controls button.active {
+  background:#1976d2;
+  color:white;
 }
 
-.radar-controls {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-  margin-top: 14px;
+.favorites {
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
 }
 
-.radar-controls button {
-  background: #1976d2;
-  color: white;
+.favorite {
+  border:0;
+  border-radius:11px;
+  padding:10px 13px;
+  background:#fff1bd;
+  font-weight:700;
 }
 
-.radar-controls button.active {
-  background: #0d47a1;
+body.dark .favorite {
+  background:#4b4021;
+  color:white;
 }
 
-.radar-slider {
-  width: 100%;
-  margin-top: 15px;
-  cursor: pointer;
+.message {
+  margin:12px 0;
+  padding:12px;
+  border-radius:10px;
+  background:#e8f2ff;
 }
 
-.radar-status {
-  margin-top: 10px;
-  font-weight: bold;
+body.dark .message {
+  background:#243449;
 }
 
-.radar-legend {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
-  font-size: 12px;
+.error {
+  background:#ffe5e5;
+  color:#941b1b;
 }
 
-.alert {
-  background: #fff3cd;
-  border: 1px solid #ffe08a;
-  color: #664d03;
-  padding: 18px;
-  border-radius: 15px;
-  margin-bottom: 10px;
+.success {
+  background:#e5f8e9;
+  color:#17652b;
 }
 
-.dark .alert {
-  background: #403718;
-  color: #ffe69c;
+.auth {
+  width:min(440px,94%);
+  margin:45px auto;
 }
 
-.no-alerts {
-  background: #e8f5e9;
-  color: #216e39;
-  padding: 18px;
-  border-radius: 15px;
+.auth input {
+  width:100%;
+  padding:13px;
+  margin-bottom:11px;
+  border:1px solid #cbd5e1;
+  border-radius:10px;
 }
 
-.dark .no-alerts {
-  background: #183524;
-  color: #9be7b1;
+.account-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
 }
 
-.alert-title {
-  font-weight: bold;
-  font-size: 18px;
-  margin-bottom: 8px;
+.badge {
+  display:inline-block;
+  border-radius:999px;
+  padding:7px 12px;
+  background:#1976d2;
+  color:white;
+  font-size:13px;
+  font-weight:800;
 }
 
-.alert-description {
-  margin-top: 8px;
-  line-height: 1.5;
+.badge.plus {
+  background:#f59e0b;
 }
 
-.status {
-  text-align: center;
-  padding: 20px;
-  color: #667085;
+.badge.admin {
+  background:#7c3aed;
 }
 
-footer {
-  text-align: center;
-  padding: 35px;
-  color: #667085;
+.sun-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
 }
 
-@media(max-width:750px) {
+.sun-box {
+  padding:16px;
+  border-radius:14px;
+  background:#f3f8fd;
+}
 
-  .header-top {
-    flex-direction: column;
+body.dark .sun-box {
+  background:#222f40;
+}
+
+.footer {
+  text-align:center;
+  padding:30px;
+  opacity:.65;
+}
+
+@media(max-width:800px) {
+  .stats {
+    grid-template-columns:repeat(2,1fr);
   }
 
+  .account-grid {
+    grid-template-columns:1fr;
+  }
+
+  .topbar {
+    align-items:flex-start;
+    flex-direction:column;
+  }
+}
+
+@media(max-width:520px) {
   .search {
-    flex-direction: column;
+    flex-direction:column;
   }
 
-  .search button {
-    width: 100%;
+  .big-temp {
+    font-size:58px;
   }
 
-  .details {
-    grid-template-columns: 1fr;
-  }
-
-  .extra-grid {
-    grid-template-columns: repeat(2,1fr);
-  }
-
-  #temperature {
-    font-size: 55px;
-  }
-
-  #radarMap {
-    height: 400px;
+  .stats {
+    grid-template-columns:1fr 1fr;
   }
 }
 </style>
@@ -398,1992 +386,1809 @@ footer {
 
 <body>
 
-<header>
+<header class="topbar">
 
-<div class="header-top">
+  <div class="brand">
+    🌦️ Weather Platform V4
+  </div>
 
-<h1>🌦️ Weather Platform</h1>
+  <div class="top-actions">
 
-<div class="header-buttons">
-<button onclick="toggleDarkMode()">🌙 Dark Mode</button>
-</div>
+    <button id="accountButton">
+      👤 Login
+    </button>
 
-</div>
+    <button id="darkButton">
+      🌙
+    </button>
 
-<div class="search">
-
-<input
-id="locationInput"
-type="text"
-placeholder="Search for a city..."
-onkeydown="if(event.key==='Enter') searchWeather()"
->
-
-<button onclick="searchWeather()">🔎 Search</button>
-
-<button onclick="useMyLocation()">📍 My Location</button>
-
-</div>
-
-<div id="favoritesBar" class="favorites-bar">
-<span>⭐ Favorites:</span>
-</div>
+  </div>
 
 </header>
 
 
-<main>
+<!-- AUTH -->
 
-<!-- CURRENT WEATHER -->
+<section id="authScreen" class="auth">
 
-<section>
+  <div class="card">
 
-<div class="card current">
+    <h1>Weather Platform</h1>
 
-<h2 id="location">Loading...</h2>
+    <p>
+      Sign in to save favorites and access your account.
+    </p>
 
-<div class="temperature">
+    <div id="authMessage" class="message hidden"></div>
 
-<span id="temperature">--°</span>
+    <input
+      id="displayName"
+      placeholder="Display name"
+      autocomplete="name"
+    >
 
-<span id="weatherIcon">🌤️</span>
+    <input
+      id="email"
+      type="email"
+      placeholder="Email"
+      autocomplete="email"
+    >
 
-</div>
+    <input
+      id="password"
+      type="password"
+      placeholder="Password"
+      autocomplete="current-password"
+    >
 
-<p id="condition">Loading...</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
 
-<p id="feelsLike" class="muted">
-Feels like --°
-</p>
+      <button id="loginButton" class="primary">
+        Log In
+      </button>
 
-<button
-class="location-button"
-onclick="addCurrentCityToFavorites()"
->
-⭐ Add to Favorites
-</button>
+      <button id="signupButton" class="secondary">
+        Sign Up
+      </button>
 
-<div class="details">
+      <button id="guestButton" class="secondary">
+        Continue as Guest
+      </button>
 
-<div class="detail-card">
-<div class="emoji">💧</div>
-Humidity
-<b id="humidity">--%</b>
-</div>
+    </div>
 
-<div class="detail-card">
-<div class="emoji">💨</div>
-Wind
-<b id="wind">-- mph</b>
-</div>
-
-<div class="detail-card">
-<div class="emoji">🌧️</div>
-Precipitation
-<b id="rain">-- mm</b>
-</div>
-
-</div>
-
-</div>
+  </div>
 
 </section>
 
 
-<!-- DETAILS -->
+<!-- MAIN APP -->
 
-<section>
+<main id="weatherApp" class="container hidden">
 
-<h2>📊 Weather Details</h2>
+  <!-- SEARCH -->
 
-<div class="extra-grid">
+  <section class="card">
 
-<div class="detail-card">
-<div class="emoji">☁️</div>
-Cloud Cover
-<b id="clouds">--%</b>
-</div>
+    <h2>🔎 Search Weather</h2>
 
-<div class="detail-card">
-<div class="emoji">👁️</div>
-Visibility
-<b id="visibility">-- mi</b>
-</div>
+    <div class="search">
 
-<div class="detail-card">
-<div class="emoji">🧭</div>
-Wind Direction
-<b id="windDirection">--</b>
-</div>
+      <input
+        id="cityInput"
+        placeholder="Enter a city..."
+      >
 
-<div class="detail-card">
-<div class="emoji">💨</div>
-Wind Gusts
-<b id="gusts">-- mph</b>
-</div>
+      <button id="searchButton" class="primary">
+        Search
+      </button>
 
-</div>
+      <button id="locationButton" class="secondary">
+        📍 My Location
+      </button>
 
-</section>
+    </div>
 
+    <div id="weatherMessage" class="message hidden"></div>
 
-<!-- SUN -->
+  </section>
 
-<section>
 
-<div class="card">
+  <!-- CURRENT WEATHER -->
 
-<h2>🌅 Sun</h2>
+  <section class="card hero">
 
-<div class="extra-grid">
+    <div id="locationName" class="location">
+      Loading...
+    </div>
 
-<div class="detail-card">
-🌅 Sunrise
-<b id="sunrise">--</b>
-</div>
+    <div id="weatherIcon" class="big-icon">
+      🌤️
+    </div>
 
-<div class="detail-card">
-🌇 Sunset
-<b id="sunset">--</b>
-</div>
+    <div id="temperature" class="big-temp">
+      --
+    </div>
 
-<div class="detail-card">
-☀️ Daylight
-<b id="daylight">--</b>
-</div>
+    <div id="condition" class="condition">
+      Loading...
+    </div>
 
-<div class="detail-card">
-🕐 Local Time
-<b id="localTime">--</b>
-</div>
+    <p id="feelsLike"></p>
 
-</div>
+    <button id="favoriteButton" class="primary">
+      ⭐ Add to Favorites
+    </button>
 
-</div>
+  </section>
 
-</section>
 
+  <!-- STATS -->
 
-<!-- HOURLY -->
+  <section class="card">
 
-<section>
+    <h2>🌡️ Current Conditions</h2>
 
-<h2>🕐 Next 24 Hours</h2>
+    <div class="stats">
 
-<div id="hourly" class="hourly">
-<div class="status">
-Loading hourly forecast...
-</div>
-</div>
+      <div class="stat">
+        💧 Humidity
+        <strong id="humidity">--</strong>
+      </div>
 
-</section>
+      <div class="stat">
+        💨 Wind
+        <strong id="wind">--</strong>
+      </div>
 
+      <div class="stat">
+        ☁️ Clouds
+        <strong id="clouds">--</strong>
+      </div>
 
-<!-- GRAPH -->
+      <div class="stat">
+        🌧️ Rain
+        <strong id="rain">--</strong>
+      </div>
 
-<section>
+      <div class="stat">
+        🧭 Wind Direction
+        <strong id="windDirection">--</strong>
+      </div>
 
-<div class="card">
+      <div class="stat">
+        👁️ Visibility
+        <strong id="visibility">--</strong>
+      </div>
 
-<h2>📈 Temperature Trend</h2>
+      <div class="stat">
+        📊 Pressure
+        <strong id="pressure">--</strong>
+      </div>
 
-<canvas id="temperatureChart"></canvas>
+      <div class="stat">
+        🌬️ Gusts
+        <strong id="gusts">--</strong>
+      </div>
 
-</div>
+    </div>
 
-</section>
+  </section>
 
 
-<!-- 16 DAY -->
+  <!-- RADAR -->
 
-<section>
+  <section class="card">
 
-<h2>📅 16-Day Detailed Forecast</h2>
+    <h2>🛰️ Weather Radar & Map</h2>
 
-<div id="forecast" class="forecast">
-<div class="status">
-Loading forecast...
-</div>
-</div>
+    <div class="map-controls">
 
-</section>
+      <button id="normalLayer" class="active">
+        🗺️ Normal
+      </button>
 
+      <button id="radarLayer">
+        🌧️ Radar
+      </button>
 
-<!-- 20 DAY -->
+      <button id="satelliteLayer">
+        🛰️ Satellite
+      </button>
 
-<section>
+      <button id="rainLayer">
+        💧 Rain
+      </button>
 
-<div class="card">
+    </div>
 
-<h2>🔭 20-Day Extended Outlook</h2>
+    <div id="map"></div>
 
-<p class="muted">
-Longer-range weather outlook. Forecast confidence
-generally decreases farther into the future.
-</p>
+    <p style="opacity:.7">
+      Click the map to load weather for that location.
+    </p>
 
-<div id="extendedForecast" class="extended">
-<div class="status">
-Loading extended outlook...
-</div>
-</div>
+  </section>
 
-</div>
 
-</section>
+  <!-- FAVORITES -->
 
+  <section class="card">
 
-<!-- ALERTS -->
+    <h2>⭐ Favorites</h2>
 
-<section>
+    <div id="favorites" class="favorites">
+      No favorites yet.
+    </div>
 
-<div class="card">
+  </section>
 
-<h2>🚨 Weather Alerts</h2>
 
-<div id="alerts">
-<div class="status">
-Checking for active alerts...
-</div>
-</div>
+  <!-- HOURLY -->
 
-</div>
+  <section class="card">
 
-</section>
+    <h2>🕐 Hourly Forecast</h2>
 
+    <div id="hourlyForecast" class="forecast"></div>
 
-<!-- RADAR -->
+  </section>
 
-<section>
 
-<h2>🛰️ Live Weather Radar</h2>
+  <!-- DAILY -->
 
-<div class="radar-panel">
+  <section class="card">
 
-<div id="radarMap"></div>
+    <h2>📅 16-Day Forecast</h2>
 
-<div class="radar-controls">
+    <div id="dailyForecast" class="forecast"></div>
 
-<button onclick="previousRadarFrame()">
-◀ Previous
-</button>
+  </section>
 
-<button
-id="playRadarButton"
-onclick="toggleRadarAnimation()"
->
-▶ Play
-</button>
 
-<button onclick="nextRadarFrame()">
-Next ▶
-</button>
+  <!-- SUN -->
 
-<button onclick="loadRadar()">
-🔄 Refresh
-</button>
+  <section class="card">
 
-</div>
+    <h2>🌅 Sun</h2>
 
-<input
-id="radarSlider"
-class="radar-slider"
-type="range"
-min="0"
-max="0"
-value="0"
-oninput="sliderRadarFrame()"
->
+    <div class="sun-grid">
 
-<div
-id="radarStatus"
-class="radar-status"
->
-Loading radar...
-</div>
+      <div class="sun-box">
+        🌅 Sunrise
+        <strong id="sunrise">--</strong>
+      </div>
 
-<div class="radar-legend">
-<span>🟦 Light</span>
-<span>🟩 Moderate</span>
-<span>🟨 Heavy</span>
-<span>🟥 Very Heavy</span>
-<span>🟪 Extreme</span>
-</div>
+      <div class="sun-box">
+        🌇 Sunset
+        <strong id="sunset">--</strong>
+      </div>
 
-</div>
+    </div>
 
-</section>
+  </section>
+
+
+  <!-- ACCOUNT -->
+
+  <section id="accountPanel" class="card hidden">
+
+    <h2>👤 My Account</h2>
+
+    <div class="account-grid">
+
+      <div class="stat">
+        Email
+        <strong id="accountEmail">--</strong>
+      </div>
+
+      <div class="stat">
+        Account
+        <strong>
+          <span id="accountType" class="badge">
+            USER
+          </span>
+        </strong>
+      </div>
+
+      <div class="stat">
+        Favorites
+        <strong id="favoriteCount">
+          0
+        </strong>
+      </div>
+
+    </div>
+
+    <br>
+
+    <button id="logoutButton" class="primary">
+      Log Out
+    </button>
+
+  </section>
+
+
+  <!-- PLUS -->
+
+  <section id="plusPanel" class="card hidden">
+
+    <h2>⭐ Weather Platform Plus</h2>
+
+    <p>
+      Your account has Plus access.
+    </p>
+
+    <div class="message success">
+      Plus features are enabled for this account.
+    </div>
+
+  </section>
+
+
+  <!-- ADMIN -->
+
+  <section id="adminPanel" class="card hidden">
+
+    <h2>🛠️ Admin Dashboard</h2>
+
+    <div class="account-grid">
+
+      <div class="stat">
+        👥 Users
+        <strong id="userCount">--</strong>
+      </div>
+
+      <div class="stat">
+        ⭐ Plus
+        <strong id="plusCount">--</strong>
+      </div>
+
+      <div class="stat">
+        🛠️ Admin
+        <strong id="adminCount">--</strong>
+      </div>
+
+    </div>
+
+    <br>
+
+    <div class="message">
+      User-management controls will be added after
+      the admin database security policies are configured.
+    </div>
+
+  </section>
 
 </main>
 
 
-<footer>
-Weather Platform 🌦️
+<footer class="footer">
+  Weather Platform V4 🌦️
 </footer>
 
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 <script>
 
-/* ==========================================
-   GLOBAL VARIABLES
-========================================== */
+/* =====================================================
+   SUPABASE
+===================================================== */
 
-let radarMap = null;
-let radarLayer = null;
+const SUPABASE_URL =
+  "https://vbtbqkvjryytmhlwexoc.supabase.co";
 
-let radarFrames = [];
-let radarHost = "";
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_F2cFR6mn7xkVEaYOtYVTMA_ZkkPnBfi";
 
-let radarIndex = 0;
-let radarTimer = null;
-let radarPlaying = false;
-
-let locationMarker = null;
-
-let currentLatitude = 25.7617;
-let currentLongitude = -80.1918;
-
-let currentCityName =
-"Miami, United States";
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
 
 
-/* ==========================================
-   FAVORITES
-========================================== */
+/* =====================================================
+   STATE
+===================================================== */
 
-let favoriteCities =
-JSON.parse(
-localStorage.getItem("favoriteCities") || "[]"
-);
+let currentUser = null;
+let currentProfile = null;
 
-
-function displayFavoriteCities() {
-
-const bar =
-document.getElementById(
-"favoritesBar"
-);
-
-bar.innerHTML =
-"<span>⭐ Favorites:</span>";
-
-favoriteCities.forEach(
-(city,index) => {
-
-const button =
-document.createElement("button");
-
-button.className =
-"favorite-city";
-
-button.textContent =
-city.name;
-
-button.onclick =
-() => {
-
-loadWeather(
-city.latitude,
-city.longitude,
-city.name
-);
-
+let currentLocation = {
+  name:"New York",
+  latitude:40.7128,
+  longitude:-74.0060
 };
 
-const remove =
-document.createElement("span");
+let map;
+let marker;
+let currentTile;
 
-remove.className =
-"remove-favorite";
 
-remove.textContent =
-" ×";
+/* =====================================================
+   ELEMENTS
+===================================================== */
 
-remove.onclick =
-(event) => {
+const authScreen =
+  document.getElementById("authScreen");
 
-event.stopPropagation();
+const weatherApp =
+  document.getElementById("weatherApp");
 
-favoriteCities.splice(
-index,
-1
-);
+const authMessage =
+  document.getElementById("authMessage");
 
-localStorage.setItem(
-"favoriteCities",
-JSON.stringify(
-favoriteCities
-)
-);
+const weatherMessage =
+  document.getElementById("weatherMessage");
 
-displayFavoriteCities();
 
-};
+/* =====================================================
+   MESSAGE HELPERS
+===================================================== */
 
-button.appendChild(remove);
+function authMsg(text,type="") {
 
-bar.appendChild(button);
+  if (!text) {
 
-});
+    authMessage.classList.add("hidden");
 
+    return;
+  }
+
+  authMessage.textContent = text;
+
+  authMessage.className =
+    "message " + type;
+
+  authMessage.classList.remove("hidden");
 }
 
 
-function addCurrentCityToFavorites() {
+function weatherMsg(text,type="") {
 
-const exists =
-favoriteCities.some(
-city =>
-city.name.toLowerCase() ===
-currentCityName.toLowerCase()
-);
+  if (!text) {
 
-if (exists) {
+    weatherMessage.classList.add("hidden");
 
-alert(
-"This city is already in your favorites!"
-);
+    return;
+  }
 
-return;
+  weatherMessage.textContent = text;
 
-}
+  weatherMessage.className =
+    "message " + type;
 
-favoriteCities.push({
-
-name:
-currentCityName,
-
-latitude:
-currentLatitude,
-
-longitude:
-currentLongitude
-
-});
-
-localStorage.setItem(
-"favoriteCities",
-JSON.stringify(
-favoriteCities
-)
-);
-
-displayFavoriteCities();
-
+  weatherMessage.classList.remove("hidden");
 }
 
 
-/* ==========================================
-   CITY SEARCH
-========================================== */
+/* =====================================================
+   WEATHER CODE
+===================================================== */
 
-async function searchWeather() {
+function weatherCode(code) {
 
-const input =
-document.getElementById(
-"locationInput"
-);
+  if (code === 0)
+    return ["☀️","Clear"];
 
-const city =
-input.value.trim();
+  if ([1,2,3].includes(code))
+    return ["⛅","Partly cloudy"];
 
-if (!city) {
+  if ([45,48].includes(code))
+    return ["🌫️","Fog"];
 
-alert(
-"Please enter a city."
-);
+  if ([51,53,55].includes(code))
+    return ["🌦️","Drizzle"];
 
-return;
+  if ([61,63,65].includes(code))
+    return ["🌧️","Rain"];
 
-}
+  if ([66,67].includes(code))
+    return ["🌧️","Freezing rain"];
 
-try {
+  if ([71,73,75,77].includes(code))
+    return ["❄️","Snow"];
 
-const response =
-await fetch(
-"https://geocoding-api.open-meteo.com/v1/search" +
-"?name=" +
-encodeURIComponent(city) +
-"&count=1&language=en&format=json"
-);
+  if ([80,81,82].includes(code))
+    return ["🌦️","Rain showers"];
 
-const data =
-await response.json();
+  if ([85,86].includes(code))
+    return ["🌨️","Snow showers"];
 
-if (
-!data.results ||
-!data.results.length
-) {
+  if ([95,96,99].includes(code))
+    return ["⛈️","Thunderstorm"];
 
-alert(
-"City not found."
-);
-
-return;
-
-}
-
-const place =
-data.results[0];
-
-const name =
-`${place.name}, ${place.country}`;
-
-loadWeather(
-place.latitude,
-place.longitude,
-name
-);
-
-}
-catch(error) {
-
-console.error(error);
-
-alert(
-"Unable to search for that city."
-);
-
-}
-
+  return ["🌤️","Weather"];
 }
 
 
-/* ==========================================
+/* =====================================================
    LOAD WEATHER
-========================================== */
+===================================================== */
 
 async function loadWeather(
-latitude,
-longitude,
-name
+  lat,
+  lon,
+  name
 ) {
 
-currentLatitude =
-latitude;
+  weatherMsg("Loading weather...");
 
-currentLongitude =
-longitude;
+  try {
 
-currentCityName =
-name;
+    const params = new URLSearchParams({
 
-document.getElementById(
-"location"
-).textContent =
-name;
+      latitude:lat,
+      longitude:lon,
 
-try {
+      current:[
+        "temperature_2m",
+        "relative_humidity_2m",
+        "apparent_temperature",
+        "precipitation",
+        "weather_code",
+        "cloud_cover",
+        "wind_speed_10m",
+        "wind_direction_10m",
+        "wind_gusts_10m",
+        "visibility",
+        "surface_pressure"
+      ].join(","),
 
-const url =
-"https://api.open-meteo.com/v1/forecast" +
+      hourly:[
+        "temperature_2m",
+        "apparent_temperature",
+        "precipitation_probability",
+        "precipitation",
+        "weather_code",
+        "cloud_cover",
+        "wind_speed_10m"
+      ].join(","),
 
-`?latitude=${latitude}` +
+      daily:[
+        "weather_code",
+        "temperature_2m_max",
+        "temperature_2m_min",
+        "precipitation_probability_max",
+        "precipitation_sum",
+        "sunrise",
+        "sunset"
+      ].join(","),
 
-`&longitude=${longitude}` +
+      forecast_days:16,
+      timezone:"auto",
+      temperature_unit:"fahrenheit",
+      wind_speed_unit:"mph",
+      precipitation_unit:"inch"
 
-"&current=" +
-"temperature_2m," +
-"relative_humidity_2m," +
-"apparent_temperature," +
-"precipitation," +
-"weather_code," +
-"wind_speed_10m," +
-"wind_direction_10m," +
-"wind_gusts_10m," +
-"cloud_cover" +
+    });
 
-"&hourly=" +
-"temperature_2m," +
-"precipitation_probability," +
-"weather_code," +
-"cloud_cover," +
-"visibility," +
-"wind_speed_10m" +
+    const response =
+      await fetch(
+        "https://api.open-meteo.com/v1/forecast?" +
+        params
+      );
 
-"&daily=" +
-"weather_code," +
-"temperature_2m_max," +
-"temperature_2m_min," +
-"precipitation_probability_max," +
-"sunrise," +
-"sunset," +
-"daylight_duration" +
+    if (!response.ok)
+      throw new Error("Weather request failed.");
 
-"&temperature_unit=fahrenheit" +
-"&wind_speed_unit=mph" +
-"&visibility_unit=miles" +
-"&forecast_days=16" +
-"&timezone=auto";
+    const data =
+      await response.json();
 
+    currentLocation = {
+      name,
+      latitude:lat,
+      longitude:lon
+    };
 
-const response =
-await fetch(url);
+    displayCurrent(data);
+    displayHourly(data);
+    displayDaily(data);
+    displaySun(data);
+    updateMapLocation(lat,lon);
 
-const data =
-await response.json();
+    weatherMsg(
+      "Weather updated.",
+      "success"
+    );
 
-updateCurrent(
-data.current
-);
+  } catch(error) {
 
-updateHourly(
-data.hourly
-);
+    console.error(error);
 
-updateForecast(
-data.daily
-);
-
-updateSun(
-data.daily
-);
-
-updateChart(
-data.hourly
-);
-
-loadExtendedForecast(
-latitude,
-longitude
-);
-
-loadAlerts(
-latitude,
-longitude
-);
-
-
-if (radarMap) {
-
-radarMap.setView(
-[
-latitude,
-longitude
-],
-7
-);
-
-if (locationMarker) {
-
-radarMap.removeLayer(
-locationMarker
-);
-
-}
-
-locationMarker =
-L.marker(
-[
-latitude,
-longitude
-]
-)
-.addTo(radarMap)
-.bindPopup(
-`<b>${name}</b>`
-);
-
-}
-
-}
-catch(error) {
-
-console.error(error);
-
-alert(
-"Weather data could not be loaded."
-);
-
-}
-
+    weatherMsg(
+      "Unable to load weather data.",
+      "error"
+    );
+  }
 }
 
 
-/* ==========================================
-   CURRENT WEATHER
-========================================== */
+/* =====================================================
+   CURRENT
+===================================================== */
 
-function updateCurrent(current) {
+function displayCurrent(data) {
 
-document.getElementById(
-"temperature"
-).textContent =
-Math.round(
-current.temperature_2m
-) + "°";
+  const c =
+    data.current;
 
-document.getElementById(
-"weatherIcon"
-).textContent =
-weatherIcon(
-current.weather_code
-);
+  const [icon,text] =
+    weatherCode(c.weather_code);
 
-document.getElementById(
-"condition"
-).textContent =
-weatherDescription(
-current.weather_code
-);
+  document.getElementById(
+    "locationName"
+  ).textContent =
+    currentLocation.name;
 
-document.getElementById(
-"feelsLike"
-).textContent =
-"Feels like " +
-Math.round(
-current.apparent_temperature
-) +
-"°";
+  document.getElementById(
+    "weatherIcon"
+  ).textContent =
+    icon;
 
-document.getElementById(
-"humidity"
-).textContent =
-current.relative_humidity_2m +
-"%";
+  document.getElementById(
+    "temperature"
+  ).textContent =
+    Math.round(c.temperature_2m) +
+    "°F";
 
-document.getElementById(
-"wind"
-).textContent =
-Math.round(
-current.wind_speed_10m
-) +
-" mph";
+  document.getElementById(
+    "condition"
+  ).textContent =
+    text;
 
-document.getElementById(
-"rain"
-).textContent =
-current.precipitation +
-" mm";
+  document.getElementById(
+    "feelsLike"
+  ).textContent =
+    "Feels like " +
+    Math.round(c.apparent_temperature) +
+    "°F";
 
-document.getElementById(
-"clouds"
-).textContent =
-current.cloud_cover +
-"%";
+  document.getElementById(
+    "humidity"
+  ).textContent =
+    c.relative_humidity_2m + "%";
 
-document.getElementById(
-"windDirection"
-).textContent =
-degreesToDirection(
-current.wind_direction_10m
-);
+  document.getElementById(
+    "wind"
+  ).textContent =
+    Math.round(c.wind_speed_10m) +
+    " mph";
 
-document.getElementById(
-"gusts"
-).textContent =
-Math.round(
-current.wind_gusts_10m
-) +
-" mph";
+  document.getElementById(
+    "clouds"
+  ).textContent =
+    c.cloud_cover + "%";
 
+  document.getElementById(
+    "rain"
+  ).textContent =
+    c.precipitation + " in";
+
+  document.getElementById(
+    "windDirection"
+  ).textContent =
+    Math.round(c.wind_direction_10m) +
+    "°";
+
+  document.getElementById(
+    "visibility"
+  ).textContent =
+    Math.round(
+      c.visibility / 1609.34
+    ) + " mi";
+
+  document.getElementById(
+    "pressure"
+  ).textContent =
+    Math.round(c.surface_pressure) +
+    " hPa";
+
+  document.getElementById(
+    "gusts"
+  ).textContent =
+    Math.round(c.wind_gusts_10m) +
+    " mph";
 }
 
 
-/* ==========================================
+/* =====================================================
    HOURLY
-========================================== */
+===================================================== */
 
-function updateHourly(hourly) {
+function displayHourly(data) {
 
-const container =
-document.getElementById(
-"hourly"
-);
+  const box =
+    document.getElementById(
+      "hourlyForecast"
+    );
 
-container.innerHTML = "";
+  box.innerHTML = "";
 
-const now =
-new Date();
+  const h =
+    data.hourly;
 
-let start =
-hourly.time.findIndex(
-time =>
-new Date(time) >= now
-);
+  for (
+    let i=0;
+    i<Math.min(24,h.time.length);
+    i++
+  ) {
 
-if (start < 0)
-start = 0;
+    const date =
+      new Date(h.time[i]);
 
-for (
-let i = start;
-i < Math.min(
-start + 24,
-hourly.time.length
-);
-i++
-) {
+    const [icon] =
+      weatherCode(
+        h.weather_code[i]
+      );
 
-const time =
-new Date(
-hourly.time[i]
-);
+    const card =
+      document.createElement("div");
 
-const card =
-document.createElement(
-"div"
-);
+    card.className =
+      "forecast-card";
 
-card.className =
-"hour-card";
+    card.innerHTML = `
 
-card.innerHTML = `
+      <strong>
+        ${date.toLocaleTimeString([],{
+          hour:"numeric"
+        })}
+      </strong>
 
-<div>
-${time.toLocaleTimeString(
-"en-US",
-{hour:"numeric"}
-)}
-</div>
+      <div class="forecast-icon">
+        ${icon}
+      </div>
 
-<div class="icon">
-${weatherIcon(
-hourly.weather_code[i]
-)}
-</div>
+      <div class="forecast-temp">
+        ${Math.round(
+          h.temperature_2m[i]
+        )}°F
+      </div>
 
-<b>
-${Math.round(
-hourly.temperature_2m[i]
-)}°
-</b>
+      <div>
+        Rain:
+        ${h.precipitation_probability[i] ?? 0}%
+      </div>
 
-<div>
-🌧️
-${hourly.precipitation_probability[i] ?? 0}%
-</div>
+    `;
 
-`;
-
-container.appendChild(card);
-
-}
-
+    box.appendChild(card);
+  }
 }
 
 
-/* ==========================================
-   16-DAY FORECAST
-========================================== */
+/* =====================================================
+   DAILY
+===================================================== */
 
-function updateForecast(daily) {
+function displayDaily(data) {
 
-const container =
-document.getElementById(
-"forecast"
-);
+  const box =
+    document.getElementById(
+      "dailyForecast"
+    );
 
-container.innerHTML = "";
+  box.innerHTML = "";
 
-for (
-let i = 0;
-i < daily.time.length;
-i++
-) {
+  const d =
+    data.daily;
 
-const date =
-new Date(
-daily.time[i] +
-"T12:00:00"
-);
+  for (
+    let i=0;
+    i<d.time.length;
+    i++
+  ) {
 
-const card =
-document.createElement(
-"div"
-);
+    const date =
+      new Date(
+        d.time[i] +
+        "T12:00:00"
+      );
 
-card.className =
-"forecast-card";
+    const [icon,text] =
+      weatherCode(
+        d.weather_code[i]
+      );
 
-card.innerHTML = `
+    const card =
+      document.createElement("div");
 
-<b>
-${
-i === 0
-? "Today"
-: date.toLocaleDateString(
-"en-US",
-{weekday:"short"}
-)
-}
-</b>
+    card.className =
+      "forecast-card";
 
-<small>
-${date.toLocaleDateString(
-"en-US",
-{
-month:"short",
-day:"numeric"
-}
-)}
-</small>
+    card.innerHTML = `
 
-<div class="icon">
-${weatherIcon(
-daily.weather_code[i]
-)}
-</div>
+      <strong>
+        ${date.toLocaleDateString([],{
+          weekday:"short",
+          month:"short",
+          day:"numeric"
+        })}
+      </strong>
 
-<div>
-${weatherDescription(
-daily.weather_code[i]
-)}
-</div>
+      <div class="forecast-icon">
+        ${icon}
+      </div>
 
-<div class="temps">
-${Math.round(
-daily.temperature_2m_max[i]
-)}°
-/
-${Math.round(
-daily.temperature_2m_min[i]
-)}°
-</div>
+      <div>
+        ${text}
+      </div>
 
-<div>
-🌧️
-${daily.precipitation_probability_max[i] ?? 0}%
-</div>
+      <div class="forecast-temp">
+        ${Math.round(
+          d.temperature_2m_max[i]
+        )}°
+        /
+        ${Math.round(
+          d.temperature_2m_min[i]
+        )}°
+      </div>
 
-`;
+      <div>
+        🌧️
+        ${d.precipitation_probability_max[i] ?? 0}%
+      </div>
 
-container.appendChild(card);
+    `;
 
-}
-
+    box.appendChild(card);
+  }
 }
 
 
-/* ==========================================
-   20-DAY EXTENDED OUTLOOK
-========================================== */
-
-async function loadExtendedForecast(
-latitude,
-longitude
-) {
-
-const container =
-document.getElementById(
-"extendedForecast"
-);
-
-container.innerHTML =
-'<div class="status">Loading extended outlook...</div>';
-
-try {
-
-const url =
-"https://ensemble-api.open-meteo.com/v1/ensemble" +
-
-`?latitude=${latitude}` +
-
-`&longitude=${longitude}` +
-
-"&models=gfs_seamless" +
-
-"&daily=" +
-"temperature_2m_mean," +
-"temperature_2m_min," +
-"temperature_2m_max" +
-
-"&temperature_unit=fahrenheit" +
-
-"&forecast_days=20" +
-
-"&timezone=auto";
-
-
-const response =
-await fetch(url);
-
-if (!response.ok)
-throw new Error(
-"Extended forecast failed"
-);
-
-const data =
-await response.json();
-
-const daily =
-data.daily;
-
-container.innerHTML = "";
-
-for (
-let i = 0;
-i < Math.min(
-20,
-daily.time.length
-);
-i++
-) {
-
-const date =
-new Date(
-daily.time[i] +
-"T12:00:00"
-);
-
-const card =
-document.createElement(
-"div"
-);
-
-card.className =
-"extended-card";
-
-card.innerHTML = `
-
-<b>
-${
-i === 0
-? "Today"
-: date.toLocaleDateString(
-"en-US",
-{weekday:"short"}
-)
-}
-</b>
-
-<small>
-${date.toLocaleDateString(
-"en-US",
-{
-month:"short",
-day:"numeric"
-}
-)}
-</small>
-
-<div class="icon">
-🌡️
-</div>
-
-<div class="temps">
-${Math.round(
-daily.temperature_2m_mean[i]
-)}°
-</div>
-
-<div>
-High:
-${Math.round(
-daily.temperature_2m_max[i]
-)}°
-</div>
-
-<div>
-Low:
-${Math.round(
-daily.temperature_2m_min[i]
-)}°
-</div>
-
-`;
-
-container.appendChild(card);
-
-}
-
-}
-catch(error) {
-
-console.error(error);
-
-container.innerHTML =
-'<div class="status">Extended outlook unavailable.</div>';
-
-}
-
-}
-
-
-/* ==========================================
-   WEATHER ALERTS
-========================================== */
-
-async function loadAlerts(
-latitude,
-longitude
-) {
-
-const container =
-document.getElementById(
-"alerts"
-);
-
-container.innerHTML =
-'<div class="status">Checking active alerts...</div>';
-
-try {
-
-const response =
-await fetch(
-`https://api.weather.gov/alerts/active?point=${latitude},${longitude}`,
-{
-headers: {
-"Accept":
-"application/geo+json"
-}
-}
-);
-
-if (!response.ok)
-throw new Error(
-"NWS request failed"
-);
-
-const data =
-await response.json();
-
-const alerts =
-data.features || [];
-
-if (!alerts.length) {
-
-container.innerHTML = `
-
-<div class="no-alerts">
-✅ No active National Weather Service
-alerts were found for this location.
-</div>
-
-`;
-
-return;
-
-}
-
-container.innerHTML = "";
-
-alerts.forEach(
-feature => {
-
-const props =
-feature.properties || {};
-
-const alert =
-document.createElement(
-"div"
-);
-
-alert.className =
-"alert";
-
-const expiration =
-props.expires
-? new Date(
-props.expires
-).toLocaleString()
-: "Unknown";
-
-alert.innerHTML = `
-
-<div class="alert-title">
-🚨 ${escapeHtml(
-props.event ||
-"Weather Alert"
-)}
-</div>
-
-<div>
-<b>Area:</b>
-${escapeHtml(
-props.areaDesc ||
-"Unknown"
-)}
-</div>
-
-<div>
-<b>Expires:</b>
-${escapeHtml(
-expiration
-)}
-</div>
-
-<div class="alert-description">
-${escapeHtml(
-props.headline ||
-"Active weather alert."
-)}
-</div>
-
-`;
-
-container.appendChild(
-alert
-);
-
-});
-
-}
-catch(error) {
-
-console.error(error);
-
-container.innerHTML = `
-
-<div class="alert">
-⚠️ Weather alerts are unavailable right now.
-</div>
-
-`;
-
-}
-
-}
-
-
-/* ==========================================
-   ANIMATED RADAR
-========================================== */
-
-function createRadar() {
-
-radarMap =
-L.map(
-"radarMap"
-).setView(
-[
-currentLatitude,
-currentLongitude
-],
-7
-);
-
-L.tileLayer(
-"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-{
-maxZoom: 19,
-attribution:
-"&copy; OpenStreetMap contributors"
-}
-).addTo(
-radarMap
-);
-
-locationMarker =
-L.marker(
-[
-currentLatitude,
-currentLongitude
-]
-)
-.addTo(
-radarMap
-)
-.bindPopup(
-"<b>Current Location</b>"
-);
-
-loadRadar();
-
-}
-
-
-/*
- IMPORTANT:
- We get BOTH the host and the frame path
- directly from RainViewer's metadata.
-*/
-
-async function loadRadar() {
-
-stopRadarAnimation();
-
-setRadarStatus(
-"🔄 Loading radar frames..."
-);
-
-try {
-
-const response =
-await fetch(
-"https://api.rainviewer.com/public/weather-maps.json"
-);
-
-if (!response.ok)
-throw new Error(
-"Radar metadata unavailable"
-);
-
-const data =
-await response.json();
-
-radarHost =
-data.host;
-
-radarFrames =
-data.radar &&
-data.radar.past
-? data.radar.past
-: [];
-
-
-if (!radarFrames.length) {
-
-throw new Error(
-"No radar frames available"
-);
-
-}
-
-
-radarIndex =
-radarFrames.length - 1;
-
-
-const slider =
-document.getElementById(
-"radarSlider"
-);
-
-slider.min = 0;
-
-slider.max =
-radarFrames.length - 1;
-
-slider.value =
-radarIndex;
-
-
-showRadarFrame();
-
-}
-catch(error) {
-
-console.error(
-"Radar error:",
-error
-);
-
-setRadarStatus(
-"⚠️ Radar could not be loaded."
-);
-
-}
-
-}
-
-
-/*
- Build the tile URL using the CURRENT
- host and frame path returned by RainViewer.
-*/
-
-function radarTileUrl(frame) {
-
-return (
-radarHost +
-frame.path +
-"/256/{z}/{x}/{y}/2/1_1.png"
-);
-
-}
-
-
-function showRadarFrame() {
-
-if (!radarFrames.length)
-return;
-
-
-const frame =
-radarFrames[
-radarIndex
-];
-
-
-if (radarLayer) {
-
-radarMap.removeLayer(
-radarLayer
-);
-
-}
-
-
-radarLayer =
-L.tileLayer(
-radarTileUrl(frame),
-{
-opacity: 0.72,
-maxNativeZoom: 7,
-maxZoom: 12,
-tileSize: 256,
-attribution:
-"Radar: RainViewer"
-}
-);
-
-
-radarLayer.addTo(
-radarMap
-);
-
-
-document.getElementById(
-"radarSlider"
-).value =
-radarIndex;
-
-
-const timestamp =
-new Date(
-frame.time * 1000
-);
-
-
-setRadarStatus(
-"🛰️ Radar: " +
-timestamp.toLocaleString(
-"en-US",
-{
-month:"short",
-day:"numeric",
-hour:"numeric",
-minute:"2-digit"
-}
-)
-);
-
-}
-
-
-/* ==========================================
-   RADAR CONTROLS
-========================================== */
-
-function previousRadarFrame() {
-
-if (!radarFrames.length)
-return;
-
-stopRadarAnimation();
-
-radarIndex--;
-
-if (radarIndex < 0) {
-
-radarIndex =
-radarFrames.length - 1;
-
-}
-
-showRadarFrame();
-
-}
-
-
-function nextRadarFrame() {
-
-if (!radarFrames.length)
-return;
-
-stopRadarAnimation();
-
-radarIndex++;
-
-if (
-radarIndex >=
-radarFrames.length
-) {
-
-radarIndex = 0;
-
-}
-
-showRadarFrame();
-
-}
-
-
-function sliderRadarFrame() {
-
-if (!radarFrames.length)
-return;
-
-stopRadarAnimation();
-
-radarIndex =
-Number(
-document.getElementById(
-"radarSlider"
-).value
-);
-
-showRadarFrame();
-
-}
-
-
-function toggleRadarAnimation() {
-
-if (radarPlaying) {
-
-stopRadarAnimation();
-
-}
-else {
-
-startRadarAnimation();
-
-}
-
-}
-
-
-function startRadarAnimation() {
-
-if (!radarFrames.length)
-return;
-
-radarPlaying = true;
-
-document.getElementById(
-"playRadarButton"
-).textContent =
-"⏸ Pause";
-
-radarTimer =
-setInterval(
-() => {
-
-radarIndex++;
-
-if (
-radarIndex >=
-radarFrames.length
-) {
-
-radarIndex = 0;
-
-}
-
-showRadarFrame();
-
-},
-700
-);
-
-}
-
-
-function stopRadarAnimation() {
-
-radarPlaying = false;
-
-if (radarTimer) {
-
-clearInterval(
-radarTimer
-);
-
-radarTimer = null;
-
-}
-
-const button =
-document.getElementById(
-"playRadarButton"
-);
-
-if (button) {
-
-button.textContent =
-"▶ Play";
-
-}
-
-}
-
-
-function setRadarStatus(
-message
-) {
-
-document.getElementById(
-"radarStatus"
-).textContent =
-message;
-
-}
-
-
-/* ==========================================
-   MY LOCATION
-========================================== */
-
-function useMyLocation() {
-
-if (!navigator.geolocation) {
-
-alert(
-"Location is not supported by this browser."
-);
-
-return;
-
-}
-
-navigator.geolocation.getCurrentPosition(
-
-position => {
-
-loadWeather(
-position.coords.latitude,
-position.coords.longitude,
-"My Location"
-);
-
-},
-
-error => {
-
-console.error(error);
-
-alert(
-"Location permission was not available."
-);
-
-}
-
-);
-
-}
-
-
-/* ==========================================
-   DARK MODE
-========================================== */
-
-function toggleDarkMode() {
-
-document.body.classList.toggle(
-"dark"
-);
-
-}
-
-
-/* ==========================================
-   TEMPERATURE CHART
-========================================== */
-
-function updateChart(hourly) {
-
-const canvas =
-document.getElementById(
-"temperatureChart"
-);
-
-const ctx =
-canvas.getContext("2d");
-
-const width =
-canvas.clientWidth;
-
-const height =
-canvas.clientHeight;
-
-canvas.width =
-width * 2;
-
-canvas.height =
-height * 2;
-
-ctx.scale(2,2);
-
-const values =
-hourly.temperature_2m.slice(
-0,
-24
-);
-
-const max =
-Math.max(
-...values
-);
-
-const min =
-Math.min(
-...values
-);
-
-ctx.clearRect(
-0,
-0,
-width,
-height
-);
-
-ctx.beginPath();
-
-values.forEach(
-(value,index) => {
-
-const x =
-index *
-width /
-(values.length - 1);
-
-const y =
-height -
-(
-(value - min) /
-(max - min || 1)
-) *
-(height - 30) -
-15;
-
-if (index === 0)
-ctx.moveTo(x,y);
-else
-ctx.lineTo(x,y);
-
-});
-
-ctx.strokeStyle =
-"#1976d2";
-
-ctx.lineWidth =
-3;
-
-ctx.stroke();
-
-}
-
-
-/* ==========================================
+/* =====================================================
    SUN
-========================================== */
+===================================================== */
 
-function updateSun(daily) {
+function displaySun(data) {
 
-document.getElementById(
-"sunrise"
-).textContent =
-formatTime(
-daily.sunrise[0]
-);
+  const d =
+    data.daily;
 
-document.getElementById(
-"sunset"
-).textContent =
-formatTime(
-daily.sunset[0]
-);
+  document.getElementById(
+    "sunrise"
+  ).textContent =
+    formatTime(d.sunrise[0]);
 
-const seconds =
-daily.daylight_duration[0];
-
-const hours =
-Math.floor(
-seconds / 3600
-);
-
-const minutes =
-Math.floor(
-(seconds % 3600) / 60
-);
-
-document.getElementById(
-"daylight"
-).textContent =
-`${hours}h ${minutes}m`;
-
-document.getElementById(
-"localTime"
-).textContent =
-new Date().toLocaleTimeString(
-"en-US",
-{
-hour:"numeric",
-minute:"2-digit"
-}
-);
-
+  document.getElementById(
+    "sunset"
+  ).textContent =
+    formatTime(d.sunset[0]);
 }
 
 
 function formatTime(value) {
 
-return new Date(
-value
-).toLocaleTimeString(
-"en-US",
-{
-hour:"numeric",
-minute:"2-digit"
-}
-);
+  if (!value)
+    return "--";
 
+  return new Date(value)
+    .toLocaleTimeString([],{
+      hour:"numeric",
+      minute:"2-digit"
+    });
 }
 
 
-/* ==========================================
-   WEATHER HELPERS
-========================================== */
+/* =====================================================
+   CITY SEARCH
+===================================================== */
 
-function weatherDescription(code) {
+async function searchCity() {
 
-if (code === 0)
-return "Clear sky";
+  const query =
+    document.getElementById(
+      "cityInput"
+    ).value.trim();
 
-if (code <= 3)
-return "Partly cloudy";
+  if (!query)
+    return;
 
-if (code <= 48)
-return "Foggy";
+  weatherMsg("Searching...");
 
-if (code <= 57)
-return "Drizzle";
+  try {
 
-if (code <= 67)
-return "Rain";
+    const response =
+      await fetch(
+        "https://geocoding-api.open-meteo.com/v1/search?" +
+        new URLSearchParams({
+          name:query,
+          count:1,
+          language:"en",
+          format:"json"
+        })
+      );
 
-if (code <= 77)
-return "Snow";
+    const data =
+      await response.json();
 
-if (code <= 82)
-return "Rain showers";
+    if (
+      !data.results ||
+      !data.results.length
+    ) {
 
-if (code <= 86)
-return "Snow showers";
+      weatherMsg(
+        "City not found.",
+        "error"
+      );
 
-if (code >= 95)
-return "Thunderstorm";
+      return;
+    }
 
-return "Unknown";
+    const place =
+      data.results[0];
 
+    const name =
+      [
+        place.name,
+        place.admin1,
+        place.country
+      ]
+      .filter(Boolean)
+      .join(", ");
+
+    loadWeather(
+      place.latitude,
+      place.longitude,
+      name
+    );
+
+  } catch {
+
+    weatherMsg(
+      "Search failed.",
+      "error"
+    );
+  }
 }
 
 
-function weatherIcon(code) {
+/* =====================================================
+   LOCATION
+===================================================== */
 
-if (code === 0)
-return "☀️";
+function myLocation() {
 
-if (code <= 3)
-return "🌤️";
+  if (!navigator.geolocation) {
 
-if (code <= 48)
-return "🌫️";
+    weatherMsg(
+      "Location isn't supported.",
+      "error"
+    );
 
-if (code <= 57)
-return "🌦️";
+    return;
+  }
 
-if (code <= 67)
-return "🌧️";
+  weatherMsg(
+    "Getting your location..."
+  );
 
-if (code <= 77)
-return "❄️";
+  navigator.geolocation.getCurrentPosition(
 
-if (code <= 82)
-return "🌦️";
+    position => {
 
-if (code <= 86)
-return "🌨️";
+      loadWeather(
+        position.coords.latitude,
+        position.coords.longitude,
+        "My Location"
+      );
 
-if (code >= 95)
-return "⛈️";
+    },
 
-return "🌡️";
+    () => {
 
+      weatherMsg(
+        "Location permission was not granted.",
+        "error"
+      );
+
+    }
+
+  );
 }
 
 
-function degreesToDirection(
-degrees
-) {
+/* =====================================================
+   FAVORITES
+===================================================== */
 
-const directions = [
-"N",
-"NE",
-"E",
-"SE",
-"S",
-"SW",
-"W",
-"NW"
-];
+function getFavorites() {
 
-return directions[
-Math.round(
-degrees / 45
-) % 8
-];
+  try {
 
+    return JSON.parse(
+      localStorage.getItem(
+        "weatherFavorites"
+      )
+    ) || [];
+
+  } catch {
+
+    return [];
+  }
 }
 
 
-function escapeHtml(value) {
+function saveFavorites(list) {
 
-return String(value)
-.replaceAll(
-"&",
-"&amp;"
-)
-.replaceAll(
-"<",
-"&lt;"
-)
-.replaceAll(
-">",
-"&gt;"
-)
-.replaceAll(
-'"',
-"&quot;"
-)
-.replaceAll(
-"'",
-"&#039;"
-);
+  localStorage.setItem(
+    "weatherFavorites",
+    JSON.stringify(list)
+  );
 
+  renderFavorites();
 }
 
 
-/* ==========================================
-   START WEBSITE
-========================================== */
+function addFavorite() {
 
-displayFavoriteCities();
+  const list =
+    getFavorites();
 
-createRadar();
+  const exists =
+    list.some(
+      x =>
+        x.name ===
+        currentLocation.name
+    );
 
-loadWeather(
-25.7617,
--80.1918,
-"Miami, United States"
-);
+  if (exists) {
 
-document.getElementById(
-"locationInput"
-).value =
-"Miami";
+    weatherMsg(
+      "Already in favorites.",
+      "success"
+    );
+
+    return;
+  }
+
+  list.push({
+    name:currentLocation.name,
+    latitude:currentLocation.latitude,
+    longitude:currentLocation.longitude
+  });
+
+  saveFavorites(list);
+
+  weatherMsg(
+    "Added to favorites!",
+    "success"
+  );
+}
+
+
+function renderFavorites() {
+
+  const box =
+    document.getElementById(
+      "favorites"
+    );
+
+  const list =
+    getFavorites();
+
+  box.innerHTML = "";
+
+  document.getElementById(
+    "favoriteCount"
+  ).textContent =
+    list.length;
+
+  if (!list.length) {
+
+    box.textContent =
+      "No favorites yet.";
+
+    return;
+  }
+
+  list.forEach(item => {
+
+    const button =
+      document.createElement("button");
+
+    button.className =
+      "favorite";
+
+    button.textContent =
+      "⭐ " + item.name;
+
+    button.onclick = () => {
+
+      loadWeather(
+        item.latitude,
+        item.longitude,
+        item.name
+      );
+
+    };
+
+    box.appendChild(button);
+
+  });
+}
+
+
+/* =====================================================
+   MAP
+===================================================== */
+
+function initializeMap() {
+
+  map =
+    L.map("map")
+      .setView(
+        [
+          currentLocation.latitude,
+          currentLocation.longitude
+        ],
+        5
+      );
+
+  currentTile =
+    L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        maxZoom:19,
+        attribution:"© OpenStreetMap"
+      }
+    ).addTo(map);
+
+  marker =
+    L.marker([
+      currentLocation.latitude,
+      currentLocation.longitude
+    ]).addTo(map);
+
+  map.on("click",event => {
+
+    const lat =
+      event.latlng.lat;
+
+    const lon =
+      event.latlng.lng;
+
+    loadWeather(
+      lat,
+      lon,
+      `Location (${lat.toFixed(2)}, ${lon.toFixed(2)})`
+    );
+
+  });
+}
+
+
+function updateMapLocation(lat,lon) {
+
+  if (!map)
+    return;
+
+  map.setView(
+    [lat,lon],
+    Math.max(
+      map.getZoom(),
+      7
+    )
+  );
+
+  if (marker)
+    marker.setLatLng([lat,lon]);
+}
+
+
+function setMapLayer(type) {
+
+  if (!map)
+    return;
+
+  if (currentTile)
+    map.removeLayer(currentTile);
+
+  if (type === "satellite") {
+
+    currentTile =
+      L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        {
+          maxZoom:19,
+          attribution:"Esri"
+        }
+      );
+
+  } else {
+
+    currentTile =
+      L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          maxZoom:19,
+          attribution:"© OpenStreetMap"
+        }
+      );
+
+  }
+
+  currentTile.addTo(map);
+}
 
 
 /*
- Refresh radar metadata every 10 minutes.
+  Radar-style precipitation overlay.
+
+  This uses RainViewer's public radar tile
+  endpoint for the visual radar layer.
 */
 
-setInterval(
-loadRadar,
-10 * 60 * 1000
-);
-<script>
-const SUPABASE_URL = "https://vbtbqkvjryytmhlwexoc.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_F2cFR6mn7xkVEaYOtYVTMA_ZkkPnBfi";
+async function showRadar() {
 
-const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
+  if (!map)
+    return;
+
+  try {
+
+    const response =
+      await fetch(
+        "https://api.rainviewer.com/public/weather-maps.json"
+      );
+
+    const data =
+      await response.json();
+
+    const radar =
+      data.radar &&
+      data.radar.past;
+
+    if (!radar || !radar.length)
+      return;
+
+    const latest =
+      radar[radar.length - 1];
+
+    if (window.radarOverlay)
+      map.removeLayer(
+        window.radarOverlay
+      );
+
+    window.radarOverlay =
+      L.tileLayer(
+        "https://tilecache.rainviewer.com" +
+        latest.path +
+        "/256/{z}/{x}/{y}/2/1_1.png",
+        {
+          opacity:.65,
+          zIndex:20
+        }
+      );
+
+    window.radarOverlay.addTo(map);
+
+  } catch(error) {
+
+    console.error(
+      "Radar error:",
+      error
+    );
+
+  }
+}
+
+
+/* =====================================================
+   AUTH
+===================================================== */
+
+async function signUp() {
+
+  const email =
+    document.getElementById(
+      "email"
+    ).value.trim();
+
+  const password =
+    document.getElementById(
+      "password"
+    ).value;
+
+  const displayName =
+    document.getElementById(
+      "displayName"
+    ).value.trim();
+
+  if (!email || !password) {
+
+    authMsg(
+      "Enter an email and password.",
+      "error"
+    );
+
+    return;
+  }
+
+  if (password.length < 6) {
+
+    authMsg(
+      "Password must be at least 6 characters.",
+      "error"
+    );
+
+    return;
+  }
+
+  authMsg(
+    "Creating account..."
+  );
+
+  const {data,error} =
+    await supabaseClient.auth.signUp({
+
+      email,
+      password,
+
+      options:{
+        data:{
+          display_name:
+            displayName
+        }
+      }
+
+    });
+
+  if (error) {
+
+    authMsg(
+      error.message,
+      "error"
+    );
+
+    return;
+  }
+
+  if (data.user) {
+
+    authMsg(
+      "Account created! Check your email if confirmation is enabled.",
+      "success"
+    );
+
+  }
+}
+
+
+async function logIn() {
+
+  const email =
+    document.getElementById(
+      "email"
+    ).value.trim();
+
+  const password =
+    document.getElementById(
+      "password"
+    ).value;
+
+  authMsg(
+    "Logging in..."
+  );
+
+  const {data,error} =
+    await supabaseClient.auth.signInWithPassword({
+
+      email,
+      password
+
+    });
+
+  if (error) {
+
+    authMsg(
+      error.message,
+      "error"
+    );
+
+    return;
+  }
+
+  currentUser =
+    data.user;
+
+  await loadProfile();
+
+  showWeatherApp();
+}
+
+
+async function logOut() {
+
+  await supabaseClient.auth.signOut();
+
+  currentUser = null;
+  currentProfile = null;
+
+  document
+    .getElementById("accountPanel")
+    .classList.add("hidden");
+
+  document
+    .getElementById("plusPanel")
+    .classList.add("hidden");
+
+  document
+    .getElementById("adminPanel")
+    .classList.add("hidden");
+
+  weatherApp.classList.add(
+    "hidden"
+  );
+
+  authScreen.classList.remove(
+    "hidden"
+  );
+
+  document.getElementById(
+    "accountButton"
+  ).textContent =
+    "👤 Login";
+}
+
+
+async function loadProfile() {
+
+  if (!currentUser)
+    return;
+
+  const {data,error} =
+    await supabaseClient
+      .from("profiles")
+      .select("*")
+      .eq("id",currentUser.id)
+      .single();
+
+  if (error) {
+
+    console.error(
+      "Profile error:",
+      error
+    );
+
+    return;
+  }
+
+  currentProfile =
+    data;
+
+  updateAccount();
+}
+
+
+function updateAccount() {
+
+  const type =
+    currentProfile?.account_type ||
+    "user";
+
+  document.getElementById(
+    "accountEmail"
+  ).textContent =
+    currentUser?.email || "--";
+
+  const badge =
+    document.getElementById(
+      "accountType"
+    );
+
+  badge.textContent =
+    type.toUpperCase();
+
+  badge.className =
+    "badge";
+
+  document
+    .getElementById("plusPanel")
+    .classList.toggle(
+      "hidden",
+      type !== "plus"
+    );
+
+  document
+    .getElementById("adminPanel")
+    .classList.toggle(
+      "hidden",
+      type !== "admin"
+    );
+}
+
+
+function showWeatherApp() {
+
+  authScreen.classList.add(
+    "hidden"
+  );
+
+  weatherApp.classList.remove(
+    "hidden"
+  );
+
+  document.getElementById(
+    "accountButton"
+  ).textContent =
+    "👤 Account";
+
+  loadWeather(
+    currentLocation.latitude,
+    currentLocation.longitude,
+    currentLocation.name
+  );
+
+  renderFavorites();
+}
+
+
+/* =====================================================
+   EVENTS
+===================================================== */
+
+document.getElementById(
+  "signupButton"
+).onclick =
+  signUp;
+
+document.getElementById(
+  "loginButton"
+).onclick =
+  logIn;
+
+document.getElementById(
+  "logoutButton"
+).onclick =
+  logOut;
+
+document.getElementById(
+  "searchButton"
+).onclick =
+  searchCity;
+
+document.getElementById(
+  "locationButton"
+).onclick =
+  myLocation;
+
+document.getElementById(
+  "favoriteButton"
+).onclick =
+  addFavorite;
+
+
+document.getElementById(
+  "guestButton"
+).onclick =
+  () => {
+
+    authScreen.classList.add(
+      "hidden"
+    );
+
+    weatherApp.classList.remove(
+      "hidden"
+    );
+
+    loadWeather(
+      currentLocation.latitude,
+      currentLocation.longitude,
+      currentLocation.name
+    );
+
+  };
+
+
+document.getElementById(
+  "accountButton"
+).onclick =
+  () => {
+
+    if (!currentUser) {
+
+      authScreen.classList.remove(
+        "hidden"
+      );
+
+      weatherApp.classList.add(
+        "hidden"
+      );
+
+      return;
+    }
+
+    document
+      .getElementById("accountPanel")
+      .classList.toggle("hidden");
+
+  };
+
+
+document.getElementById(
+  "darkButton"
+).onclick =
+  () => {
+
+    document.body.classList.toggle(
+      "dark"
+    );
+
+    localStorage.setItem(
+      "weatherDark",
+      document.body.classList.contains(
+        "dark"
+      )
+    );
+
+  };
+
+
+document.getElementById(
+  "normalLayer"
+).onclick =
+  () => {
+
+    setMapLayer("normal");
+
+  };
+
+
+document.getElementById(
+  "satelliteLayer"
+).onclick =
+  () => {
+
+    setMapLayer("satellite");
+
+  };
+
+
+document.getElementById(
+  "radarLayer"
+).onclick =
+  () => {
+
+    showRadar();
+
+  };
+
+
+document.getElementById(
+  "rainLayer"
+).onclick =
+  () => {
+
+    showRadar();
+
+  };
+
+
+/* =====================================================
+   ENTER TO SEARCH
+===================================================== */
+
+document.getElementById(
+  "cityInput"
+).addEventListener(
+  "keydown",
+  event => {
+
+    if (event.key === "Enter")
+      searchCity();
+
+  }
 );
-</script>
+
+
+/* =====================================================
+   START
+===================================================== */
+
+async function startApp() {
+
+  if (
+    localStorage.getItem(
+      "weatherDark"
+    ) === "true"
+  ) {
+
+    document.body.classList.add(
+      "dark"
+    );
+
+  }
+
+  renderFavorites();
+
+  /*
+    Wait until the page is painted before
+    creating the map.
+  */
+
+  initializeMap();
+
+  const {
+    data:{
+      session
+    }
+  } =
+    await supabaseClient.auth.getSession();
+
+  if (session?.user) {
+
+    currentUser =
+      session.user;
+
+    await loadProfile();
+
+    showWeatherApp();
+
+  } else {
+
+    authScreen.classList.remove(
+      "hidden"
+    );
+
+  }
+}
+
+
+supabaseClient.auth.onAuthStateChange(
+  async (_event,session) => {
+
+    if (session?.user) {
+
+      currentUser =
+        session.user;
+
+      await loadProfile();
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   PWA
+===================================================== */
+
+if (
+  "serviceWorker" in navigator
+) {
+
+  window.addEventListener(
+    "load",
+    () => {
+
+      navigator.serviceWorker
+        .register("./sw.js")
+        .then(() => {
+
+          console.log(
+            "Weather Platform PWA ready!"
+          );
+
+        })
+        .catch(error => {
+
+          console.error(
+            "PWA registration failed:",
+            error
+          );
+
+        });
+
+    }
+  );
+
+}
+
+
+startApp();
+
 </script>
 
 </body>
