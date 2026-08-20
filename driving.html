@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drive Rush</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div id="game">
+
+    <div id="hud">
+      Score: <span id="score">0</span>
+    </div>
+
+    <canvas id="road"></canvas>
+
+    <div id="startScreen">
+      <h1>🚗 Drive Rush</h1>
+      <p>Dodge the traffic!</p>
+      <button id="startButton">START</button>
+    </div>
+
+    <div id="gameOverScreen" class="hidden">
+      <h1>💥 Game Over</h1>
+      <p>Score: <span id="finalScore">0</span></p>
+      <button id="restartButton">PLAY AGAIN</button>
+    </div>
+
+    <div id="controls">
+      <button id="leftButton">⬅️</button>
+      <button id="rightButton">➡️</button>
+    </div>
+
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
