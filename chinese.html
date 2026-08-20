@@ -1,0 +1,2203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#d71920">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="中文学习">
+
+<title>中文学习</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+  background: #f4f5f7;
+  color: #222;
+}
+
+body.dark {
+  background: #111827;
+  color: white;
+}
+
+header {
+  height: 64px;
+  background: white;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.dark header {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.logo {
+  font-size: 21px;
+  font-weight: bold;
+  color: #d71920;
+  white-space: nowrap;
+}
+
+.search {
+  flex: 1;
+  display: flex;
+  max-width: 650px;
+  margin: auto;
+  border: 2px solid #d71920;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.search input {
+  flex: 1;
+  border: 0;
+  padding: 11px;
+  outline: none;
+  background: transparent;
+  color: inherit;
+}
+
+.search button {
+  border: 0;
+  background: #d71920;
+  color: white;
+  padding: 0 18px;
+  cursor: pointer;
+}
+
+button {
+  cursor: pointer;
+}
+
+.topButton {
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 13px;
+}
+
+.sidebar {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  bottom: 0;
+  width: 235px;
+  background: white;
+  border-right: 1px solid #ddd;
+  padding: 15px;
+  overflow-y: auto;
+  z-index: 9;
+}
+
+.dark .sidebar {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.nav {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 12px;
+  margin-bottom: 4px;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 15px;
+}
+
+.nav:hover,
+.nav.active {
+  background: #fee2e2;
+  color: #b91c1c;
+  font-weight: bold;
+}
+
+.dark .nav:hover,
+.dark .nav.active {
+  background: #3f1d20;
+  color: #fecaca;
+}
+
+.moreMenu {
+  display: none;
+  padding-left: 10px;
+}
+
+main {
+  margin-left: 235px;
+  padding-top: 64px;
+}
+
+.hero {
+  background: #d71920;
+  color: white;
+  padding: 28px;
+}
+
+.content {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
+
+.page {
+  display: none;
+}
+
+.card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 18px;
+}
+
+.dark .card {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.home {
+  text-align: center;
+  padding: 50px 20px;
+}
+
+.flag {
+  font-size: 65px;
+}
+
+.primary {
+  background: #d71920;
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 16px;
+}
+
+.secondary {
+  background: #2563eb;
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 16px;
+}
+
+.gray {
+  background: #e5e7eb;
+  color: #222;
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 16px;
+}
+
+.dark .gray {
+  background: #374151;
+  color: white;
+}
+
+.lesson {
+  font-size: 20px;
+  line-height: 2.05;
+}
+
+.lessonTitle {
+  text-align: center;
+}
+
+.lessonTitle .cn {
+  font-size: 38px;
+  font-weight: bold;
+}
+
+.lessonTitle .en {
+  color: #777;
+}
+
+.info {
+  display: none;
+  background: #f3f4f6;
+  color: #555;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.characterGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+.character {
+  border: 2px solid #ddd;
+  border-radius: 15px;
+  padding: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: .15s;
+}
+
+.character:hover {
+  transform: translateY(-2px);
+}
+
+.character.selected {
+  border-color: #d71920;
+  background: #fff1f2;
+}
+
+.dark .character.selected {
+  background: #3f1d20;
+}
+
+.character .hanzi {
+  font-size: 48px;
+  color: #d71920;
+  font-weight: bold;
+}
+
+.character .pinyin {
+  color: #777;
+}
+
+.strokeArea {
+  text-align: center;
+}
+
+#strokeCanvas {
+  display: block;
+  width: 340px;
+  height: 340px;
+  max-width: 100%;
+  margin: 15px auto;
+  border: 3px solid #d71920;
+  border-radius: 16px;
+  background: white;
+}
+
+.currentCharacter {
+  font-size: 70px;
+  font-weight: bold;
+  color: #d71920;
+}
+
+.words {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+}
+
+.word {
+  border: 1px solid #ddd;
+  border-radius: 14px;
+  padding: 14px;
+  cursor: pointer;
+}
+
+.word .meaning {
+  display: none;
+  color: #666;
+}
+
+.word.open .meaning {
+  display: block;
+}
+
+.micBox {
+  margin-top: 25px;
+  text-align: center;
+  background: #fff1f2;
+  border-radius: 15px;
+  padding: 22px;
+}
+
+.micButton {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 0;
+  background: #d71920;
+  color: white;
+  font-size: 30px;
+}
+
+.progress {
+  height: 14px;
+  background: #ddd;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  width: 0%;
+  background: #d71920;
+  transition: .3s;
+}
+
+#board {
+  width: 100%;
+  height: 500px;
+  background: white;
+  display: block;
+  touch-action: none;
+}
+
+.boardWrap {
+  border: 2px solid #ddd;
+  border-radius: 15px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.homework {
+  border: 1px solid #ddd;
+  border-radius: 14px;
+  padding: 15px;
+  margin: 10px 0;
+}
+
+.homework input,
+.homework textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 9px;
+  background: transparent;
+  color: inherit;
+}
+
+.coming {
+  text-align: center;
+  padding: 70px;
+}
+
+.comingIcon {
+  font-size: 70px;
+}
+
+.mobileMenu {
+  display: none;
+}
+
+@media(max-width:800px) {
+
+  .logo {
+    display: none;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: .2s;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  main {
+    margin-left: 0;
+  }
+
+  .mobileMenu {
+    display: block;
+    position: fixed;
+    top: 72px;
+    left: 10px;
+    z-index: 11;
+    border: 0;
+    border-radius: 10px;
+    padding: 10px 13px;
+    background: white;
+  }
+
+  .hero {
+    padding-left: 65px;
+  }
+
+  .characterGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media(max-width:500px) {
+
+  .characterGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .content {
+    padding: 12px;
+  }
+
+  .lesson {
+    font-size: 18px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+  <div class="logo">
+    🇨🇳 中文学习
+  </div>
+
+  <div class="search">
+    <input
+      id="searchInput"
+      placeholder="搜索中文、拼音或英文..."
+      onkeydown="if(event.key==='Enter') search()"
+    >
+
+    <button onclick="search()">🔎</button>
+  </div>
+
+  <button
+    class="topButton"
+    onclick="toggleDark()">
+    🌙
+  </button>
+
+</header>
+
+<button
+  class="mobileMenu"
+  onclick="toggleSidebar()">
+  ☰
+</button>
+
+<aside class="sidebar" id="sidebar">
+
+  <h2>中文学习</h2>
+
+  <button class="nav active"
+    onclick="openPage('home',this)">
+    🏠 首页
+  </button>
+
+  <button class="nav"
+    onclick="openPage('lesson',this)">
+    📖 课文
+  </button>
+
+  <button class="nav"
+    onclick="openPage('characters',this)">
+    🔤 生字
+  </button>
+
+  <button class="nav"
+    onclick="openPage('words',this)">
+    📚 词语
+  </button>
+
+  <button class="nav"
+    onclick="openPage('practice',this)">
+    ✏️ 练习
+  </button>
+
+  <button class="nav"
+    onclick="openPage('progress',this)">
+    📊 学习进度
+  </button>
+
+  <button class="nav"
+    onclick="openPage('searchPage',this)">
+    🔎 搜索
+  </button>
+
+  <button class="nav"
+    onclick="toggleMore()">
+    ⋯ 更多
+  </button>
+
+  <div
+    class="moreMenu"
+    id="moreMenu">
+
+    <button class="nav"
+      onclick="openPage('board',this)">
+      🖊️ 自由画板
+    </button>
+
+    <button class="nav"
+      onclick="openPage('homework',this)">
+      📝 作业
+    </button>
+
+    <button class="nav"
+      onclick="openPage('quizzes',this)">
+      🧠 测验
+    </button>
+
+    <button class="nav"
+      onclick="openPage('pdf',this)">
+      📄 PDF
+    </button>
+
+  </div>
+
+</aside>
+
+<main>
+
+<div class="hero">
+
+  <h1>中文学习</h1>
+
+  <p>
+    Chinese Learning
+  </p>
+
+</div>
+
+<div class="content">
+
+<!-- HOME -->
+
+<section
+id="home"
+class="page"
+style="display:block">
+
+<div class="card home">
+
+  <div class="flag">
+    🇨🇳
+  </div>
+
+  <h2>
+    欢迎来到中文学习！
+  </h2>
+
+  <p>
+    Reading · Vocabulary · Writing · Homework
+  </p>
+
+  <button
+    class="primary"
+    onclick="openPage('lesson')">
+    📖 课文
+  </button>
+
+  <button
+    class="secondary"
+    onclick="openPage('characters')">
+    🔤 生字
+  </button>
+
+  <button
+    class="gray"
+    onclick="openPage('board')">
+    🖊️ 画板
+  </button>
+
+</div>
+
+</section>
+
+
+<!-- LESSON -->
+
+<section
+id="lesson"
+class="page">
+
+<div class="card">
+
+<div class="lessonTitle">
+
+<div class="cn">
+1　买文具
+</div>
+
+<div class="en">
+Buy Stationery
+</div>
+
+</div>
+
+<br>
+
+<button
+class="secondary"
+onclick="readLesson()">
+🔊 听课文
+</button>
+
+<button
+class="gray"
+onclick="toggleInfo('pinyinInfo')">
+👁️ 拼音
+</button>
+
+<button
+class="gray"
+onclick="toggleInfo('englishInfo')">
+🇺🇸 English
+</button>
+
+<hr>
+
+<div class="lesson">
+
+<p>
+快开学了，前天我和妈妈去超市买文具。
+</p>
+
+<div
+id="pinyinInfo"
+class="info">
+
+Kuài kāixué le, qiántiān wǒ hé māma qù chāoshì mǎi wénjù.
+
+</div>
+
+<div
+id="englishInfo"
+class="info">
+
+School is about to start. The day before yesterday, my mom and I went to the supermarket to buy stationery.
+
+</div>
+
+<p>
+超市里的文具可多啦，有各种各样的笔，各种颜色的练习本，还有许多漂亮的尺子、小刀和书包。
+</p>
+
+<p>
+我买了几支圆珠笔和画笔，还买了几本练习本。
+</p>
+
+<p>
+快离开时，我看见一个红色的书包。
+</p>
+
+<p>
+我对妈妈说：“这个书包的颜色多好看啊！妈妈，给我买一个好吗？”
+</p>
+
+<p>
+妈妈说：“要是你喜欢，就给你买个吧。”
+</p>
+
+<p>
+我看到书包上有一行小小的英文字——Made in China。
+</p>
+
+</div>
+
+<div class="micBox">
+
+<h3>
+🎤 朗读练习
+</h3>
+
+<button
+class="micButton"
+onclick="startMicrophone()">
+🎤
+</button>
+
+<p id="micStatus">
+Ready.
+</p>
+
+<p id="micResult"></p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- CHARACTERS -->
+
+<section
+id="characters"
+class="page">
+
+<div class="card">
+
+<h2>
+🔤 生字
+</h2>
+
+<p>
+Tap a character to practice it.
+</p>
+
+<div
+id="characterGrid"
+class="characterGrid">
+</div>
+
+</div>
+
+
+<div class="card strokeArea">
+
+<h2>
+✍️ 笔顺练习
+</h2>
+
+<div
+id="currentCharacter"
+class="currentCharacter">
+超
+</div>
+
+<p id="currentPinyin">
+chāo
+</p>
+
+<canvas
+id="strokeCanvas"
+width="640"
+height="640">
+</canvas>
+
+<button
+class="secondary"
+onclick="playStroke()">
+▶️ Play
+</button>
+
+<button
+class="gray"
+onclick="resetStroke()">
+↻ Reset
+</button>
+
+<button
+class="primary"
+onclick="markLearned()">
+✅ Learned
+</button>
+
+<p id="strokeStatus">
+Ready.
+</p>
+
+</div>
+
+</section>
+
+
+<!-- WORDS -->
+
+<section
+id="words"
+class="page">
+
+<div class="card">
+
+<h2>
+📚 词语
+</h2>
+
+<div
+id="wordGrid"
+class="words">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- PRACTICE -->
+
+<section
+id="practice"
+class="page">
+
+<div class="card">
+
+<h2>
+✏️ 练习
+</h2>
+
+<h3>
+“书包” means:
+</h3>
+
+<button
+class="gray"
+onclick="answer(false)">
+Book
+</button>
+
+<button
+class="gray"
+onclick="answer(true)">
+Schoolbag
+</button>
+
+<button
+class="gray"
+onclick="answer(false)">
+Store
+</button>
+
+<p id="answerResult"></p>
+
+</div>
+
+</section>
+
+
+<!-- PROGRESS -->
+
+<section
+id="progress"
+class="page">
+
+<div class="card">
+
+<h2>
+📊 学习进度
+</h2>
+
+<h3>
+<span id="learnedCount">
+0
+</span>
+/
+15 生字
+</h3>
+
+<div class="progress">
+
+<div
+id="progressBar"
+class="progressBar">
+</div>
+
+</div>
+
+<br>
+
+<button
+class="primary"
+onclick="resetProgress()">
+Reset Progress
+</button>
+
+</div>
+
+</section>
+
+
+<!-- SEARCH -->
+
+<section
+id="searchPage"
+class="page">
+
+<div class="card">
+
+<h2>
+🔎 搜索结果
+</h2>
+
+<div id="searchResults">
+Search something above.
+</div>
+
+</div>
+
+</section>
+
+
+<!-- BOARD -->
+
+<section
+id="board"
+class="page">
+
+<div class="card">
+
+<h2>
+🖊️ 自由画板
+</h2>
+
+<p>
+Use your finger, mouse, or Apple Pencil.
+</p>
+
+<button
+class="secondary"
+onclick="setTool('pencil')">
+✏️ Pencil
+</button>
+
+<button
+class="gray"
+onclick="setTool('eraser')">
+🧽 Eraser
+</button>
+
+<button
+class="gray"
+onclick="undoBoard()">
+↶ Undo
+</button>
+
+<button
+class="gray"
+onclick="clearBoard()">
+🗑️ Clear
+</button>
+
+<button
+class="gray"
+onclick="saveBoard()">
+💾 Save
+</button>
+
+<label>
+Size
+<input
+id="brushSize"
+type="range"
+min="1"
+max="30"
+value="5">
+</label>
+
+<div class="boardWrap">
+
+<canvas id="boardCanvas">
+</canvas>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- HOMEWORK -->
+
+<section
+id="homework"
+class="page">
+
+<div class="card">
+
+<h2>
+📝 作业
+</h2>
+
+<p>
+Practice based on 买文具.
+</p>
+
+<button
+class="secondary"
+onclick="saveHomework()">
+💾 Save
+</button>
+
+<button
+class="gray"
+onclick="clearHomework()">
+🗑️ Clear
+</button>
+
+
+<div class="homework">
+
+<b>
+1. Vocabulary
+</b>
+
+<p>
+Write the English meaning of 书包.
+</p>
+
+<input
+data-homework="1">
+
+</div>
+
+
+<div class="homework">
+
+<b>
+2. Pinyin
+</b>
+
+<p>
+Write the pinyin for 颜色.
+</p>
+
+<input
+data-homework="2">
+
+</div>
+
+
+<div class="homework">
+
+<b>
+3. Sentence
+</b>
+
+<p>
+Make a sentence with 超市.
+</p>
+
+<textarea
+rows="3"
+data-homework="3">
+</textarea>
+
+</div>
+
+
+<div class="homework">
+
+<b>
+4. Character Practice
+</b>
+
+<p>
+Practice your characters on the free board.
+</p>
+
+<button
+class="gray"
+onclick="openPage('board')">
+🖊️ Open Board
+</button>
+
+</div>
+
+<p id="homeworkStatus"></p>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+📄 Official Workbook
+</h3>
+
+<a
+class="secondary"
+target="_blank"
+href="http://old.hwjyw.com/fj/jcxz/zwlxca/5/1.pdf">
+
+↗ Open Workbook PDF
+
+</a>
+
+</div>
+
+</section>
+
+
+<!-- QUIZZES -->
+
+<section
+id="quizzes"
+class="page">
+
+<div class="card coming">
+
+<div class="comingIcon">
+🧠
+</div>
+
+<h2>
+测验 Quizzes
+</h2>
+
+<p>
+Coming Soon
+</p>
+
+</div>
+
+</section>
+
+
+<!-- PDF -->
+
+<section
+id="pdf"
+class="page">
+
+<div class="card">
+
+<h2>
+📄 PDF
+</h2>
+
+<a
+class="secondary"
+target="_blank"
+href="http://old.hwjyw.com/fj/jcxz/zhongwen/1/1.pdf">
+
+↗ Open Textbook PDF
+
+</a>
+
+</div>
+
+</section>
+
+</div>
+
+</main>
+
+
+<script>
+
+/* =========================
+   DATA
+========================= */
+
+const characters = [
+
+["超","chāo"],
+["市","shì"],
+["各","gè"],
+["颜","yán"],
+["练","liàn"],
+["许","xǔ"],
+["漂","piào"],
+["尺","chǐ"],
+["刀","dāo"],
+["支","zhī"],
+["行","xíng"],
+["商","shāng"],
+["鞋","xié"],
+["品","pǐn"],
+["制","zhì"]
+
+];
+
+const words = [
+
+["前天","qiántiān","the day before yesterday"],
+["各种","gèzhǒng","various"],
+["颜色","yánsè","color"],
+["练习","liànxí","practice"],
+["许多","xǔduō","many"],
+["漂亮","piàoliang","beautiful"],
+["圆珠笔","yuánzhūbǐ","ballpoint pen"],
+["离开","líkāi","leave"],
+["书包","shūbāo","schoolbag"],
+["这个","zhège","this"],
+["要是","yàoshi","if"],
+["英文","Yīngwén","English"],
+["商店","shāngdiàn","store"],
+["衣服","yīfu","clothes"],
+["日用品","rìyòngpǐn","daily necessities"],
+["制造","zhìzào","manufacture"]
+
+];
+
+
+/* =========================
+   PAGE NAVIGATION
+========================= */
+
+function openPage(id, button) {
+
+  document
+    .querySelectorAll(".page")
+    .forEach(page => {
+      page.style.display = "none";
+    });
+
+  document
+    .getElementById(id)
+    .style.display = "block";
+
+  document
+    .querySelectorAll(".nav")
+    .forEach(nav => {
+      nav.classList.remove("active");
+    });
+
+  if (button) {
+    button.classList.add("active");
+  }
+
+  if (window.innerWidth < 800) {
+    document
+      .getElementById("sidebar")
+      .classList.remove("open");
+  }
+
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+function toggleSidebar() {
+
+  document
+    .getElementById("sidebar")
+    .classList.toggle("open");
+
+}
+
+function toggleMore() {
+
+  const menu =
+    document.getElementById("moreMenu");
+
+  menu.style.display =
+    menu.style.display === "block"
+      ? "none"
+      : "block";
+
+}
+
+
+/* =========================
+   DARK MODE
+========================= */
+
+function toggleDark() {
+
+  document.body.classList.toggle("dark");
+
+  localStorage.setItem(
+    "darkMode",
+    document.body.classList.contains("dark")
+  );
+
+}
+
+if (
+  localStorage.getItem("darkMode") === "true"
+) {
+  document.body.classList.add("dark");
+}
+
+
+/* =========================
+   LESSON
+========================= */
+
+function readLesson() {
+
+  const text =
+`快开学了，前天我和妈妈去超市买文具。
+超市里的文具可多啦，有各种各样的笔，各种颜色的练习本，还有许多漂亮的尺子、小刀和书包。
+我买了几支圆珠笔和画笔，还买了几本练习本。
+快离开时，我看见一个红色的书包。
+我对妈妈说，这个书包的颜色多好看啊！妈妈，给我买一个好吗？
+妈妈说，要是你喜欢，就给你买个吧。
+我看到书包上有一行小小的英文字。`;
+
+  speak(text);
+
+}
+
+
+function speak(text) {
+
+  if (!window.speechSynthesis) {
+    return;
+  }
+
+  speechSynthesis.cancel();
+
+  const speech =
+    new SpeechSynthesisUtterance(text);
+
+  speech.lang = "zh-CN";
+  speech.rate = .8;
+
+  speechSynthesis.speak(speech);
+
+}
+
+
+function toggleInfo(id) {
+
+  const element =
+    document.getElementById(id);
+
+  element.style.display =
+    element.style.display === "block"
+      ? "none"
+      : "block";
+
+}
+
+
+/* =========================
+   MICROPHONE
+========================= */
+
+function startMicrophone() {
+
+  const Recognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!Recognition) {
+
+    document.getElementById("micStatus")
+      .textContent =
+      "Speech recognition is not supported in this browser.";
+
+    return;
+
+  }
+
+  const recognition =
+    new Recognition();
+
+  recognition.lang = "zh-CN";
+
+  recognition.onstart = function() {
+
+    document.getElementById("micStatus")
+      .textContent =
+      "🎤 Listening...";
+
+  };
+
+  recognition.onresult = function(event) {
+
+    const result =
+      event.results[0][0].transcript;
+
+    document.getElementById("micResult")
+      .textContent =
+      "你说的是：" + result;
+
+  };
+
+  recognition.onend = function() {
+
+    document.getElementById("micStatus")
+      .textContent =
+      "Finished.";
+
+  };
+
+  recognition.start();
+
+}
+
+
+/* =========================
+   CHARACTERS
+========================= */
+
+let selectedCharacter = 0;
+
+let learned =
+  JSON.parse(
+    localStorage.getItem("learnedCharacters") || "[]"
+  );
+
+
+function buildCharacters() {
+
+  const grid =
+    document.getElementById("characterGrid");
+
+  grid.innerHTML = "";
+
+  characters.forEach((character,index) => {
+
+    const div =
+      document.createElement("div");
+
+    div.className =
+      "character" +
+      (index === selectedCharacter
+        ? " selected"
+        : "");
+
+    div.innerHTML = `
+
+      <div class="hanzi">
+        ${character[0]}
+      </div>
+
+      <div class="pinyin">
+        ${character[1]}
+      </div>
+
+    `;
+
+    div.onclick = function() {
+
+      selectCharacter(index);
+
+    };
+
+    grid.appendChild(div);
+
+  });
+
+}
+
+
+function selectCharacter(index) {
+
+  selectedCharacter = index;
+
+  document
+    .querySelectorAll(".character")
+    .forEach((element,i) => {
+
+      element.classList.toggle(
+        "selected",
+        i === index
+      );
+
+    });
+
+  document
+    .getElementById("currentCharacter")
+    .textContent =
+    characters[index][0];
+
+  document
+    .getElementById("currentPinyin")
+    .textContent =
+    characters[index][1];
+
+  resetStroke();
+
+}
+
+
+/* =========================
+   STROKE PRACTICE
+========================= */
+
+const strokeCanvas =
+  document.getElementById("strokeCanvas");
+
+const strokeContext =
+  strokeCanvas.getContext("2d");
+
+
+function resetStroke() {
+
+  strokeContext.clearRect(
+    0,
+    0,
+    strokeCanvas.width,
+    strokeCanvas.height
+  );
+
+  strokeContext.fillStyle =
+    "#fff";
+
+  strokeContext.fillRect(
+    0,
+    0,
+    strokeCanvas.width,
+    strokeCanvas.height
+  );
+
+  document
+    .getElementById("strokeStatus")
+    .textContent =
+    "Ready.";
+
+}
+
+
+function playStroke() {
+
+  resetStroke();
+
+  const character =
+    characters[selectedCharacter][0];
+
+  /*
+    This is a visual handwriting
+    guide. The character itself is
+    drawn gradually so the animation
+    does not produce random shapes.
+  */
+
+  const fontSize = 470;
+
+  strokeContext.font =
+    `bold ${fontSize}px "PingFang SC",
+     "Microsoft YaHei",
+     sans-serif`;
+
+  strokeContext.textAlign =
+    "center";
+
+  strokeContext.textBaseline =
+    "middle";
+
+  strokeContext.fillStyle =
+    "#d71920";
+
+  let progress = 0;
+
+  document
+    .getElementById("strokeStatus")
+    .textContent =
+    "✍️ Drawing...";
+
+  function animate() {
+
+    strokeContext.clearRect(
+      0,
+      0,
+      strokeCanvas.width,
+      strokeCanvas.height
+    );
+
+    strokeContext.fillStyle =
+      "#fff";
+
+    strokeContext.fillRect(
+      0,
+      0,
+      strokeCanvas.width,
+      strokeCanvas.height
+    );
+
+    /*
+      Reveal the character from
+      left to right as a simple
+      writing animation.
+    */
+
+    strokeContext.save();
+
+    strokeContext.beginPath();
+
+    strokeContext.rect(
+      0,
+      0,
+      strokeCanvas.width * progress,
+      strokeCanvas.height
+    );
+
+    strokeContext.clip();
+
+    strokeContext.fillStyle =
+      "#d71920";
+
+    strokeContext.fillText(
+      character,
+      strokeCanvas.width / 2,
+      strokeCanvas.height / 2
+    );
+
+    strokeContext.restore();
+
+    progress += .025;
+
+    if (progress < 1) {
+
+      requestAnimationFrame(animate);
+
+    } else {
+
+      document
+        .getElementById("strokeStatus")
+        .textContent =
+        "✅ Finished!";
+
+    }
+
+  }
+
+  animate();
+
+}
+
+
+function markLearned() {
+
+  const character =
+    characters[selectedCharacter][0];
+
+  if (!learned.includes(character)) {
+
+    learned.push(character);
+
+    localStorage.setItem(
+      "learnedCharacters",
+      JSON.stringify(learned)
+    );
+
+  }
+
+  updateProgress();
+
+  document
+    .getElementById("strokeStatus")
+    .textContent =
+    "✅ Saved as learned!";
+
+}
+
+
+function updateProgress() {
+
+  const count =
+    document.getElementById("learnedCount");
+
+  const bar =
+    document.getElementById("progressBar");
+
+  count.textContent =
+    learned.length;
+
+  bar.style.width =
+    (learned.length / characters.length * 100)
+    + "%";
+
+}
+
+
+function resetProgress() {
+
+  learned = [];
+
+  localStorage.removeItem(
+    "learnedCharacters"
+  );
+
+  updateProgress();
+
+}
+
+
+/* =========================
+   WORDS
+========================= */
+
+function buildWords() {
+
+  const grid =
+    document.getElementById("wordGrid");
+
+  grid.innerHTML = "";
+
+  words.forEach(word => {
+
+    const div =
+      document.createElement("div");
+
+    div.className = "word";
+
+    div.innerHTML = `
+
+      <div class="hanzi">
+        ${word[0]}
+      </div>
+
+      <div>
+        ${word[1]}
+      </div>
+
+      <div class="meaning">
+
+        <hr>
+
+        ${word[2]}
+
+        <br><br>
+
+        <button class="secondary">
+          🔊 Hear
+        </button>
+
+      </div>
+
+    `;
+
+    div.onclick = function() {
+
+      div.classList.toggle("open");
+
+      const button =
+        div.querySelector("button");
+
+      if (button) {
+
+        button.onclick =
+          function(event) {
+
+            event.stopPropagation();
+
+            speak(word[0]);
+
+          };
+
+      }
+
+    };
+
+    grid.appendChild(div);
+
+  });
+
+}
+
+
+/* =========================
+   PRACTICE
+========================= */
+
+function answer(correct) {
+
+  document
+    .getElementById("answerResult")
+    .textContent =
+    correct
+      ? "🎉 Correct!"
+      : "❌ Try again.";
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+function search() {
+
+  const query =
+    document
+      .getElementById("searchInput")
+      .value
+      .toLowerCase()
+      .trim();
+
+  openPage("searchPage");
+
+  const results =
+    document.getElementById("searchResults");
+
+  if (!query) {
+
+    results.innerHTML =
+      "Type something in the search bar.";
+
+    return;
+
+  }
+
+  const characterResults =
+    characters.filter(item =>
+      item.join(" ")
+        .toLowerCase()
+        .includes(query)
+    );
+
+  const wordResults =
+    words.filter(item =>
+      item.join(" ")
+        .toLowerCase()
+        .includes(query)
+    );
+
+  const allResults =
+    [
+      ...characterResults,
+      ...wordResults
+    ];
+
+  if (!allResults.length) {
+
+    results.innerHTML =
+      "没有找到结果 — No results.";
+
+    return;
+
+  }
+
+  results.innerHTML =
+    allResults.map(item => `
+
+      <div class="card">
+
+        <div class="currentCharacter">
+          ${item[0]}
+        </div>
+
+        <p>
+          ${item.slice(1).join(" · ")}
+        </p>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+/* =========================
+   FREE BOARD
+========================= */
+
+const board =
+  document.getElementById("boardCanvas");
+
+const boardContext =
+  board.getContext("2d");
+
+let drawing = false;
+
+let boardTool = "pencil";
+
+let lastPosition = null;
+
+let boardHistory = [];
+
+
+function resizeBoard() {
+
+  const rect =
+    board.getBoundingClientRect();
+
+  const ratio =
+    window.devicePixelRatio || 1;
+
+  if (
+    board.width !==
+    Math.floor(rect.width * ratio)
+  ) {
+
+    board.width =
+      Math.floor(rect.width * ratio);
+
+    board.height =
+      Math.floor(rect.height * ratio);
+
+    boardContext.fillStyle =
+      "white";
+
+    boardContext.fillRect(
+      0,
+      0,
+      board.width,
+      board.height
+    );
+
+  }
+
+}
+
+
+function boardPosition(event) {
+
+  const rect =
+    board.getBoundingClientRect();
+
+  return {
+
+    x:
+      (event.clientX - rect.left)
+      * board.width / rect.width,
+
+    y:
+      (event.clientY - rect.top)
+      * board.height / rect.height
+
+  };
+
+}
+
+
+board.addEventListener(
+  "pointerdown",
+  event => {
+
+    event.preventDefault();
+
+    resizeBoard();
+
+    boardHistory.push(
+      board.toDataURL()
+    );
+
+    drawing = true;
+
+    lastPosition =
+      boardPosition(event);
+
+  }
+);
+
+
+board.addEventListener(
+  "pointermove",
+  event => {
+
+    if (!drawing) return;
+
+    event.preventDefault();
+
+    const position =
+      boardPosition(event);
+
+    boardContext.lineWidth =
+      Number(
+        document.getElementById(
+          "brushSize"
+        ).value
+      );
+
+    boardContext.lineCap =
+      "round";
+
+    boardContext.strokeStyle =
+      boardTool === "eraser"
+        ? "#ffffff"
+        : "#111111";
+
+    boardContext.beginPath();
+
+    boardContext.moveTo(
+      lastPosition.x,
+      lastPosition.y
+    );
+
+    boardContext.lineTo(
+      position.x,
+      position.y
+    );
+
+    boardContext.stroke();
+
+    lastPosition =
+      position;
+
+  }
+);
+
+
+board.addEventListener(
+  "pointerup",
+  () => {
+    drawing = false;
+  }
+);
+
+
+board.addEventListener(
+  "pointercancel",
+  () => {
+    drawing = false;
+  }
+);
+
+
+function setTool(tool) {
+
+  boardTool = tool;
+
+}
+
+
+function clearBoard() {
+
+  resizeBoard();
+
+  boardContext.fillStyle =
+    "white";
+
+  boardContext.fillRect(
+    0,
+    0,
+    board.width,
+    board.height
+  );
+
+  boardHistory = [];
+
+}
+
+
+function undoBoard() {
+
+  const previous =
+    boardHistory.pop();
+
+  if (!previous) return;
+
+  const image =
+    new Image();
+
+  image.onload = function() {
+
+    boardContext.drawImage(
+      image,
+      0,
+      0,
+      board.width,
+      board.height
+    );
+
+  };
+
+  image.src =
+    previous;
+
+}
+
+
+function saveBoard() {
+
+  const link =
+    document.createElement("a");
+
+  link.download =
+    "chinese-free-board.png";
+
+  link.href =
+    board.toDataURL();
+
+  link.click();
+
+}
+
+
+/* =========================
+   HOMEWORK
+========================= */
+
+function saveHomework() {
+
+  const answers = {};
+
+  document
+    .querySelectorAll("[data-homework]")
+    .forEach(input => {
+
+      answers[input.dataset.homework] =
+        input.value;
+
+    });
+
+  localStorage.setItem(
+    "homework",
+    JSON.stringify(answers)
+  );
+
+  document
+    .getElementById("homeworkStatus")
+    .textContent =
+    "✅ Homework saved on this device.";
+
+}
+
+
+function loadHomework() {
+
+  const answers =
+    JSON.parse(
+      localStorage.getItem("homework")
+      || "{}"
+    );
+
+  document
+    .querySelectorAll("[data-homework]")
+    .forEach(input => {
+
+      if (
+        answers[input.dataset.homework]
+        !== undefined
+      ) {
+
+        input.value =
+          answers[input.dataset.homework];
+
+      }
+
+    });
+
+}
+
+
+function clearHomework() {
+
+  document
+    .querySelectorAll("[data-homework]")
+    .forEach(input => {
+
+      input.value = "";
+
+    });
+
+  localStorage.removeItem(
+    "homework"
+  );
+
+  document
+    .getElementById("homeworkStatus")
+    .textContent =
+    "Cleared.";
+
+}
+
+
+/* =========================
+   STARTUP
+========================= */
+
+buildCharacters();
+
+buildWords();
+
+updateProgress();
+
+loadHomework();
+
+setTimeout(() => {
+
+  resizeBoard();
+
+  resetStroke();
+
+}, 100);
+
+window.addEventListener(
+  "resize",
+  resizeBoard
+);
+
+</script>
+
+</body>
+</html>
