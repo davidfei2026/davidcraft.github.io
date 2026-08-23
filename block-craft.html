@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>BlockCraft V2</title>
+<title>BlockCraft V3</title>
 
 <style>
 *{
@@ -24,9 +24,12 @@ html,body{
     width:100vw;
     height:100vh;
     display:block;
+    image-rendering:auto;
 }
 
-/* Crosshair */
+/* =========================
+   CROSSHAIR
+========================= */
 
 #crosshair{
     position:fixed;
@@ -36,7 +39,7 @@ html,body{
     height:20px;
     transform:translate(-50%,-50%);
     pointer-events:none;
-    z-index:10;
+    z-index:20;
 }
 
 #crosshair::before{
@@ -47,7 +50,7 @@ html,body{
     left:9px;
     top:0;
     background:white;
-    box-shadow:0 0 3px black;
+    box-shadow:0 0 3px #000;
 }
 
 #crosshair::after{
@@ -58,10 +61,12 @@ html,body{
     left:0;
     top:9px;
     background:white;
-    box-shadow:0 0 3px black;
+    box-shadow:0 0 3px #000;
 }
 
-/* Help */
+/* =========================
+   HELP
+========================= */
 
 #help{
     position:fixed;
@@ -71,12 +76,10 @@ html,body{
     background:rgba(0,0,0,.58);
     color:white;
     border-radius:8px;
-    line-height:1.5;
+    line-height:1.45;
     font-size:14px;
-    z-index:20;
+    z-index:30;
 }
-
-/* Status */
 
 #status{
     position:fixed;
@@ -86,42 +89,87 @@ html,body{
     background:rgba(0,0,0,.58);
     color:white;
     border-radius:8px;
-    z-index:20;
+    z-index:30;
 }
 
-/* Hotbar */
+/* =========================
+   PLAYER HUD
+========================= */
 
-#hotbar{
+#hud{
     position:fixed;
-    bottom:18px;
+    bottom:86px;
     left:50%;
     transform:translateX(-50%);
+    width:min(520px,94vw);
+    z-index:30;
+}
+
+#bars{
     display:flex;
-    gap:5px;
-    z-index:20;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:5px;
+}
+
+#health,
+#hunger{
+    display:flex;
+    gap:3px;
+}
+
+.heart,
+.hungerIcon{
+    width:25px;
+    height:25px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:21px;
+    line-height:1;
+    text-shadow:1px 1px 2px #000;
+}
+
+.heart{
+    color:#e31b23;
+}
+
+.hungerIcon{
+    color:#d88a27;
+}
+
+/* =========================
+   HOTBAR
+========================= */
+
+#hotbar{
+    display:grid;
+    grid-template-columns:repeat(9,1fr);
+    gap:3px;
+    width:min(520px,94vw);
 }
 
 .slot{
-    width:58px;
-    height:58px;
+    aspect-ratio:1;
     border:3px solid #555;
-    background:rgba(20,20,20,.75);
+    background:rgba(20,20,20,.78);
     display:flex;
     align-items:center;
     justify-content:center;
     position:relative;
+    min-width:0;
 }
 
 .slot.selected{
-    border-color:white;
+    border-color:#fff;
     box-shadow:
-        0 0 0 2px black,
-        0 0 10px rgba(255,255,255,.7);
+        0 0 0 2px #222,
+        0 0 8px rgba(255,255,255,.8);
 }
 
 .swatch{
-    width:36px;
-    height:36px;
+    width:65%;
+    height:65%;
     border:2px solid #111;
     image-rendering:pixelated;
 }
@@ -132,10 +180,12 @@ html,body{
     bottom:2px;
     color:white;
     font-size:11px;
-    text-shadow:1px 1px 2px black;
+    text-shadow:1px 1px 2px #000;
 }
 
-/* Start screen */
+/* =========================
+   START SCREEN
+========================= */
 
 #start{
     position:fixed;
@@ -148,7 +198,7 @@ html,body{
 }
 
 #panel{
-    width:430px;
+    width:440px;
     max-width:90%;
     padding:30px;
     text-align:center;
@@ -176,6 +226,33 @@ html,body{
 #startButton:hover{
     background:#58bd5d;
 }
+
+/* =========================
+   MOBILE WARNING
+========================= */
+
+#mobileNotice{
+    display:none;
+}
+
+@media(max-width:700px){
+
+    #help{
+        font-size:11px;
+    }
+
+    .heart,
+    .hungerIcon{
+        font-size:17px;
+        width:19px;
+        height:19px;
+    }
+
+    #hud{
+        bottom:72px;
+    }
+
+}
 </style>
 </head>
 
@@ -186,32 +263,70 @@ html,body{
 <div id="crosshair"></div>
 
 <div id="help">
-    <b>BlockCraft V2</b><br>
+    <b>BlockCraft V3</b><br>
     WASD — Move<br>
     Space — Jump<br>
     Mouse — Look<br>
     Left Click — Break<br>
     Right Click — Place<br>
-    1–6 — Select Block
+    1–9 — Select Block
 </div>
 
 <div id="status">
-    V2 • Textured
+    V3 • Survival HUD
 </div>
 
-<div id="hotbar"></div>
+<!-- PLAYER HUD -->
+
+<div id="hud">
+
+    <div id="bars">
+
+        <div id="health">
+            <div class="heart">♥</div>
+            <div class="heart">♥</div>
+            <div class="heart">♥</div>
+            <div class="heart">♥</div>
+            <div class="heart">♥</div>
+            <div class="heart">♥</div>
+            <div class="heart">♥</div>
+            <div class="heart">♥</div>
+            <div class="heart">♥</div>
+        </div>
+
+        <div id="hunger">
+            <div class="hungerIcon">🍗</div>
+            <div class="hungerIcon">🍗</div>
+            <div class="hungerIcon">🍗</div>
+            <div class="hungerIcon">🍗</div>
+            <div class="hungerIcon">🍗</div>
+            <div class="hungerIcon">🍗</div>
+            <div class="hungerIcon">🍗</div>
+            <div class="hungerIcon">🍗</div>
+            <div class="hungerIcon">🍗</div>
+        </div>
+
+    </div>
+
+    <div id="hotbar"></div>
+
+</div>
+
+<!-- START -->
 
 <div id="start">
+
     <div id="panel">
 
-        <h1>⛏️ BlockCraft V2</h1>
+        <h1>⛏️ BlockCraft V3</h1>
 
         <p>
-            Textured voxel sandbox
+            Textured voxel survival sandbox
         </p>
 
         <p>
-            Explore, mine and build.
+            You now have a 9-slot hotbar,
+            health, hunger, and more blocks.
         </p>
 
         <button id="startButton">
@@ -219,6 +334,7 @@ html,body{
         </button>
 
     </div>
+
 </div>
 
 
@@ -229,7 +345,7 @@ import * as THREE from
 
 
 /* =========================================================
-   BASIC SETUP
+   THREE.JS
 ========================================================= */
 
 const canvas =
@@ -245,7 +361,7 @@ scene.fog =
     new THREE.Fog(
         0x87ceeb,
         35,
-        95
+        100
     );
 
 
@@ -254,16 +370,16 @@ const camera =
         75,
         window.innerWidth /
         window.innerHeight,
-        0.05,
+        .05,
         150
     );
 
-camera.rotation.order = "YXZ";
+camera.rotation.order="YXZ";
 
 
 const renderer =
     new THREE.WebGLRenderer({
-        canvas,
+        canvas:canvas,
         antialias:false
     });
 
@@ -279,7 +395,7 @@ renderer.setSize(
     window.innerHeight
 );
 
-renderer.shadowMap.enabled = true;
+renderer.shadowMap.enabled=true;
 
 
 /* =========================================================
@@ -308,47 +424,38 @@ sun.position.set(
     20
 );
 
-sun.castShadow = true;
+sun.castShadow=true;
 
 scene.add(sun);
 
 
 /* =========================================================
-   TEXTURE CREATION
+   TEXTURE GENERATOR
 ========================================================= */
 
-/*
-   Instead of downloading texture files,
-   we generate small pixel textures.
-
-   This means the whole game stays inside
-   one HTML file.
-*/
-
-
 function createTexture(
-    baseColor,
-    variations,
-    pattern = "noise"
+    base,
+    colors,
+    pattern="noise"
 ){
 
-    const size = 16;
+    const size=16;
 
-    const canvas =
-        document.createElement("canvas");
+    const canvas=
+        document.createElement(
+            "canvas"
+        );
 
-    canvas.width = size;
-    canvas.height = size;
+    canvas.width=size;
+    canvas.height=size;
 
-    const ctx =
+    const ctx=
         canvas.getContext("2d");
 
-    ctx.imageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled=false;
 
 
-    /* Base */
-
-    ctx.fillStyle = baseColor;
+    ctx.fillStyle=base;
 
     ctx.fillRect(
         0,
@@ -358,29 +465,27 @@ function createTexture(
     );
 
 
-    /* Pixel variation */
-
     for(
-        let y = 0;
-        y < size;
+        let y=0;
+        y<size;
         y++
     ){
 
         for(
-            let x = 0;
-            x < size;
+            let x=0;
+            x<size;
             x++
         ){
 
             if(
-                Math.random() > .72
+                Math.random()>.72
             ){
 
-                ctx.fillStyle =
-                    variations[
+                ctx.fillStyle=
+                    colors[
                         Math.floor(
-                            Math.random() *
-                            variations.length
+                            Math.random()*
+                            colors.length
                         )
                     ];
 
@@ -398,34 +503,28 @@ function createTexture(
     }
 
 
-    /* Special patterns */
-
-    if(pattern === "grass"){
+    if(
+        pattern==="grass"
+    ){
 
         for(
             let i=0;
-            i<20;
+            i<30;
             i++
         ){
 
-            ctx.fillStyle =
-                Math.random() > .5
-                ? "#4c9d32"
-                : "#6bbd43";
-
-            const x =
-                Math.floor(
-                    Math.random()*16
-                );
-
-            const y =
-                Math.floor(
-                    Math.random()*16
-                );
+            ctx.fillStyle=
+                Math.random()>.5
+                ?" #4a9630".trim()
+                :"#6ab83e";
 
             ctx.fillRect(
-                x,
-                y,
+                Math.floor(
+                    Math.random()*16
+                ),
+                Math.floor(
+                    Math.random()*16
+                ),
                 1,
                 1
             );
@@ -435,26 +534,25 @@ function createTexture(
     }
 
 
-    if(pattern === "wood"){
+    if(
+        pattern==="wood"
+    ){
 
         for(
             let i=0;
-            i<8;
+            i<7;
             i++
         ){
 
-            ctx.fillStyle =
+            ctx.fillStyle=
                 i%2
-                ? "#6e421e"
-                : "#b17a3d";
-
-            const x =
-                Math.floor(
-                    Math.random()*16
-                );
+                ?"#6b401c"
+                :"#b47739";
 
             ctx.fillRect(
-                x,
+                Math.floor(
+                    Math.random()*16
+                ),
                 0,
                 1,
                 16
@@ -465,32 +563,31 @@ function createTexture(
     }
 
 
-    if(pattern === "leaves"){
+    if(
+        pattern==="leaves"
+    ){
 
         for(
             let i=0;
-            i<35;
+            i<40;
             i++
         ){
 
-            ctx.fillStyle =
-                Math.random() > .5
-                ? "#287b31"
-                : "#48a33c";
-
-            const x =
-                Math.floor(
-                    Math.random()*16
-                );
-
-            const y =
-                Math.floor(
-                    Math.random()*16
-                );
+            ctx.fillStyle=
+                colors[
+                    Math.floor(
+                        Math.random()*
+                        colors.length
+                    )
+                ];
 
             ctx.fillRect(
-                x,
-                y,
+                Math.floor(
+                    Math.random()*16
+                ),
+                Math.floor(
+                    Math.random()*16
+                ),
                 1,
                 1
             );
@@ -500,28 +597,23 @@ function createTexture(
     }
 
 
-    const texture =
+    const texture=
         new THREE.CanvasTexture(
             canvas
         );
 
-    texture.magFilter =
+    texture.magFilter=
         THREE.NearestFilter;
 
-    texture.minFilter =
+    texture.minFilter=
         THREE.NearestFilter;
 
-    texture.colorSpace =
+    texture.colorSpace=
         THREE.SRGBColorSpace;
-
-    texture.wrapS =
-        THREE.RepeatWrapping;
-
-    texture.wrapT =
-        THREE.RepeatWrapping;
 
 
     return texture;
+
 }
 
 
@@ -529,7 +621,10 @@ function createTexture(
    TEXTURES
 ========================================================= */
 
-const grassTopTexture =
+const textures={};
+
+
+textures.grassTop=
     createTexture(
         "#55a936",
         [
@@ -541,41 +636,53 @@ const grassTopTexture =
     );
 
 
-const grassSideTexture =
+textures.grassSide=
     createTexture(
-        "#8a5a2d",
+        "#87582c",
         [
-            "#74481f",
-            "#996536",
-            "#6f431e"
+            "#71461f",
+            "#9a6434",
+            "#6d411d"
         ]
     );
 
 
-const dirtTexture =
+textures.dirt=
     createTexture(
         "#8b5a2b",
         [
             "#70451f",
-            "#9b6938",
-            "#784a24"
+            "#9d6936",
+            "#764a23"
         ]
     );
 
 
-const stoneTexture =
+textures.stone=
     createTexture(
         "#858585",
         [
             "#707070",
-            "#969696",
+            "#999999",
             "#626262",
-            "#a0a0a0"
+            "#a2a2a2"
         ]
     );
 
 
-const woodSideTexture =
+textures.cobblestone=
+    createTexture(
+        "#707070",
+        [
+            "#555555",
+            "#858585",
+            "#646464",
+            "#999999"
+        ]
+    );
+
+
+textures.wood=
     createTexture(
         "#8b5a2b",
         [
@@ -587,7 +694,7 @@ const woodSideTexture =
     );
 
 
-const woodTopTexture =
+textures.woodTop=
     createTexture(
         "#a97943",
         [
@@ -598,7 +705,7 @@ const woodTopTexture =
     );
 
 
-const leavesTexture =
+textures.leaves=
     createTexture(
         "#368c38",
         [
@@ -611,7 +718,7 @@ const leavesTexture =
     );
 
 
-const sandTexture =
+textures.sand=
     createTexture(
         "#d9c27a",
         [
@@ -622,11 +729,66 @@ const sandTexture =
     );
 
 
+textures.planks=
+    createTexture(
+        "#b17a3f",
+        [
+            "#95622e",
+            "#c38c50",
+            "#7e5025"
+        ]
+    );
+
+
+textures.brick=
+    createTexture(
+        "#a94732",
+        [
+            "#8d3626",
+            "#c45b40",
+            "#74291f"
+        ]
+    );
+
+
+textures.snow=
+    createTexture(
+        "#eeeeee",
+        [
+            "#ffffff",
+            "#d9e4e8",
+            "#cbd7dc"
+        ]
+    );
+
+
+textures.glass=
+    createTexture(
+        "#a8dce8",
+        [
+            "#d8f6fa",
+            "#72bac9",
+            "#bcecf2"
+        ]
+    );
+
+
+textures.bedrock=
+    createTexture(
+        "#343434",
+        [
+            "#202020",
+            "#4b4b4b",
+            "#171717"
+        ]
+    );
+
+
 /* =========================================================
-   MATERIAL HELPERS
+   MATERIALS
 ========================================================= */
 
-function material(texture){
+function mat(texture){
 
     return new THREE.MeshLambertMaterial({
         map:texture
@@ -639,57 +801,65 @@ function material(texture){
    BLOCK MATERIALS
 ========================================================= */
 
+const materials={};
+
 
 /* Grass */
 
-const grassMaterials = [
+materials.grass=[
 
-    material(grassSideTexture),
-    material(grassSideTexture),
+    mat(textures.grassSide),
+    mat(textures.grassSide),
 
-    material(grassTopTexture),
-    material(dirtTexture),
+    mat(textures.grassTop),
+    mat(textures.dirt),
 
-    material(grassSideTexture),
-    material(grassSideTexture)
+    mat(textures.grassSide),
+    mat(textures.grassSide)
 
 ];
 
 
 /* Dirt */
 
-const dirtMaterial =
-    material(dirtTexture);
+materials.dirt=
+    mat(textures.dirt);
 
 
 /* Stone */
 
-const stoneMaterial =
-    material(stoneTexture);
+materials.stone=
+    mat(textures.stone);
+
+
+/* Cobblestone */
+
+materials.cobblestone=
+    mat(textures.cobblestone);
 
 
 /* Wood */
 
-const woodMaterials = [
+materials.wood=[
 
-    material(woodSideTexture),
-    material(woodSideTexture),
+    mat(textures.wood),
+    mat(textures.wood),
 
-    material(woodTopTexture),
-    material(woodTopTexture),
+    mat(textures.woodTop),
+    mat(textures.woodTop),
 
-    material(woodSideTexture),
-    material(woodSideTexture)
+    mat(textures.wood),
+    mat(textures.wood)
 
 ];
 
 
 /* Leaves */
 
-const leavesMaterial =
+materials.leaves=
     new THREE.MeshLambertMaterial({
 
-        map:leavesTexture,
+        map:textures.leaves,
 
         transparent:true,
 
@@ -700,61 +870,74 @@ const leavesMaterial =
 
 /* Sand */
 
-const sandMaterial =
-    material(sandTexture);
+materials.sand=
+    mat(textures.sand);
+
+
+/* Planks */
+
+materials.planks=
+    mat(textures.planks);
+
+
+/* Brick */
+
+materials.brick=
+    mat(textures.brick);
+
+
+/* Snow */
+
+materials.snow=
+    mat(textures.snow);
+
+
+/* Glass */
+
+materials.glass=
+    new THREE.MeshLambertMaterial({
+
+        map:textures.glass,
+
+        transparent:true,
+
+        opacity:.65,
+
+        depthWrite:false
+
+    });
+
+
+/* Bedrock */
+
+materials.bedrock=
+    mat(textures.bedrock);
 
 
 /* =========================================================
-   BLOCK TYPES
+   BLOCK LIST
 ========================================================= */
 
-const blockTypes = [
+const blockTypes=[
 
     "grass",
     "dirt",
     "stone",
     "wood",
     "leaves",
-    "sand"
+    "sand",
+    "cobblestone",
+    "planks",
+    "brick"
 
 ];
-
-
-function getMaterial(type){
-
-    switch(type){
-
-        case "grass":
-            return grassMaterials;
-
-        case "dirt":
-            return dirtMaterial;
-
-        case "stone":
-            return stoneMaterial;
-
-        case "wood":
-            return woodMaterials;
-
-        case "leaves":
-            return leavesMaterial;
-
-        case "sand":
-            return sandMaterial;
-
-        default:
-            return dirtMaterial;
-
-    }
-
-}
 
 
 /* =========================================================
    BLOCK STORAGE
 ========================================================= */
 
-const blocks =
+const blocks=
     new Map();
 
 
@@ -770,10 +953,10 @@ function blockKey(
 
 
 /* =========================================================
-   BLOCK GEOMETRY
+   GEOMETRY
 ========================================================= */
 
-const cubeGeometry =
+const cubeGeometry=
     new THREE.BoxGeometry(
         1,
         1,
@@ -792,7 +975,7 @@ function addBlock(
     type
 ){
 
-    const key =
+    const key=
         blockKey(
             x,
             y,
@@ -809,10 +992,10 @@ function addBlock(
     }
 
 
-    const block =
+    const block=
         new THREE.Mesh(
             cubeGeometry,
-            getMaterial(type)
+            materials[type]
         );
 
 
@@ -823,18 +1006,16 @@ function addBlock(
     );
 
 
-    block.castShadow = true;
+    block.castShadow=true;
 
-    block.receiveShadow = true;
+    block.receiveShadow=true;
 
 
-    block.userData = {
-
+    block.userData={
         x,
         y,
         z,
         type
-
     };
 
 
@@ -858,7 +1039,7 @@ function removeBlock(
     z
 ){
 
-    const key =
+    const key=
         blockKey(
             x,
             y,
@@ -866,7 +1047,7 @@ function removeBlock(
         );
 
 
-    const block =
+    const block=
         blocks.get(key);
 
 
@@ -898,15 +1079,11 @@ function terrainHeight(
 
             4
 
-            + Math.sin(
-                x*.23
-            )*1.6
+            +Math.sin(x*.23)*1.6
 
-            + Math.cos(
-                z*.19
-            )*1.4
+            +Math.cos(z*.19)*1.4
 
-            + Math.sin(
+            +Math.sin(
                 (x+z)*.11
             )*1.2
 
@@ -918,7 +1095,7 @@ function terrainHeight(
 
 
 /* =========================================================
-   GENERATE WORLD
+   WORLD
 ========================================================= */
 
 for(
@@ -933,7 +1110,7 @@ for(
         z++
     ){
 
-        const height =
+        const height=
             terrainHeight(
                 x,
                 z
@@ -995,14 +1172,12 @@ function createTree(
     z
 ){
 
-    const ground =
+    const ground=
         terrainHeight(
             x,
             z
         );
 
-
-    /* Trunk */
 
     for(
         let y=ground+1;
@@ -1019,8 +1194,6 @@ function createTree(
 
     }
 
-
-    /* Leaves */
 
     for(
         let dx=-2;
@@ -1067,7 +1240,7 @@ function createTree(
 }
 
 
-/* Random trees */
+/* Trees */
 
 for(
     let x=-18;
@@ -1110,7 +1283,7 @@ for(
    PLAYER
 ========================================================= */
 
-const player = {
+const player={
 
     position:
         new THREE.Vector3(
@@ -1143,22 +1316,22 @@ camera.position.copy(
    KEYBOARD
 ========================================================= */
 
-const keys = {};
+const keys={};
 
 
 window.addEventListener(
     "keydown",
-    event => {
+    event=>{
 
         keys[event.code]=true;
 
 
         if(
-            /^Digit[1-6]$/
+            /^Digit[1-9]$/
             .test(event.code)
         ){
 
-            const number =
+            const number=
                 Number(
                     event.code.slice(-1)
                 );
@@ -1176,7 +1349,7 @@ window.addEventListener(
 
 window.addEventListener(
     "keyup",
-    event => {
+    event=>{
 
         keys[event.code]=false;
 
@@ -1191,10 +1364,32 @@ window.addEventListener(
 let selectedBlock=0;
 
 
-const hotbar =
+const hotbar=
     document.querySelector(
         "#hotbar"
     );
+
+
+function getPreviewTexture(
+    type
+){
+
+    const material=
+        materials[type];
+
+
+    if(
+        Array.isArray(material)
+    ){
+
+        return material[2].map;
+
+    }
+
+
+    return material.map;
+
+}
 
 
 function drawHotbar(){
@@ -1202,115 +1397,104 @@ function drawHotbar(){
     hotbar.innerHTML="";
 
 
-    blockTypes.forEach(
-        (type,index)=>{
+    for(
+        let i=0;
+        i<9;
+        i++
+    ){
 
-            const slot =
-                document.createElement(
-                    "div"
-                );
-
-
-            slot.className="slot";
-
-
-            if(
-                index===selectedBlock
-            ){
-
-                slot.classList.add(
-                    "selected"
-                );
-
-            }
-
-
-            const texture =
-                getMaterial(type);
-
-
-            let preview;
-
-
-            if(
-                Array.isArray(texture)
-            ){
-
-                preview =
-                    texture[0]
-                    .map
-                    .image;
-
-            }
-
-            else{
-
-                preview =
-                    texture.map.image;
-
-            }
-
-
-            const image =
-                document.createElement(
-                    "canvas"
-                );
-
-
-            image.width=16;
-            image.height=16;
-
-
-            const ctx =
-                image.getContext(
-                    "2d"
-                );
-
-
-            if(preview){
-
-                ctx.drawImage(
-                    preview,
-                    0,
-                    0
-                );
-
-            }
-
-
-            image.className="swatch";
-
-
-            slot.appendChild(
-                image
+        const slot=
+            document.createElement(
+                "div"
             );
 
 
-            const number =
-                document.createElement(
-                    "div"
-                );
+        slot.className="slot";
 
 
-            number.className=
-                "number";
+        if(
+            i===selectedBlock
+        ){
 
-
-            number.textContent=
-                index+1;
-
-
-            slot.appendChild(
-                number
-            );
-
-
-            hotbar.appendChild(
-                slot
+            slot.classList.add(
+                "selected"
             );
 
         }
-    );
+
+
+        const type=
+            blockTypes[i];
+
+
+        const image=
+            document.createElement(
+                "canvas"
+            );
+
+
+        image.width=16;
+        image.height=16;
+
+        image.className=
+            "swatch";
+
+
+        const ctx=
+            image.getContext(
+                "2d"
+            );
+
+
+        const texture=
+            getPreviewTexture(
+                type
+            );
+
+
+        if(
+            texture &&
+            texture.image
+        ){
+
+            ctx.drawImage(
+                texture.image,
+                0,
+                0
+            );
+
+        }
+
+
+        slot.appendChild(
+            image
+        );
+
+
+        const number=
+            document.createElement(
+                "div"
+            );
+
+
+        number.className=
+            "number";
+
+
+        number.textContent=
+            i+1;
+
+
+        slot.appendChild(
+            number
+        );
+
+
+        hotbar.appendChild(
+            slot
+        );
+
+    }
 
 }
 
@@ -1319,11 +1503,11 @@ function selectBlock(
     index
 ){
 
-    selectedBlock =
+    selectedBlock=
         Math.max(
             0,
             Math.min(
-                blockTypes.length-1,
+                8,
                 index
             )
         );
@@ -1341,8 +1525,11 @@ drawHotbar();
    RAYCASTING
 ========================================================= */
 
-const raycaster =
+const raycaster=
     new THREE.Raycaster();
+
+
+raycaster.far=6;
 
 
 function getTargetBlock(){
@@ -1356,17 +1543,17 @@ function getTargetBlock(){
     );
 
 
-    const objects =
+    const objects=
         [...blocks.values()];
 
 
-    const hits =
+    const hits=
         raycaster.intersectObjects(
             objects
         );
 
 
-    return hits[0] || null;
+    return hits[0]||null;
 
 }
 
@@ -1397,7 +1584,7 @@ canvas.addEventListener(
         }
 
 
-        const hit =
+        const hit=
             getTargetBlock();
 
 
@@ -1405,11 +1592,11 @@ canvas.addEventListener(
             return;
 
 
-        const data =
+        const data=
             hit.object.userData;
 
 
-        /* Break */
+        /* BREAK */
 
         if(
             event.button===0
@@ -1430,36 +1617,36 @@ canvas.addEventListener(
         }
 
 
-        /* Place */
+        /* PLACE */
 
         if(
             event.button===2
         ){
 
-            const normal =
+            const normal=
                 hit.face.normal.clone();
 
 
-            const position =
+            const position=
                 hit.object.position
                 .clone()
                 .subScalar(.5)
                 .add(normal);
 
 
-            const x =
+            const x=
                 Math.floor(
                     position.x
                 );
 
 
-            const y =
+            const y=
                 Math.floor(
                     position.y
                 );
 
 
-            const z =
+            const z=
                 Math.floor(
                     position.z
                 );
@@ -1495,7 +1682,7 @@ canvas.addEventListener(
 
 
 /* =========================================================
-   POINTER LOCK
+   MOUSE LOOK
 ========================================================= */
 
 canvas.addEventListener(
@@ -1522,19 +1709,19 @@ window.addEventListener(
         }
 
 
-        player.yaw -=
+        player.yaw-=
             event.movementX*.0025;
 
 
-        player.pitch -=
+        player.pitch-=
             event.movementY*.0025;
 
 
-        const limit =
+        const limit=
             Math.PI/2-.05;
 
 
-        player.pitch =
+        player.pitch=
             Math.max(
                 -limit,
                 Math.min(
@@ -1623,7 +1810,7 @@ function collides(
 
 
 /* =========================================================
-   MOVE AXIS
+   MOVEMENT
 ========================================================= */
 
 function moveAxis(
@@ -1631,7 +1818,7 @@ function moveAxis(
     amount
 ){
 
-    const test =
+    const test=
         player.position.clone();
 
 
@@ -1656,10 +1843,10 @@ function moveAxis(
 
 
 /* =========================================================
-   GAME UPDATE
+   GAME
 ========================================================= */
 
-const clock =
+const clock=
     new THREE.Clock();
 
 
@@ -1692,7 +1879,7 @@ function update(
         sideways+=1;
 
 
-    const length =
+    const length=
         Math.hypot(
             forward,
             sideways
@@ -1704,35 +1891,33 @@ function update(
     sideways/=length;
 
 
-    const sin =
+    const sin=
         Math.sin(
             player.yaw
         );
 
 
-    const cos =
+    const cos=
         Math.cos(
             player.yaw
         );
 
 
-    const velocityX =
+    const velocityX=
         (
             sideways*cos
             -
             forward*sin
-        )
-        *
+        )*
         moveSpeed;
 
 
-    const velocityZ =
+    const velocityZ=
         (
             sideways*sin
             +
             forward*cos
-        )
-        *
+        )*
         moveSpeed;
 
 
@@ -1750,7 +1935,7 @@ function update(
 
     /* Gravity */
 
-    player.velocity.y -=
+    player.velocity.y-=
         gravity*delta;
 
 
@@ -1770,7 +1955,7 @@ function update(
     }
 
 
-    /* Vertical */
+    /* Vertical collision */
 
     if(
         !moveAxis(
@@ -1820,8 +2005,6 @@ function update(
     }
 
 
-    /* Camera */
-
     camera.position.set(
         player.position.x,
         player.position.y+.72,
@@ -1849,7 +2032,7 @@ function animate(){
     );
 
 
-    const delta =
+    const delta=
         Math.min(
             clock.getDelta(),
             .05
@@ -1871,7 +2054,7 @@ animate();
 
 
 /* =========================================================
-   START
+   START GAME
 ========================================================= */
 
 document
@@ -1899,8 +2082,8 @@ window.addEventListener(
     "resize",
     ()=>{
 
-        camera.aspect =
-            window.innerWidth /
+        camera.aspect=
+            window.innerWidth/
             window.innerHeight;
 
 
