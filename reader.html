@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Offline BookShelf PDF Reader</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#111827;color:#f8fafc;height:100vh;overflow:hidden}
+header{height:64px;background:#1f2937;display:flex;align-items:center;padding:0 18px;gap:14px;border-bottom:1px solid #374151}
+h1{font-size:20px;margin:0;white-space:nowrap}.spacer{flex:1}
+button,.fileBtn{border:0;border-radius:9px;padding:10px 14px;background:#2563eb;color:white;font-weight:600;cursor:pointer}
+button:hover,.fileBtn:hover{filter:brightness(1.1)}input[type=file]{display:none}
+main{height:calc(100vh - 64px);display:grid;grid-template-columns:300px 1fr}
+aside{background:#0f172a;border-right:1px solid #334155;padding:16px;overflow:auto}
+.viewer{background:#334155;position:relative;display:flex;flex-direction:column;min-width:0}
+.toolbar{height:52px;background:#1e293b;display:flex;align-items:center;gap:8px;padding:8px 12px}
+.toolbar button{padding:7px 11px;background:#475569}.toolbar span{min-width:90px;text-align:center}
+#pdf{width:100%;height:calc(100% - 52px);border:0;background:white}
+.book{padding:12px;border:1px solid #334155;border-radius:10px;margin:9px 0;background:#1e293b;cursor:pointer}
+.book.active{outline:2px solid #60a5fa}.bookTitle{font-weight:700}.bookAuthor{font-size:12px;color:#94a3b8;margin-top:3px}
+.empty{color:#94a3b8;font-size:14px;line-height:1.5;margin-top:18px}
+.note{font-size:12px;color:#94a3b8;margin-top:18px;line-height:1.5}
+#drop{border:2px dashed #475569;border-radius:12px;padding:16px;text-align:center;color:#94a3b8;margin-top:12px}
+@media(max-width:700px){main{grid-template-columns:210px 1fr}header h1{font-size:16px}aside{padding:10px}}
+</style>
+</head>
+<body>
+<header>
+<h1>📚 Offline BookShelf</h1>
+<div class="spacer"></div>
+<label class="fileBtn">＋ Add PDF files<input id="files" type="file" accept="application/pdf" multiple></label>
+</header>
+<main>
+<aside>
+<div id="books"></div>
+<div id="drop">Drop PDF files here</div>
+<div class="note">
+Your PDFs stay on this device. This reader does not upload them anywhere.<br><br>
+The three requested Patricia MacLachlan books are listed as suggested titles below, but their copyrighted PDF files cannot be bundled into this app. Use <b>Add PDF files</b> to import copies you are authorized to use.
+</div>
+</aside>
+<section class="viewer">
+<div class="toolbar">
+<button id="prev">←</button><button id="next">→</button>
+<span id="pageInfo">Page —</span>
+<div class="spacer"></div>
+<button id="zoomOut">−</button><button id="zoomIn">＋</button>
+<button id="newTab">Open</button>
+</div>
+<iframe id="pdf" title="PDF viewer"></iframe>
+</section>
+</main>
+<script>
+const DB='offline-bookshelf-v1', STORE='pdfs';
+let db, books=[], current=null, currentUrl=null, scale=1;
+
+const suggested=[
+"Skylark — Patricia MacLachlan",
+"Caleb's Story — Patricia MacLachlan",
+"Sarah, Plain and Tall — Patricia MacLachlan"
+];
+
+function openDB(){
+ return new Promise((resolve,reject)=>{
+  const r=indexedDB.open(DB,1);
+  r.onupgradeneeded=()=>r.result.createObjectStore(STORE,{keyPath:'id',autoIncrement:true});
+  r.onsuccess=()=>{db=r.result;resolve()};
+  r.onerror=()=>reject(r.error);
+ });
+}
+function tx(mode='readonly'){return db.transaction(STORE,mode).objectStore(STORE)}
+function getAll(){
+ return new Promise((res,rej)=>{const r=tx().getAll();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})
+}
+function addFile(file){
+ return new Promise((res,rej)=>{
+  const r=tx('readwrite').add({name:file.name,type:file.type,data:file,added:Date.now()});
+  r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)
+ });
+}
+function removeFile(id){
+ return new Promise((res,rej)=>{const r=tx('readwrite').delete(id);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})
+}
+function render(){
+ const el=document.querySelector('#books'); el.innerHTML='';
+ const s=document.createElement('div');
+ s.innerHTML='<div style="font-weight:800;margin-bottom:8px">Suggested books</div>';
+ el.appendChild(s);
+ suggested.forEach(t=>{
+  const d=document.createElement('div');d.className='book';
+  d.innerHTML='<div class="bookTitle">'+escapeHtml(t.split(' — ')[0])+'</div><div class="bookAuthor">Patricia MacLachlan • Import your PDF</div>';
+  el.appendChild(d);
+ });
+ if(books.length){
+  const h=document.createElement('div');h.style='font-weight:800;margin:18px 0 8px';h.textContent='My PDFs';el.appendChild(h);
+ }
+ books.forEach(b=>{
+  const d=document.createElement('div');d.className='book'+(current&&current.id===b.id?' active':'');
+  d.innerHTML='<div class="bookTitle">'+escapeHtml(b.name)+'</div><div class="bookAuthor">Stored offline</div>';
+  d.onclick=()=>openBook(b);el.appendChild(d);
+ });
+}
+function escapeHtml(x){return x.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+async function refresh(){books=await getAll();render()}
+async function openBook(b){
+ current=b;
+ if(currentUrl)URL.revokeObjectURL(currentUrl);
+ currentUrl=URL.createObjectURL(b.data);
+ document.querySelector('#pdf').src=currentUrl;
+ document.querySelector('#pageInfo').textContent=b.name;
+ render();
+}
+async function importFiles(list){
+ for(const f of list) if(f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf')) await addFile(f);
+ await refresh();
+ if(!current && books[0]) openBook(books[0]);
+}
+document.querySelector('#files').onchange=e=>importFiles([...e.target.files]);
+const drop=document.querySelector('#drop');
+drop.ondragover=e=>{e.preventDefault();drop.style.borderColor='#60a5fa'};
+drop.ondragleave=()=>drop.style.borderColor='';
+drop.ondrop=e=>{e.preventDefault();drop.style.borderColor='';importFiles([...e.dataTransfer.files])};
+
+document.querySelector('#zoomIn').onclick=()=>{scale=Math.min(2.5,scale+.1);document.querySelector('#pdf').style.transform='scale('+scale+')';document.querySelector('#pdf').style.transformOrigin='top left'};
+document.querySelector('#zoomOut').onclick=()=>{scale=Math.max(.5,scale-.1);document.querySelector('#pdf').style.transform='scale('+scale+')';document.querySelector('#pdf').style.transformOrigin='top left'};
+document.querySelector('#newTab').onclick=()=>{if(currentUrl)window.open(currentUrl,'_blank')};
+document.querySelector('#prev').onclick=()=>{try{document.querySelector('#pdf').contentWindow.postMessage({type:'prev'},'*')}catch(e){}};
+document.querySelector('#next').onclick=()=>{try{document.querySelector('#pdf').contentWindow.postMessage({type:'next'},'*')}catch(e){}};
+
+(async()=>{await openDB();await refresh();})();
+</script>
+</body>
+</html>
