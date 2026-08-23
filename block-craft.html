@@ -1,222 +1,180 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>BlockCraft V1</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BlockCraft V2</title>
 
 <style>
-* {
-    box-sizing: border-box;
+*{
+    box-sizing:border-box;
 }
 
-html,
-body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: #87ceeb;
-    font-family: Arial, sans-serif;
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#87ceeb;
+    font-family:Arial,sans-serif;
 }
 
-#game {
-    width: 100vw;
-    height: 100vh;
-    display: block;
+#game{
+    width:100vw;
+    height:100vh;
+    display:block;
 }
 
 /* Crosshair */
 
-#crosshair {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    width: 20px;
-    height: 20px;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 10;
+#crosshair{
+    position:fixed;
+    left:50%;
+    top:50%;
+    width:20px;
+    height:20px;
+    transform:translate(-50%,-50%);
+    pointer-events:none;
+    z-index:10;
 }
 
-#crosshair::before {
-    content: "";
-    position: absolute;
-    width: 2px;
-    height: 20px;
-    background: white;
-    left: 9px;
-    top: 0;
-    box-shadow: 0 0 3px black;
+#crosshair::before{
+    content:"";
+    position:absolute;
+    width:2px;
+    height:20px;
+    left:9px;
+    top:0;
+    background:white;
+    box-shadow:0 0 3px black;
 }
 
-#crosshair::after {
-    content: "";
-    position: absolute;
-    width: 20px;
-    height: 2px;
-    background: white;
-    left: 0;
-    top: 9px;
-    box-shadow: 0 0 3px black;
+#crosshair::after{
+    content:"";
+    position:absolute;
+    width:20px;
+    height:2px;
+    left:0;
+    top:9px;
+    background:white;
+    box-shadow:0 0 3px black;
 }
 
 /* Help */
 
-#help {
-    position: fixed;
-    left: 12px;
-    top: 12px;
-
-    padding: 10px 14px;
-
-    background: rgba(0,0,0,.55);
-    color: white;
-
-    border-radius: 8px;
-
-    font-size: 14px;
-
-    line-height: 1.5;
-
-    z-index: 20;
+#help{
+    position:fixed;
+    top:12px;
+    left:12px;
+    padding:10px 14px;
+    background:rgba(0,0,0,.58);
+    color:white;
+    border-radius:8px;
+    line-height:1.5;
+    font-size:14px;
+    z-index:20;
 }
 
 /* Status */
 
-#status {
-    position: fixed;
-    right: 12px;
-    top: 12px;
-
-    padding: 8px 12px;
-
-    background: rgba(0,0,0,.55);
-    color: white;
-
-    border-radius: 8px;
-
-    z-index: 20;
+#status{
+    position:fixed;
+    top:12px;
+    right:12px;
+    padding:8px 12px;
+    background:rgba(0,0,0,.58);
+    color:white;
+    border-radius:8px;
+    z-index:20;
 }
 
 /* Hotbar */
 
-#hotbar {
-    position: fixed;
-
-    bottom: 18px;
-    left: 50%;
-
-    transform: translateX(-50%);
-
-    display: flex;
-
-    gap: 5px;
-
-    z-index: 20;
+#hotbar{
+    position:fixed;
+    bottom:18px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:5px;
+    z-index:20;
 }
 
-.slot {
-    width: 58px;
-    height: 58px;
-
-    border: 3px solid #555;
-
-    background: rgba(0,0,0,.65);
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    position: relative;
+.slot{
+    width:58px;
+    height:58px;
+    border:3px solid #555;
+    background:rgba(20,20,20,.75);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
 }
 
-.slot.selected {
-    border-color: white;
-
+.slot.selected{
+    border-color:white;
     box-shadow:
-        0 0 0 2px black;
+        0 0 0 2px black,
+        0 0 10px rgba(255,255,255,.7);
 }
 
-.swatch {
-    width: 34px;
-    height: 34px;
-
-    border: 2px solid black;
+.swatch{
+    width:36px;
+    height:36px;
+    border:2px solid #111;
+    image-rendering:pixelated;
 }
 
-.number {
-    position: absolute;
-
-    right: 3px;
-    bottom: 2px;
-
-    color: white;
-
-    font-size: 11px;
-
-    text-shadow: 1px 1px 2px black;
+.number{
+    position:absolute;
+    right:3px;
+    bottom:2px;
+    color:white;
+    font-size:11px;
+    text-shadow:1px 1px 2px black;
 }
 
 /* Start screen */
 
-#start {
-    position: fixed;
-
-    inset: 0;
-
-    background: rgba(0,0,0,.75);
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    z-index: 100;
+#start{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.78);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
 }
 
-#panel {
-    width: 420px;
-
-    max-width: 90%;
-
-    background: #182018;
-
-    color: white;
-
-    border: 2px solid white;
-
-    border-radius: 12px;
-
-    padding: 30px;
-
-    text-align: center;
+#panel{
+    width:430px;
+    max-width:90%;
+    padding:30px;
+    text-align:center;
+    color:white;
+    background:#1b211b;
+    border:2px solid white;
+    border-radius:12px;
 }
 
-#panel h1 {
-    margin-top: 0;
+#panel h1{
+    margin-top:0;
+    font-size:36px;
 }
 
-#startButton {
-    border: none;
-
-    background: #4caf50;
-
-    color: white;
-
-    padding: 14px 25px;
-
-    font-size: 18px;
-
-    border-radius: 8px;
-
-    cursor: pointer;
+#startButton{
+    border:0;
+    border-radius:8px;
+    padding:14px 28px;
+    font-size:18px;
+    color:white;
+    background:#45a049;
+    cursor:pointer;
 }
 
-#startButton:hover {
-    background: #45a049;
+#startButton:hover{
+    background:#58bd5d;
 }
 </style>
 </head>
@@ -228,33 +186,32 @@ body {
 <div id="crosshair"></div>
 
 <div id="help">
-    WASD: Move<br>
-    Space: Jump<br>
-    Mouse: Look<br>
-    Left Click: Break<br>
-    Right Click: Place<br>
-    1–6: Select Block
+    <b>BlockCraft V2</b><br>
+    WASD — Move<br>
+    Space — Jump<br>
+    Mouse — Look<br>
+    Left Click — Break<br>
+    Right Click — Place<br>
+    1–6 — Select Block
 </div>
 
 <div id="status">
-    BlockCraft V1
+    V2 • Textured
 </div>
 
 <div id="hotbar"></div>
 
 <div id="start">
-
     <div id="panel">
 
-        <h1>⛏️ BlockCraft V1</h1>
+        <h1>⛏️ BlockCraft V2</h1>
 
         <p>
-            A simple Minecraft-style voxel sandbox.
+            Textured voxel sandbox
         </p>
 
         <p>
-            Explore the world, break blocks,
-            and build your own structures.
+            Explore, mine and build.
         </p>
 
         <button id="startButton">
@@ -262,22 +219,24 @@ body {
         </button>
 
     </div>
-
 </div>
 
 
 <script type="module">
 
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
+import * as THREE from
+"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
 
 
-/* =====================================================
-   BASIC THREE.JS SETUP
-===================================================== */
+/* =========================================================
+   BASIC SETUP
+========================================================= */
 
-const canvas = document.querySelector("#game");
+const canvas =
+    document.querySelector("#game");
 
-const scene = new THREE.Scene();
+const scene =
+    new THREE.Scene();
 
 scene.background =
     new THREE.Color(0x87ceeb);
@@ -286,11 +245,9 @@ scene.fog =
     new THREE.Fog(
         0x87ceeb,
         35,
-        90
+        95
     );
 
-
-/* Camera */
 
 const camera =
     new THREE.PerspectiveCamera(
@@ -304,16 +261,17 @@ const camera =
 camera.rotation.order = "YXZ";
 
 
-/* Renderer */
-
 const renderer =
     new THREE.WebGLRenderer({
-        canvas: canvas,
-        antialias: false
+        canvas,
+        antialias:false
     });
 
 renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio, 2)
+    Math.min(
+        window.devicePixelRatio,
+        2
+    )
 );
 
 renderer.setSize(
@@ -324,14 +282,14 @@ renderer.setSize(
 renderer.shadowMap.enabled = true;
 
 
-/* =====================================================
-   LIGHTING
-===================================================== */
+/* =========================================================
+   LIGHT
+========================================================= */
 
 const skyLight =
     new THREE.HemisphereLight(
         0xbfe9ff,
-        0x6b5a3b,
+        0x625238,
         1.8
     );
 
@@ -355,73 +313,465 @@ sun.castShadow = true;
 scene.add(sun);
 
 
-/* =====================================================
+/* =========================================================
+   TEXTURE CREATION
+========================================================= */
+
+/*
+   Instead of downloading texture files,
+   we generate small pixel textures.
+
+   This means the whole game stays inside
+   one HTML file.
+*/
+
+
+function createTexture(
+    baseColor,
+    variations,
+    pattern = "noise"
+){
+
+    const size = 16;
+
+    const canvas =
+        document.createElement("canvas");
+
+    canvas.width = size;
+    canvas.height = size;
+
+    const ctx =
+        canvas.getContext("2d");
+
+    ctx.imageSmoothingEnabled = false;
+
+
+    /* Base */
+
+    ctx.fillStyle = baseColor;
+
+    ctx.fillRect(
+        0,
+        0,
+        size,
+        size
+    );
+
+
+    /* Pixel variation */
+
+    for(
+        let y = 0;
+        y < size;
+        y++
+    ){
+
+        for(
+            let x = 0;
+            x < size;
+            x++
+        ){
+
+            if(
+                Math.random() > .72
+            ){
+
+                ctx.fillStyle =
+                    variations[
+                        Math.floor(
+                            Math.random() *
+                            variations.length
+                        )
+                    ];
+
+                ctx.fillRect(
+                    x,
+                    y,
+                    1,
+                    1
+                );
+
+            }
+
+        }
+
+    }
+
+
+    /* Special patterns */
+
+    if(pattern === "grass"){
+
+        for(
+            let i=0;
+            i<20;
+            i++
+        ){
+
+            ctx.fillStyle =
+                Math.random() > .5
+                ? "#4c9d32"
+                : "#6bbd43";
+
+            const x =
+                Math.floor(
+                    Math.random()*16
+                );
+
+            const y =
+                Math.floor(
+                    Math.random()*16
+                );
+
+            ctx.fillRect(
+                x,
+                y,
+                1,
+                1
+            );
+
+        }
+
+    }
+
+
+    if(pattern === "wood"){
+
+        for(
+            let i=0;
+            i<8;
+            i++
+        ){
+
+            ctx.fillStyle =
+                i%2
+                ? "#6e421e"
+                : "#b17a3d";
+
+            const x =
+                Math.floor(
+                    Math.random()*16
+                );
+
+            ctx.fillRect(
+                x,
+                0,
+                1,
+                16
+            );
+
+        }
+
+    }
+
+
+    if(pattern === "leaves"){
+
+        for(
+            let i=0;
+            i<35;
+            i++
+        ){
+
+            ctx.fillStyle =
+                Math.random() > .5
+                ? "#287b31"
+                : "#48a33c";
+
+            const x =
+                Math.floor(
+                    Math.random()*16
+                );
+
+            const y =
+                Math.floor(
+                    Math.random()*16
+                );
+
+            ctx.fillRect(
+                x,
+                y,
+                1,
+                1
+            );
+
+        }
+
+    }
+
+
+    const texture =
+        new THREE.CanvasTexture(
+            canvas
+        );
+
+    texture.magFilter =
+        THREE.NearestFilter;
+
+    texture.minFilter =
+        THREE.NearestFilter;
+
+    texture.colorSpace =
+        THREE.SRGBColorSpace;
+
+    texture.wrapS =
+        THREE.RepeatWrapping;
+
+    texture.wrapT =
+        THREE.RepeatWrapping;
+
+
+    return texture;
+}
+
+
+/* =========================================================
+   TEXTURES
+========================================================= */
+
+const grassTopTexture =
+    createTexture(
+        "#55a936",
+        [
+            "#4a962e",
+            "#67b83e",
+            "#3f882a"
+        ],
+        "grass"
+    );
+
+
+const grassSideTexture =
+    createTexture(
+        "#8a5a2d",
+        [
+            "#74481f",
+            "#996536",
+            "#6f431e"
+        ]
+    );
+
+
+const dirtTexture =
+    createTexture(
+        "#8b5a2b",
+        [
+            "#70451f",
+            "#9b6938",
+            "#784a24"
+        ]
+    );
+
+
+const stoneTexture =
+    createTexture(
+        "#858585",
+        [
+            "#707070",
+            "#969696",
+            "#626262",
+            "#a0a0a0"
+        ]
+    );
+
+
+const woodSideTexture =
+    createTexture(
+        "#8b5a2b",
+        [
+            "#70431d",
+            "#a86f36",
+            "#633b1b"
+        ],
+        "wood"
+    );
+
+
+const woodTopTexture =
+    createTexture(
+        "#a97943",
+        [
+            "#7d4f27",
+            "#c18b50",
+            "#633b1b"
+        ]
+    );
+
+
+const leavesTexture =
+    createTexture(
+        "#368c38",
+        [
+            "#28732c",
+            "#4ba747",
+            "#246728",
+            "#59b84c"
+        ],
+        "leaves"
+    );
+
+
+const sandTexture =
+    createTexture(
+        "#d9c27a",
+        [
+            "#c5aa60",
+            "#ead58f",
+            "#bda25b"
+        ]
+    );
+
+
+/* =========================================================
+   MATERIAL HELPERS
+========================================================= */
+
+function material(texture){
+
+    return new THREE.MeshLambertMaterial({
+        map:texture
+    });
+
+}
+
+
+/* =========================================================
    BLOCK MATERIALS
-===================================================== */
-
-const materials = {
-
-    grass:
-        new THREE.MeshLambertMaterial({
-            color: 0x55aa38
-        }),
-
-    dirt:
-        new THREE.MeshLambertMaterial({
-            color: 0x8b5a2b
-        }),
-
-    stone:
-        new THREE.MeshLambertMaterial({
-            color: 0x888888
-        }),
-
-    wood:
-        new THREE.MeshLambertMaterial({
-            color: 0x9a642e
-        }),
-
-    leaves:
-        new THREE.MeshLambertMaterial({
-            color: 0x2f8f35
-        }),
-
-    sand:
-        new THREE.MeshLambertMaterial({
-            color: 0xd9c27a
-        })
-};
+========================================================= */
 
 
-/* Available blocks */
+/* Grass */
+
+const grassMaterials = [
+
+    material(grassSideTexture),
+    material(grassSideTexture),
+
+    material(grassTopTexture),
+    material(dirtTexture),
+
+    material(grassSideTexture),
+    material(grassSideTexture)
+
+];
+
+
+/* Dirt */
+
+const dirtMaterial =
+    material(dirtTexture);
+
+
+/* Stone */
+
+const stoneMaterial =
+    material(stoneTexture);
+
+
+/* Wood */
+
+const woodMaterials = [
+
+    material(woodSideTexture),
+    material(woodSideTexture),
+
+    material(woodTopTexture),
+    material(woodTopTexture),
+
+    material(woodSideTexture),
+    material(woodSideTexture)
+
+];
+
+
+/* Leaves */
+
+const leavesMaterial =
+    new THREE.MeshLambertMaterial({
+
+        map:leavesTexture,
+
+        transparent:true,
+
+        alphaTest:.45
+
+    });
+
+
+/* Sand */
+
+const sandMaterial =
+    material(sandTexture);
+
+
+/* =========================================================
+   BLOCK TYPES
+========================================================= */
 
 const blockTypes = [
+
     "grass",
     "dirt",
     "stone",
     "wood",
     "leaves",
     "sand"
+
 ];
 
 
-/* =====================================================
+function getMaterial(type){
+
+    switch(type){
+
+        case "grass":
+            return grassMaterials;
+
+        case "dirt":
+            return dirtMaterial;
+
+        case "stone":
+            return stoneMaterial;
+
+        case "wood":
+            return woodMaterials;
+
+        case "leaves":
+            return leavesMaterial;
+
+        case "sand":
+            return sandMaterial;
+
+        default:
+            return dirtMaterial;
+
+    }
+
+}
+
+
+/* =========================================================
    BLOCK STORAGE
-===================================================== */
+========================================================= */
 
-const blocks = new Map();
+const blocks =
+    new Map();
 
 
-function blockKey(x, y, z) {
+function blockKey(
+    x,
+    y,
+    z
+){
 
     return `${x},${y},${z}`;
 
 }
 
 
-/* =====================================================
+/* =========================================================
    BLOCK GEOMETRY
-===================================================== */
+========================================================= */
 
 const cubeGeometry =
     new THREE.BoxGeometry(
@@ -431,22 +781,28 @@ const cubeGeometry =
     );
 
 
-/* =====================================================
-   CREATE BLOCK
-===================================================== */
+/* =========================================================
+   ADD BLOCK
+========================================================= */
 
 function addBlock(
     x,
     y,
     z,
     type
-) {
+){
 
-    if (
-        blocks.has(
-            blockKey(x, y, z)
-        )
-    ) {
+    const key =
+        blockKey(
+            x,
+            y,
+            z
+        );
+
+
+    if(
+        blocks.has(key)
+    ){
 
         return;
 
@@ -456,14 +812,14 @@ function addBlock(
     const block =
         new THREE.Mesh(
             cubeGeometry,
-            materials[type]
+            getMaterial(type)
         );
 
 
     block.position.set(
-        x + 0.5,
-        y + 0.5,
-        z + 0.5
+        x+.5,
+        y+.5,
+        z+.5
     );
 
 
@@ -474,48 +830,48 @@ function addBlock(
 
     block.userData = {
 
-        x: x,
-        y: y,
-        z: z,
-
-        type: type
+        x,
+        y,
+        z,
+        type
 
     };
 
 
     scene.add(block);
 
-
     blocks.set(
-        blockKey(x, y, z),
+        key,
         block
     );
 
 }
 
 
-/* =====================================================
+/* =========================================================
    REMOVE BLOCK
-===================================================== */
+========================================================= */
 
 function removeBlock(
     x,
     y,
     z
-) {
+){
 
     const key =
-        blockKey(x, y, z);
+        blockKey(
+            x,
+            y,
+            z
+        );
+
 
     const block =
         blocks.get(key);
 
 
-    if (!block) {
-
+    if(!block)
         return;
-
-    }
 
 
     scene.remove(block);
@@ -525,11 +881,14 @@ function removeBlock(
 }
 
 
-/* =====================================================
+/* =========================================================
    TERRAIN
-===================================================== */
+========================================================= */
 
-function terrainHeight(x, z) {
+function terrainHeight(
+    x,
+    z
+){
 
     return Math.max(
 
@@ -539,13 +898,17 @@ function terrainHeight(x, z) {
 
             4
 
-            + Math.sin(x * 0.23) * 1.6
+            + Math.sin(
+                x*.23
+            )*1.6
 
-            + Math.cos(z * 0.19) * 1.4
+            + Math.cos(
+                z*.19
+            )*1.4
 
             + Math.sin(
-                (x + z) * 0.11
-            ) * 1.2
+                (x+z)*.11
+            )*1.2
 
         )
 
@@ -554,52 +917,57 @@ function terrainHeight(x, z) {
 }
 
 
-/* =====================================================
+/* =========================================================
    GENERATE WORLD
-===================================================== */
+========================================================= */
 
-for (
-    let x = -22;
-    x <= 22;
+for(
+    let x=-22;
+    x<=22;
     x++
-) {
+){
 
-    for (
-        let z = -22;
-        z <= 22;
+    for(
+        let z=-22;
+        z<=22;
         z++
-    ) {
+    ){
 
         const height =
-            terrainHeight(x, z);
+            terrainHeight(
+                x,
+                z
+            );
 
 
-        for (
-            let y = 0;
-            y <= height;
+        for(
+            let y=0;
+            y<=height;
             y++
-        ) {
+        ){
 
             let type;
 
 
-            if (y === height) {
+            if(
+                y===height
+            ){
 
-                type = "grass";
-
-            }
-
-            else if (
-                y > height - 3
-            ) {
-
-                type = "dirt";
+                type="grass";
 
             }
 
-            else {
+            else if(
+                y>height-3
+            ){
 
-                type = "stone";
+                type="dirt";
+
+            }
+
+            else{
+
+                type="stone";
 
             }
 
@@ -618,23 +986,29 @@ for (
 }
 
 
-/* =====================================================
+/* =========================================================
    TREES
-===================================================== */
+========================================================= */
 
-function createTree(x, z) {
+function createTree(
+    x,
+    z
+){
 
     const ground =
-        terrainHeight(x, z);
+        terrainHeight(
+            x,
+            z
+        );
 
 
     /* Trunk */
 
-    for (
-        let y = ground + 1;
-        y < ground + 5;
+    for(
+        let y=ground+1;
+        y<ground+5;
         y++
-    ) {
+    ){
 
         addBlock(
             x,
@@ -648,37 +1022,37 @@ function createTree(x, z) {
 
     /* Leaves */
 
-    for (
-        let dx = -2;
-        dx <= 2;
+    for(
+        let dx=-2;
+        dx<=2;
         dx++
-    ) {
+    ){
 
-        for (
-            let dz = -2;
-            dz <= 2;
+        for(
+            let dz=-2;
+            dz<=2;
             dz++
-        ) {
+        ){
 
-            for (
-                let dy = 3;
-                dy <= 5;
+            for(
+                let dy=3;
+                dy<=5;
                 dy++
-            ) {
+            ){
 
-                if (
+                if(
                     Math.abs(dx)
                     +
                     Math.abs(dz)
                     +
-                    (dy === 5 ? 1 : 0)
-                    < 5
-                ) {
+                    (dy===5?1:0)
+                    <5
+                ){
 
                     addBlock(
-                        x + dx,
-                        ground + dy,
-                        z + dz,
+                        x+dx,
+                        ground+dy,
+                        z+dz,
                         "leaves"
                     );
 
@@ -695,32 +1069,34 @@ function createTree(x, z) {
 
 /* Random trees */
 
-for (
-    let x = -18;
-    x <= 18;
-    x += 6
-) {
+for(
+    let x=-18;
+    x<=18;
+    x+=6
+){
 
-    for (
-        let z = -18;
-        z <= 18;
-        z += 7
-    ) {
+    for(
+        let z=-18;
+        z<=18;
+        z+=7
+    ){
 
-        if (
-            Math.random() > 0.35
-        ) {
+        if(
+            Math.random()>.35
+        ){
 
             createTree(
-                x +
-                Math.floor(
-                    Math.random() * 3
-                ) - 1,
 
-                z +
+                x+
                 Math.floor(
-                    Math.random() * 3
-                ) - 1
+                    Math.random()*3
+                )-1,
+
+                z+
+                Math.floor(
+                    Math.random()*3
+                )-1
+
             );
 
         }
@@ -730,27 +1106,30 @@ for (
 }
 
 
-/* =====================================================
+/* =========================================================
    PLAYER
-===================================================== */
+========================================================= */
 
 const player = {
 
     position:
         new THREE.Vector3(
-            0.5,
-            terrainHeight(0, 0) + 1.05,
-            0.5
+            .5,
+            terrainHeight(
+                0,
+                0
+            )+1.05,
+            .5
         ),
 
     velocity:
         new THREE.Vector3(),
 
-    yaw: 0,
+    yaw:0,
 
-    pitch: 0,
+    pitch:0,
 
-    onGround: false
+    onGround:false
 
 };
 
@@ -760,9 +1139,9 @@ camera.position.copy(
 );
 
 
-/* =====================================================
+/* =========================================================
    KEYBOARD
-===================================================== */
+========================================================= */
 
 const keys = {};
 
@@ -771,21 +1150,22 @@ window.addEventListener(
     "keydown",
     event => {
 
-        keys[event.code] = true;
+        keys[event.code]=true;
 
 
-        if (
+        if(
             /^Digit[1-6]$/
-                .test(event.code)
-        ) {
+            .test(event.code)
+        ){
 
             const number =
                 Number(
                     event.code.slice(-1)
                 );
 
+
             selectBlock(
-                number - 1
+                number-1
             );
 
         }
@@ -798,29 +1178,32 @@ window.addEventListener(
     "keyup",
     event => {
 
-        keys[event.code] = false;
+        keys[event.code]=false;
 
     }
 );
 
 
-/* =====================================================
+/* =========================================================
    HOTBAR
-===================================================== */
+========================================================= */
 
-let selectedBlock = 0;
+let selectedBlock=0;
+
 
 const hotbar =
-    document.querySelector("#hotbar");
+    document.querySelector(
+        "#hotbar"
+    );
 
 
-function drawHotbar() {
+function drawHotbar(){
 
-    hotbar.innerHTML = "";
+    hotbar.innerHTML="";
 
 
     blockTypes.forEach(
-        (type, index) => {
+        (type,index)=>{
 
             const slot =
                 document.createElement(
@@ -828,13 +1211,12 @@ function drawHotbar() {
                 );
 
 
-            slot.className =
-                "slot";
+            slot.className="slot";
 
 
-            if (
-                index === selectedBlock
-            ) {
+            if(
+                index===selectedBlock
+            ){
 
                 slot.classList.add(
                     "selected"
@@ -843,27 +1225,89 @@ function drawHotbar() {
             }
 
 
-            const color =
-                materials[type]
-                    .color
-                    .getHexString();
+            const texture =
+                getMaterial(type);
 
 
-            slot.innerHTML = `
-
-                <div
-                    class="swatch"
-                    style="background:#${color}"
-                ></div>
-
-                <div class="number">
-                    ${index + 1}
-                </div>
-
-            `;
+            let preview;
 
 
-            hotbar.appendChild(slot);
+            if(
+                Array.isArray(texture)
+            ){
+
+                preview =
+                    texture[0]
+                    .map
+                    .image;
+
+            }
+
+            else{
+
+                preview =
+                    texture.map.image;
+
+            }
+
+
+            const image =
+                document.createElement(
+                    "canvas"
+                );
+
+
+            image.width=16;
+            image.height=16;
+
+
+            const ctx =
+                image.getContext(
+                    "2d"
+                );
+
+
+            if(preview){
+
+                ctx.drawImage(
+                    preview,
+                    0,
+                    0
+                );
+
+            }
+
+
+            image.className="swatch";
+
+
+            slot.appendChild(
+                image
+            );
+
+
+            const number =
+                document.createElement(
+                    "div"
+                );
+
+
+            number.className=
+                "number";
+
+
+            number.textContent=
+                index+1;
+
+
+            slot.appendChild(
+                number
+            );
+
+
+            hotbar.appendChild(
+                slot
+            );
 
         }
     );
@@ -871,13 +1315,15 @@ function drawHotbar() {
 }
 
 
-function selectBlock(index) {
+function selectBlock(
+    index
+){
 
     selectedBlock =
         Math.max(
             0,
             Math.min(
-                blockTypes.length - 1,
+                blockTypes.length-1,
                 index
             )
         );
@@ -891,20 +1337,20 @@ function selectBlock(index) {
 drawHotbar();
 
 
-/* =====================================================
+/* =========================================================
    RAYCASTING
-===================================================== */
+========================================================= */
 
 const raycaster =
     new THREE.Raycaster();
 
 
-function getTargetBlock() {
+function getTargetBlock(){
 
     raycaster.setFromCamera(
         {
-            x: 0,
-            y: 0
+            x:0,
+            y:0
         },
         camera
     );
@@ -925,28 +1371,26 @@ function getTargetBlock() {
 }
 
 
-/* =====================================================
-   MOUSE CONTROLS
-===================================================== */
+/* =========================================================
+   MOUSE
+========================================================= */
 
 canvas.addEventListener(
     "contextmenu",
-    event => {
-
+    event=>{
         event.preventDefault();
-
     }
 );
 
 
 canvas.addEventListener(
     "mousedown",
-    event => {
+    event=>{
 
-        if (
+        if(
             document.pointerLockElement
-            !== canvas
-        ) {
+            !==canvas
+        ){
 
             return;
 
@@ -957,31 +1401,28 @@ canvas.addEventListener(
             getTargetBlock();
 
 
-        if (!hit) {
-
+        if(!hit)
             return;
 
-        }
 
-
-        const block =
+        const data =
             hit.object.userData;
 
 
-        /* LEFT CLICK */
+        /* Break */
 
-        if (
-            event.button === 0
-        ) {
+        if(
+            event.button===0
+        ){
 
-            if (
-                block.y > 0
-            ) {
+            if(
+                data.y>0
+            ){
 
                 removeBlock(
-                    block.x,
-                    block.y,
-                    block.z
+                    data.x,
+                    data.y,
+                    data.z
                 );
 
             }
@@ -989,11 +1430,11 @@ canvas.addEventListener(
         }
 
 
-        /* RIGHT CLICK */
+        /* Place */
 
-        if (
-            event.button === 2
-        ) {
+        if(
+            event.button===2
+        ){
 
             const normal =
                 hit.face.normal.clone();
@@ -1001,23 +1442,31 @@ canvas.addEventListener(
 
             const position =
                 hit.object.position
-                    .clone()
-                    .subScalar(0.5)
-                    .add(normal);
+                .clone()
+                .subScalar(.5)
+                .add(normal);
 
 
             const x =
-                Math.floor(position.x);
+                Math.floor(
+                    position.x
+                );
+
 
             const y =
-                Math.floor(position.y);
+                Math.floor(
+                    position.y
+                );
+
 
             const z =
-                Math.floor(position.z);
+                Math.floor(
+                    position.z
+                );
 
 
-            if (
-                y >= 0
+            if(
+                y>=0
                 &&
                 !blocks.has(
                     blockKey(
@@ -1026,7 +1475,7 @@ canvas.addEventListener(
                         z
                     )
                 )
-            ) {
+            ){
 
                 addBlock(
                     x,
@@ -1045,13 +1494,13 @@ canvas.addEventListener(
 );
 
 
-/* =====================================================
-   MOUSE LOOK
-===================================================== */
+/* =========================================================
+   POINTER LOCK
+========================================================= */
 
 canvas.addEventListener(
     "click",
-    () => {
+    ()=>{
 
         canvas.requestPointerLock();
 
@@ -1061,12 +1510,12 @@ canvas.addEventListener(
 
 window.addEventListener(
     "mousemove",
-    event => {
+    event=>{
 
-        if (
+        if(
             document.pointerLockElement
-            !== canvas
-        ) {
+            !==canvas
+        ){
 
             return;
 
@@ -1074,15 +1523,15 @@ window.addEventListener(
 
 
         player.yaw -=
-            event.movementX * 0.0025;
+            event.movementX*.0025;
 
 
         player.pitch -=
-            event.movementY * 0.0025;
+            event.movementY*.0025;
 
 
         const limit =
-            Math.PI / 2 - 0.05;
+            Math.PI/2-.05;
 
 
         player.pitch =
@@ -1098,58 +1547,56 @@ window.addEventListener(
 );
 
 
-/* =====================================================
+/* =========================================================
    COLLISION
-===================================================== */
+========================================================= */
 
-function collides(position) {
+function collides(
+    position
+){
 
-    const radius = 0.28;
+    const radius=.28;
 
-    const height = 1.75;
+    const height=1.75;
 
 
-    for (
-        let x =
-            Math.floor(
-                position.x - radius
-            );
+    for(
+        let x=Math.floor(
+            position.x-radius
+        );
 
-        x <=
-            Math.floor(
-                position.x + radius
-            );
+        x<=Math.floor(
+            position.x+radius
+        );
 
         x++
-    ) {
+    ){
 
-        for (
-            let y =
-                Math.floor(position.y);
+        for(
+            let y=Math.floor(
+                position.y
+            );
 
-            y <=
-                Math.floor(
-                    position.y + height
-                );
+            y<=Math.floor(
+                position.y+height
+            );
 
             y++
-        ) {
+        ){
 
-            for (
-                let z =
-                    Math.floor(
-                        position.z - radius
-                    );
+            for(
+                let z=Math.floor(
+                    position.z-radius
+                );
 
-                z <=
-                    Math.floor(
-                        position.z + radius
-                    );
+                z<=Math.floor(
+                    position.z+radius
+                );
 
                 z++
-            ) {
+            ){
 
-                if (
+                if(
                     blocks.has(
                         blockKey(
                             x,
@@ -1157,7 +1604,7 @@ function collides(position) {
                             z
                         )
                     )
-                ) {
+                ){
 
                     return true;
 
@@ -1175,27 +1622,27 @@ function collides(position) {
 }
 
 
-/* =====================================================
-   MOVEMENT
-===================================================== */
+/* =========================================================
+   MOVE AXIS
+========================================================= */
 
 function moveAxis(
     axis,
     amount
-) {
+){
 
     const test =
         player.position.clone();
 
 
-    test[axis] += amount;
+    test[axis]+=amount;
 
 
-    if (
+    if(
         !collides(test)
-    ) {
+    ){
 
-        player.position[axis] +=
+        player.position[axis]+=
             amount;
 
         return true;
@@ -1208,65 +1655,72 @@ function moveAxis(
 }
 
 
-/* =====================================================
-   GAME LOOP
-===================================================== */
+/* =========================================================
+   GAME UPDATE
+========================================================= */
 
 const clock =
     new THREE.Clock();
 
 
-const moveSpeed = 5.5;
+const moveSpeed=5.5;
 
-const gravity = 18;
+const gravity=18;
 
-const jumpPower = 7.2;
-
-
-function update(delta) {
-
-    let forward = 0;
-
-    let sideways = 0;
+const jumpPower=7.2;
 
 
-    if (keys.KeyW)
-        forward -= 1;
+function update(
+    delta
+){
 
-    if (keys.KeyS)
-        forward += 1;
+    let forward=0;
 
-    if (keys.KeyA)
-        sideways -= 1;
+    let sideways=0;
 
-    if (keys.KeyD)
-        sideways += 1;
+
+    if(keys.KeyW)
+        forward-=1;
+
+    if(keys.KeyS)
+        forward+=1;
+
+    if(keys.KeyA)
+        sideways-=1;
+
+    if(keys.KeyD)
+        sideways+=1;
 
 
     const length =
         Math.hypot(
             forward,
             sideways
-        ) || 1;
+        )||1;
 
 
-    forward /= length;
+    forward/=length;
 
-    sideways /= length;
+    sideways/=length;
 
 
     const sin =
-        Math.sin(player.yaw);
+        Math.sin(
+            player.yaw
+        );
+
 
     const cos =
-        Math.cos(player.yaw);
+        Math.cos(
+            player.yaw
+        );
 
 
     const velocityX =
         (
-            sideways * cos
+            sideways*cos
             -
-            forward * sin
+            forward*sin
         )
         *
         moveSpeed;
@@ -1274,9 +1728,9 @@ function update(delta) {
 
     const velocityZ =
         (
-            sideways * sin
+            sideways*sin
             +
-            forward * cos
+            forward*cos
         )
         *
         moveSpeed;
@@ -1284,77 +1738,77 @@ function update(delta) {
 
     moveAxis(
         "x",
-        velocityX * delta
+        velocityX*delta
     );
 
 
     moveAxis(
         "z",
-        velocityZ * delta
+        velocityZ*delta
     );
 
 
     /* Gravity */
 
     player.velocity.y -=
-        gravity * delta;
+        gravity*delta;
 
 
     /* Jump */
 
-    if (
+    if(
         keys.Space
         &&
         player.onGround
-    ) {
+    ){
 
-        player.velocity.y =
+        player.velocity.y=
             jumpPower;
 
-        player.onGround = false;
+        player.onGround=false;
 
     }
 
 
-    /* Vertical movement */
+    /* Vertical */
 
-    if (
+    if(
         !moveAxis(
             "y",
-            player.velocity.y * delta
+            player.velocity.y*delta
         )
-    ) {
+    ){
 
-        if (
-            player.velocity.y < 0
-        ) {
+        if(
+            player.velocity.y<0
+        ){
 
-            player.onGround = true;
+            player.onGround=true;
 
         }
 
 
-        player.velocity.y = 0;
+        player.velocity.y=0;
 
     }
 
-    else {
+    else{
 
-        player.onGround = false;
+        player.onGround=false;
 
     }
 
 
     /* Respawn */
 
-    if (
-        player.position.y < -10
-    ) {
+    if(
+        player.position.y<-10
+    ){
 
         player.position.set(
-            0.5,
+            .5,
             12,
-            0.5
+            .5
         );
 
         player.velocity.set(
@@ -1370,7 +1824,7 @@ function update(delta) {
 
     camera.position.set(
         player.position.x,
-        player.position.y + 0.72,
+        player.position.y+.72,
         player.position.z
     );
 
@@ -1384,11 +1838,11 @@ function update(delta) {
 }
 
 
-/* =====================================================
-   RENDER LOOP
-===================================================== */
+/* =========================================================
+   RENDER
+========================================================= */
 
-function animate() {
+function animate(){
 
     requestAnimationFrame(
         animate
@@ -1398,7 +1852,7 @@ function animate() {
     const delta =
         Math.min(
             clock.getDelta(),
-            0.05
+            .05
         );
 
 
@@ -1416,31 +1870,34 @@ function animate() {
 animate();
 
 
-/* =====================================================
-   START GAME
-===================================================== */
+/* =========================================================
+   START
+========================================================= */
 
 document
-    .querySelector("#startButton")
-    .onclick = () => {
+.querySelector("#startButton")
+.addEventListener(
+    "click",
+    ()=>{
 
         document
-            .querySelector("#start")
-            .style.display = "none";
+        .querySelector("#start")
+        .style.display="none";
 
 
         canvas.requestPointerLock();
 
-    };
+    }
+);
 
 
-/* =====================================================
+/* =========================================================
    RESIZE
-===================================================== */
+========================================================= */
 
 window.addEventListener(
     "resize",
-    () => {
+    ()=>{
 
         camera.aspect =
             window.innerWidth /
@@ -1462,3 +1919,4 @@ window.addEventListener(
 
 </body>
 </html>
+```
