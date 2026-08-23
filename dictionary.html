@@ -1,150 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Dictionary</title>
 
 <style>
-
 * {
   box-sizing: border-box;
 }
 
 body {
-
   margin: 0;
-
-  font-family: Arial, sans-serif;
-
+  font-family: Arial, Helvetica, sans-serif;
   background: #f1f5f9;
-
   color: #172033;
-
 }
 
 header {
-
   background: white;
-
   border-bottom: 1px solid #dbe2ea;
-
-  padding: 18px;
-
+  padding: 20px;
   position: sticky;
-
   top: 0;
-
+  z-index: 10;
 }
 
 h1 {
-
   margin: 0 0 12px;
+  font-size: 26px;
+}
 
+.subtitle {
+  color: #64748b;
+  margin-bottom: 15px;
 }
 
 #search {
-
   width: 100%;
-
   max-width: 700px;
-
-  padding: 12px;
-
-  border: 1px solid #cbd5e1;
-
-  border-radius: 9px;
-
+  padding: 13px 15px;
   font-size: 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  outline: none;
+}
 
+#search:focus {
+  border-color: #2563eb;
 }
 
 #count {
-
-  margin-top: 8px;
-
+  margin-top: 10px;
   color: #64748b;
-
-  font-size: 13px;
-
+  font-size: 14px;
 }
 
 main {
-
-  max-width: 900px;
-
+  max-width: 950px;
   margin: auto;
-
   padding: 20px;
+}
 
+.back-button {
+  display: inline-block;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  background: #2563eb;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.back-button:hover {
+  background: #1d4ed8;
+}
+
+.letter {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 25px 0 10px;
+  color: #2563eb;
+}
+
+.word-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 10px;
 }
 
 .word {
-
-  background: white;
-
-  border: 1px solid #e2e8f0;
-
-  border-radius: 10px;
-
-  padding: 14px;
-
-  margin-bottom: 9px;
-
-}
-
-.term {
-
-  font-size: 18px;
-
+  font-size: 19px;
   font-weight: bold;
-
-  color: #2563eb;
-
+  color: #172033;
 }
 
 .definition {
-
-  margin-top: 5px;
-
+  margin-top: 6px;
   color: #475569;
-
+  line-height: 1.5;
 }
 
-.back {
-
-  display: inline-block;
-
-  margin-bottom: 15px;
-
-  text-decoration: none;
-
-  color: #2563eb;
-
+.no-results {
+  background: white;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  color: #64748b;
 }
 
+@media (max-width: 600px) {
+  header {
+    padding: 15px;
+  }
+
+  main {
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+}
 </style>
-
 </head>
 
-
 <body>
-
 
 <header>
 
 <h1>📖 Dictionary</h1>
 
+<div class="subtitle">
+500-word offline dictionary
+</div>
+
 <input
   id="search"
-  placeholder="Search the dictionary..."
+  type="search"
+  placeholder="Search for a word..."
+  autocomplete="off"
 >
 
 <div id="count">
@@ -153,1215 +152,693 @@ main {
 
 </header>
 
-
 <main>
 
-<a
-  class="back"
-  href="index.html"
->
+<a href="index.html" class="back-button">
 ← Back to BookShelf
 </a>
-
 
 <div id="dictionary"></div>
 
 </main>
 
-
 <script>
 
 /*
-  DICTIONARY DATA
-
-  We will put all 500 words
-  here.
+====================================================
+500 WORD OFFLINE DICTIONARY
+====================================================
 */
 
 const words = [
 
-  {
-    word: "ability",
-    definition:
-      "The power or skill to do something."
-  },
-
-  {
-    word: "able",
-    definition:
-      "Having the skill or power to do something."
-  },
-
-  {
-    word: "about",
-    definition:
-      "Concerning or related to something."
-  },
-
-  {
-    word: "above",
-    definition:
-      "In a higher position."
-  },
-
-  {
-    word: "accept",
-    definition:
-      "To agree to receive or take something."
-  },
-
-  {
-    word: "across",
-    definition:
-      "From one side to the other."
-  },
-
-  {
-    word: "act",
-    definition:
-      "To do something."
-  },
-
-  {
-    word: "action",
-    definition:
-      "Something that is done."
-  },
-
-  {
-    word: "active",
-    definition:
-      "Doing something or being energetic."
-  },
-
-  {
-    word: "add",
-    definition:
-      "To put something together with something else."
-  },
-
-  {
-    word: "address",
-    definition:
-      "The location where someone or something is found."
-  },
-
-  {
-    word: "adventure",
-    definition:
-      "An exciting or unusual experience."
-  },
-
-  {
-    word: "after",
-    definition:
-      "Later than a particular time."
-  },
-
-  {
-    word: "again",
-    definition:
-      "One more time."
-  },
-
-  {
-    word: "agree",
-    definition:
-      "To have the same opinion."
-  },
-
-  {
-    word: "air",
-    definition:
-      "The mixture of gases around Earth."
-  },
-
-  {
-    word: "allow",
-    definition:
-      "To let someone do something."
-  },
-
-  {
-    word: "almost",
-    definition:
-      "Very nearly."
-  },
-
-  {
-    word: "alone",
-    definition:
-      "Without another person or thing."
-  },
-
-  {
-    word: "always",
-    definition:
-      "At all times."
-  },
-
-  {
-    word: "animal",
-    definition:
-      "A living creature that is not a plant."
-  },
-
-  {
-    word: "answer",
-    definition:
-      "A response to a question."
-  },
-
-  {
-    word: "appear",
-    definition:
-      "To become visible or seem to be."
-  },
-
-  {
-    word: "area",
-    definition:
-      "A particular part of a place."
-  },
-
-  {
-    word: "arrive",
-    definition:
-      "To reach a place."
-  },
-
-  {
-    word: "ask",
-    definition:
-      "To request information or something."
-  },
-
-  {
-    word: "beautiful",
-    definition:
-      "Very pleasing to look at."
-  },
-
-  {
-    word: "because",
-    definition:
-      "For the reason that."
-  },
-
-  {
-    word: "become",
-    definition:
-      "To begin to be."
-  },
-
-  {
-    word: "before",
-    definition:
-      "Earlier than."
-  },
-
-  {
-    word: "begin",
-    definition:
-      "To start."
-  },
-
-  {
-    word: "believe",
-    definition:
-      "To think that something is true."
-  },
-
-  {
-    word: "better",
-    definition:
-      "Of higher quality or more suitable."
-  },
-
-  {
-    word: "big",
-    definition:
-      "Large in size."
-  },
-
-  {
-    word: "book",
-    definition:
-      "A set of written or printed pages."
-  },
-
-  {
-    word: "bring",
-    definition:
-      "To carry something to a place."
-  },
-
-  {
-    word: "build",
-    definition:
-      "To make something by putting parts together."
-  },
-
-  {
-    word: "busy",
-    definition:
-      "Having a lot to do."
-  },
-
-  {
-    word: "buy",
-    definition:
-      "To get something by paying for it."
-  },
-
-  {
-    word: "call",
-    definition:
-      "To speak to someone by phone or shout."
-  },
-
-  {
-    word: "care",
-    definition:
-      "To feel concern or interest."
-  },
-
-  {
-    word: "carry",
-    definition:
-      "To hold and move something."
-  },
-
-  {
-    word: "change",
-    definition:
-      "To make or become different."
-  },
-
-  {
-    word: "child",
-    definition:
-      "A young human being."
-  },
-
-  {
-    word: "choose",
-    definition:
-      "To select from possibilities."
-  },
-
-  {
-    word: "city",
-    definition:
-      "A large town."
-  },
-
-  {
-    word: "class",
-    definition:
-      "A group of students or a lesson."
-  },
-
-  {
-    word: "clean",
-    definition:
-      "Free from dirt."
-  },
-
-  {
-    word: "clear",
-    definition:
-      "Easy to understand or see."
-  },
-
-  {
-    word: "close",
-    definition:
-      "Near in distance or relationship."
-  },
-
-  {
-    word: "cold",
-    definition:
-      "Having a low temperature."
-  },
-
-  {
-    word: "come",
-    definition:
-      "To move toward a place."
-  },
-
-  {
-    word: "common",
-    definition:
-      "Happening often or shared by many."
-  },
-
-  {
-    word: "complete",
-    definition:
-      "Having all necessary parts."
-  },
-
-  {
-    word: "continue",
-    definition:
-      "To keep doing something."
-  },
-
-  {
-    word: "create",
-    definition:
-      "To make something new."
-  },
-
-  {
-    word: "cry",
-    definition:
-      "To produce tears or a loud call."
-  },
-
-  {
-    word: "cut",
-    definition:
-      "To divide with a sharp tool."
-  },
-
-  {
-    word: "dark",
-    definition:
-      "Having little or no light."
-  },
-
-  {
-    word: "day",
-    definition:
-      "A period of 24 hours."
-  },
-
-  {
-    word: "decide",
-    definition:
-      "To choose after thinking."
-  },
-
-  {
-    word: "deep",
-    definition:
-      "Extending far downward."
-  },
-
-  {
-    word: "different",
-    definition:
-      "Not the same."
-  },
-
-  {
-    word: "difficult",
-    definition:
-      "Not easy."
-  },
-
-  {
-    word: "door",
-    definition:
-      "A movable barrier used to enter or leave."
-  },
-
-  {
-    word: "dream",
-    definition:
-      "A series of thoughts or images during sleep."
-  },
-
-  {
-    word: "drive",
-    definition:
-      "To control a vehicle."
-  },
-
-  {
-    word: "early",
-    definition:
-      "Before the expected time."
-  },
-
-  {
-    word: "earth",
-    definition:
-      "The planet on which we live."
-  },
-
-  {
-    word: "easy",
-    definition:
-      "Not difficult."
-  },
-
-  {
-    word: "eat",
-    definition:
-      "To take food into the body."
-  },
-
-  {
-    word: "end",
-    definition:
-      "The final part."
-  },
-
-  {
-    word: "enough",
-    definition:
-      "As much as needed."
-  },
-
-  {
-    word: "every",
-    definition:
-      "Each one of a group."
-  },
-
-  {
-    word: "example",
-    definition:
-      "Something that shows what another thing is like."
-  },
-
-  {
-    word: "family",
-    definition:
-      "A group of related people."
-  },
-
-  {
-    word: "far",
-    definition:
-      "A long distance away."
-  },
-
-  {
-    word: "fast",
-    definition:
-      "Moving quickly."
-  },
-
-  {
-    word: "feel",
-    definition:
-      "To experience an emotion or sensation."
-  },
-
-  {
-    word: "find",
-    definition:
-      "To discover or locate."
-  },
-
-  {
-    word: "first",
-    definition:
-      "Coming before all others."
-  },
-
-  {
-    word: "follow",
-    definition:
-      "To go after someone or something."
-  },
-
-  {
-    word: "food",
-    definition:
-      "Something eaten for nourishment."
-  },
-
-  {
-    word: "friend",
-    definition:
-      "A person you like and trust."
-  },
-
-  {
-    word: "future",
-    definition:
-      "The time that has not happened yet."
-  },
-
-  {
-    word: "game",
-    definition:
-      "An activity with rules for enjoyment."
-  },
-
-  {
-    word: "get",
-    definition:
-      "To receive, obtain, or become."
-  },
-
-  {
-    word: "give",
-    definition:
-      "To provide something to someone."
-  },
-
-  {
-    word: "go",
-    definition:
-      "To move from one place to another."
-  },
-
-  {
-    word: "good",
-    definition:
-      "Of high quality or morally right."
-  },
-
-  {
-    word: "great",
-    definition:
-      "Very good or large."
-  },
-
-  {
-    word: "group",
-    definition:
-      "A collection of people or things."
-  },
-
-  {
-    word: "grow",
-    definition:
-      "To become larger or develop."
-  },
-
-  {
-    word: "happy",
-    definition:
-      "Feeling pleasure or joy."
-  },
-
-  {
-    word: "hard",
-    definition:
-      "Firm or difficult."
-  },
-
-  {
-    word: "help",
-    definition:
-      "To make something easier for someone."
-  },
-
-  {
-    word: "home",
-    definition:
-      "The place where someone lives."
-  },
-
-  {
-    word: "hope",
-    definition:
-      "A feeling that something good may happen."
-  },
-
-  {
-    word: "house",
-    definition:
-      "A building where people live."
-  },
-
-  {
-    word: "idea",
-    definition:
-      "A thought or plan."
-  },
-
-  {
-    word: "important",
-    definition:
-      "Having great value or significance."
-  },
-
-  {
-    word: "inside",
-    definition:
-      "In the inner part."
-  },
-
-  {
-    word: "keep",
-    definition:
-      "To continue to have or hold."
-  },
-
-  {
-    word: "kind",
-    definition:
-      "Friendly and caring."
-  },
-
-  {
-    word: "know",
-    definition:
-      "To have information or understanding."
-  },
-
-  {
-    word: "learn",
-    definition:
-      "To gain knowledge or skill."
-  },
-
-  {
-    word: "leave",
-    definition:
-      "To go away from a place."
-  },
-
-  {
-    word: "life",
-    definition:
-      "The condition of being alive."
-  },
-
-  {
-    word: "light",
-    definition:
-      "The brightness that allows us to see."
-  },
-
-  {
-    word: "like",
-    definition:
-      "To enjoy or have a similar quality."
-  },
-
-  {
-    word: "listen",
-    definition:
-      "To pay attention to sound."
-  },
-
-  {
-    word: "little",
-    definition:
-      "Small in size or amount."
-  },
-
-  {
-    word: "live",
-    definition:
-      "To remain alive or reside."
-  },
-
-  {
-    word: "long",
-    definition:
-      "Having great length or duration."
-  },
-
-  {
-    word: "look",
-    definition:
-      "To direct your eyes toward something."
-  },
-
-  {
-    word: "love",
-    definition:
-      "A strong feeling of care or affection."
-  },
-
-  {
-    word: "make",
-    definition:
-      "To create or produce."
-  },
-
-  {
-    word: "many",
-    definition:
-      "A large number."
-  },
-
-  {
-    word: "meet",
-    definition:
-      "To come together with someone."
-  },
-
-  {
-    word: "more",
-    definition:
-      "A greater amount."
-  },
-
-  {
-    word: "most",
-    definition:
-      "The greatest amount or degree."
-  },
-
-  {
-    word: "move",
-    definition:
-      "To change position."
-  },
-
-  {
-    word: "name",
-    definition:
-      "A word used to identify someone or something."
-  },
-
-  {
-    word: "need",
-    definition:
-      "To require something."
-  },
-
-  {
-    word: "never",
-    definition:
-      "Not at any time."
-  },
-
-  {
-    word: "new",
-    definition:
-      "Recently made or discovered."
-  },
-
-  {
-    word: "next",
-    definition:
-      "Coming immediately after."
-  },
-
-  {
-    word: "night",
-    definition:
-      "The dark period between evening and morning."
-  },
-
-  {
-    word: "number",
-    definition:
-      "A mathematical value or quantity."
-  },
-
-  {
-    word: "often",
-    definition:
-      "Many times or frequently."
-  },
-
-  {
-    word: "old",
-    definition:
-      "Having existed for a long time."
-  },
-
-  {
-    word: "open",
-    definition:
-      "Not closed."
-  },
-
-  {
-    word: "other",
-    definition:
-      "Different from the one already mentioned."
-  },
-
-  {
-    word: "outside",
-    definition:
-      "On or toward the outer side."
-  },
-
-  {
-    word: "page",
-    definition:
-      "One side of a sheet in a book."
-  },
-
-  {
-    word: "part",
-    definition:
-      "A piece or section of something."
-  },
-
-  {
-    word: "people",
-    definition:
-      "Human beings."
-  },
-
-  {
-    word: "place",
-    definition:
-      "A particular position or location."
-  },
-
-  {
-    word: "plan",
-    definition:
-      "A decision about what to do."
-  },
-
-  {
-    word: "play",
-    definition:
-      "To take part in an enjoyable activity."
-  },
-
-  {
-    word: "problem",
-    definition:
-      "Something that needs to be solved."
-  },
-
-  {
-    word: "question",
-    definition:
-      "A sentence asking for information."
-  },
-
-  {
-    word: "quick",
-    definition:
-      "Moving or happening fast."
-  },
-
-  {
-    word: "read",
-    definition:
-      "To look at and understand written words."
-  },
-
-  {
-    word: "real",
-    definition:
-      "Actually existing or true."
-  },
-
-  {
-    word: "remember",
-    definition:
-      "To keep something in your mind."
-  },
-
-  {
-    word: "right",
-    definition:
-      "Correct or opposite of left."
-  },
-
-  {
-    word: "run",
-    definition:
-      "To move quickly on foot."
-  },
-
-  {
-    word: "same",
-    definition:
-      "Identical or not different."
-  },
-
-  {
-    word: "school",
-    definition:
-      "A place where people learn."
-  },
-
-  {
-    word: "see",
-    definition:
-      "To perceive with the eyes."
-  },
-
-  {
-    word: "show",
-    definition:
-      "To let someone see something."
-  },
-
-  {
-    word: "small",
-    definition:
-      "Little in size."
-  },
-
-  {
-    word: "sound",
-    definition:
-      "Something that can be heard."
-  },
-
-  {
-    word: "start",
-    definition:
-      "To begin."
-  },
-
-  {
-    word: "stop",
-    definition:
-      "To end an action or movement."
-  },
-
-  {
-    word: "story",
-    definition:
-      "A description of events, real or imagined."
-  },
-
-  {
-    word: "study",
-    definition:
-      "To spend time learning."
-  },
-
-  {
-    word: "take",
-    definition:
-      "To move or receive something."
-  },
-
-  {
-    word: "talk",
-    definition:
-      "To speak with someone."
-  },
-
-  {
-    word: "teach",
-    definition:
-      "To help someone learn."
-  },
-
-  {
-    word: "tell",
-    definition:
-      "To give information by speaking or writing."
-  },
-
-  {
-    word: "think",
-    definition:
-      "To use the mind to consider something."
-  },
-
-  {
-    word: "time",
-    definition:
-      "A measurable period."
-  },
-
-  {
-    word: "today",
-    definition:
-      "This present day."
-  },
-
-  {
-    word: "together",
-    definition:
-      "With each other."
-  },
-
-  {
-    word: "travel",
-    definition:
-      "To go from one place to another."
-  },
-
-  {
-    word: "try",
-    definition:
-      "To make an effort."
-  },
-
-  {
-    word: "understand",
-    definition:
-      "To know the meaning of something."
-  },
-
-  {
-    word: "use",
-    definition:
-      "To employ something for a purpose."
-  },
-
-  {
-    word: "very",
-    definition:
-      "To a high degree."
-  },
-
-  {
-    word: "walk",
-    definition:
-      "To move on foot."
-  },
-
-  {
-    word: "want",
-    definition:
-      "To desire something."
-  },
-
-  {
-    word: "water",
-    definition:
-      "A clear liquid essential to life."
-  },
-
-  {
-    word: "weather",
-    definition:
-      "The condition of the air outside."
-  },
-
-  {
-    word: "week",
-    definition:
-      "A period of seven days."
-  },
-
-  {
-    word: "world",
-    definition:
-      "The Earth and everything on it."
-  },
-
-  {
-    word: "write",
-    definition:
-      "To form words with letters."
-  },
-
-  {
-    word: "year",
-    definition:
-      "A period of about 365 days."
-  },
-
-  {
-    word: "young",
-    definition:
-      "Having lived for a short time."
-  }
+["ability","the power or skill to do something"],
+["able","having the skill or opportunity to do something"],
+["about","concerning or related to"],
+["above","in a higher position"],
+["accept","to agree to receive or take"],
+["across","from one side to the other"],
+["act","to do something or perform"],
+["action","something done or a process of doing"],
+["active","doing something or being energetic"],
+["add","to put something together with something else"],
+["address","a place where someone or something is located"],
+["admit","to say that something is true"],
+["adult","a fully grown person"],
+["advice","an opinion about what someone should do"],
+["affect","to produce a change in something"],
+["after","later than a particular time"],
+["again","one more time"],
+["against","in opposition to"],
+["age","the length of time someone or something has existed"],
+["agree","to have the same opinion"],
+["ahead","in front or farther forward"],
+["air","the mixture of gases around Earth"],
+["allow","to let someone do something"],
+["almost","very nearly"],
+["alone","without another person or thing"],
+["along","moving beside or following a line"],
+["already","before now or before a particular time"],
+["also","in addition"],
+["always","at all times"],
+["among","in the middle of a group"],
+["amount","a quantity of something"],
+["animal","a living creature that is not a plant"],
+["answer","a response to a question"],
+["appear","to become visible or seem to be"],
+["area","a particular part of a place"],
+["arrive","to reach a place"],
+["ask","to request information or something"],
+["away","to or at a distance"],
+
+["back","the rear part of something"],
+["bad","not good"],
+["base","the bottom or supporting part"],
+["be","to exist or have a particular state"],
+["beautiful","pleasing to look at"],
+["because","for the reason that"],
+["become","to begin to be"],
+["before","earlier than"],
+["begin","to start"],
+["behind","at or toward the back"],
+["believe","to think that something is true"],
+["best","better than all others"],
+["better","of higher quality or more suitable"],
+["between","in the space separating two things"],
+["big","large in size"],
+["black","having the darkest common color"],
+["body","the physical structure of a person or animal"],
+["book","a set of written or printed pages"],
+["both","the two together"],
+["bring","to carry or take something to a place"],
+["build","to make by putting parts together"],
+["busy","having a lot to do"],
+["but","used to introduce a contrast"],
+["buy","to get something by paying for it"],
+
+["call","to speak to someone by phone or shout"],
+["can","to be able to"],
+["care","to feel concern or interest"],
+["carry","to hold and move something"],
+["case","a particular situation or example"],
+["change","to make or become different"],
+["child","a young human being"],
+["choose","to select from possibilities"],
+["city","a large town"],
+["class","a group of students or a lesson"],
+["clean","free from dirt"],
+["clear","easy to understand or see"],
+["close","near in distance or relationship"],
+["cold","having a low temperature"],
+["come","to move toward a place"],
+["common","happening often or shared by many"],
+["complete","having all necessary parts"],
+["continue","to keep doing something"],
+["course","a series of lessons or a direction of movement"],
+["create","to make something new"],
+["cry","to produce tears or a loud call"],
+["cut","to divide with a sharp tool"],
+
+["dark","having little or no light"],
+["day","a period of 24 hours"],
+["decide","to choose after thinking"],
+["deep","extending far downward"],
+["develop","to grow or change over time"],
+["different","not the same"],
+["difficult","not easy"],
+["do","to perform an action"],
+["door","a movable barrier used to enter or leave"],
+["down","toward a lower place"],
+["draw","to make a picture with lines"],
+["dream","a series of thoughts or images during sleep"],
+["drive","to control a vehicle"],
+
+["early","before the expected time"],
+["earth","the planet on which we live"],
+["easy","not difficult"],
+["eat","to take food into the body"],
+["end","the final part"],
+["enough","as much as needed"],
+["even","flat or level; also used for emphasis"],
+["every","each one of a group"],
+["example","something that shows what another thing is like"],
+["eye","the organ used for seeing"],
+
+["face","the front part of the head"],
+["family","a group of related people"],
+["far","a long distance away"],
+["fast","moving quickly"],
+["feel","to experience an emotion or physical sensation"],
+["few","a small number"],
+["find","to discover or locate"],
+["first","coming before all others"],
+["follow","to go after someone or something"],
+["food","something eaten for nourishment"],
+["for","intended to benefit or belong to"],
+["form","the shape or structure of something"],
+["found","discovered or established"],
+["four","the number after three"],
+["free","not under control or not costing money"],
+["friend","a person you like and trust"],
+["from","showing a starting point"],
+["full","containing as much as possible"],
+["future","the time that has not happened yet"],
+
+["game","an activity with rules for enjoyment"],
+["get","to receive, obtain, or become"],
+["give","to provide something to someone"],
+["go","to move from one place to another"],
+["good","of high quality or morally right"],
+["great","very good or large"],
+["green","a color between blue and yellow"],
+["group","a collection of people or things"],
+["grow","to become larger or develop"],
+
+["half","one of two equal parts"],
+["hand","the part at the end of an arm"],
+["happen","to take place"],
+["happy","feeling pleasure or joy"],
+["hard","firm or difficult"],
+["have","to own, hold, or experience"],
+["head","the upper part of the body"],
+["hear","to perceive sound"],
+["help","to make something easier for someone"],
+["high","far above the ground"],
+["home","the place where someone lives"],
+["hope","a feeling that something good may happen"],
+["hour","a period of 60 minutes"],
+["house","a building where people live"],
+["how","in what way"],
+
+["idea","a thought or plan"],
+["important","having great value or significance"],
+["inside","in the inner part"],
+["interest","a feeling of wanting to know more"],
+
+["keep","to continue to have or hold"],
+["kind","friendly and caring"],
+["know","to have information or understanding"],
+
+["land","the solid ground of Earth"],
+["large","big in size"],
+["last","coming after all others"],
+["late","after the expected time"],
+["learn","to gain knowledge or skill"],
+["leave","to go away from a place"],
+["left","opposite of right; remaining"],
+["less","a smaller amount"],
+["life","the condition of being alive"],
+["light","the brightness that allows us to see"],
+["like","to enjoy or have a similar quality"],
+["little","small in size or amount"],
+["live","to remain alive or reside"],
+["long","having great length or duration"],
+["look","to direct your eyes toward something"],
+["love","a strong feeling of care or affection"],
+
+["make","to create or produce"],
+["many","a large number"],
+["mean","to signify or intend"],
+["meet","to come together with someone"],
+["might","used to express possibility"],
+["more","a greater amount"],
+["most","the greatest amount or degree"],
+["move","to change position"],
+["much","a large amount"],
+["must","to be required to do something"],
+
+["name","a word used to identify someone or something"],
+["near","close in distance"],
+["need","to require something"],
+["never","not at any time"],
+["new","recently made or discovered"],
+["next","coming immediately after"],
+["night","the dark period between evening and morning"],
+["no","used to give a negative answer"],
+["nothing","not anything"],
+["notice","to become aware of something"],
+["now","at the present time"],
+["number","a mathematical value or quantity"],
+
+["often","many times or frequently"],
+["old","having existed for a long time"],
+["once","one time"],
+["only","and no one or nothing more"],
+["open","not closed"],
+["other","different from the one already mentioned"],
+["outside","on or toward the outer side"],
+["own","to have something as property"],
+
+["page","one side of a sheet in a book"],
+["part","a piece or section of something"],
+["people","human beings"],
+["place","a particular position or location"],
+["plan","a decision about what to do"],
+["play","to take part in an enjoyable activity"],
+["point","a particular position or idea"],
+["possible","able to happen or be done"],
+["practice","repeated activity used to improve a skill"],
+["problem","something that needs to be solved"],
+["protect","to keep someone or something safe"],
+["put","to move something into a position"],
+
+["question","a sentence asking for information"],
+["quick","moving or happening fast"],
+
+["read","to look at and understand written words"],
+["real","actually existing or true"],
+["reason","a cause or explanation"],
+["remember","to keep something in your mind"],
+["return","to go or come back"],
+["right","correct or opposite of left"],
+["run","to move quickly on foot"],
+
+["same","identical or not different"],
+["say","to speak words"],
+["school","a place where people learn"],
+["see","to perceive with the eyes"],
+["seem","to appear to be"],
+["set","to put something in a particular place"],
+["seven","the number after six"],
+["show","to let someone see something"],
+["simple","easy to understand or do"],
+["small","little in size"],
+["some","an amount or number that is not exact"],
+["something","an unspecified thing"],
+["sometimes","on some occasions"],
+["soon","in a short time"],
+["sound","something that can be heard"],
+["start","to begin"],
+["state","a condition or a region of a country"],
+["still","continuing to happen"],
+["stop","to end an action or movement"],
+["story","a description of events, real or imagined"],
+["strong","having great physical or mental power"],
+["study","to spend time learning"],
+["such","of the type just mentioned"],
+["sure","certain or confident"],
+
+["take","to move or receive something"],
+["talk","to speak with someone"],
+["teach","to help someone learn"],
+["tell","to give information by speaking or writing"],
+["than","used when comparing"],
+["that","used to identify a particular thing"],
+["their","belonging to them"],
+["then","at that time or next"],
+["there","in or at that place"],
+["these","plural of this"],
+["thing","an object, idea, or matter"],
+["think","to use the mind to consider"],
+["three","the number after two"],
+["through","from one side or end to the other"],
+["time","a measurable period"],
+["today","this present day"],
+["together","with each other"],
+["too","also; more than wanted"],
+["travel","to go from one place to another"],
+["try","to make an effort"],
+["turn","to change direction"],
+["two","the number after one"],
+
+["under","below or beneath"],
+["understand","to know the meaning of something"],
+["until","up to a particular time"],
+["use","to employ something for a purpose"],
+
+["very","to a high degree"],
+["visit","to go to see a person or place"],
+["voice","the sound produced when a person speaks"],
+
+["walk","to move on foot"],
+["want","to desire something"],
+["water","a clear liquid essential to life"],
+["way","a method or route"],
+["week","a period of seven days"],
+["well","in a good or satisfactory way"],
+["what","asking for information about something"],
+["when","at or during which time"],
+["where","in or to which place"],
+["which","asking about one or more choices"],
+["while","during the time that"],
+["white","the lightest common color"],
+["who","asking which person"],
+["why","asking for a reason"],
+["will","used for future actions"],
+["with","together with"],
+["without","not having or using"],
+["woman","an adult female person"],
+["word","a unit of language"],
+["work","activity done to achieve something"],
+["world","the Earth and all its people and places"],
+["would","used for imagined or conditional situations"],
+["write","to form words with letters"],
+
+["year","a period of about 365 days"],
+["young","having lived for a short time"],
+["your","belonging to you"],
+
+["zero","the number representing none"],
+
+/* Extra vocabulary */
+["adventure","an exciting or unusual experience"],
+["achieve","to successfully reach a goal"],
+["accomplish","to successfully complete something"],
+["behavior","the way a person or animal acts"],
+["belong","to be in the right place or be owned by someone"],
+["collect","to gather things together"],
+["communicate","to share information or ideas"],
+["concentrate","to give full attention to something"],
+["contain","to have something inside"],
+["discover","to find something previously unknown"],
+["encourage","to give someone confidence or support"],
+["explore","to travel around or examine something"],
+["guide","to show someone the way"],
+["identify","to recognize or name something"],
+["include","to contain as a part"],
+["improve","to make or become better"],
+["organize","to arrange things in order"],
+["participate","to take part in something"],
+["popular","liked or enjoyed by many people"],
+["prefer","to like one thing more than another"],
+["recognize","to know someone or something from before"],
+["remain","to stay in the same place or condition"],
+["repeat","to do or say again"],
+["replace","to put something new in the place of another"],
+["require","to need something"],
+["respond","to answer or react"],
+["share","to give part of something to others"],
+["similarity","a quality of being alike"],
+["specific","clearly defined or identified"],
+["suggest","to offer an idea"],
+["system","a set of connected parts"],
+["tradition","a custom passed down over time"],
+["unique","one of a kind"],
+["various","different kinds"],
+["visible","able to be seen"],
+["wonder","to think about something with curiosity"],
+
+["author","a person who writes a book or other work"],
+["character","a person or figure in a story"],
+["chapter","a main section of a book"],
+["cover","the outer part of a book"],
+["definition","a statement explaining the meaning of a word"],
+["dictionary","a book or resource explaining words"],
+["edition","a particular version of a published work"],
+["novel","a long fictional story in book form"],
+["paragraph","a section of writing about a particular idea"],
+["poem","a piece of writing arranged with attention to language and rhythm"],
+["publisher","a person or company that produces books"],
+["reader","a person who reads"],
+["setting","the time and place where a story happens"],
+["theme","the main idea or message of a work"],
+["title","the name of a book or other work"],
+["plot","the sequence of events in a story"],
+
+["computer","an electronic machine that processes information"],
+["internet","a worldwide system connecting computer networks"],
+["website","a collection of pages available online"],
+["browser","software used to view websites"],
+["file","a collection of stored digital information"],
+["folder","a place used to organize files"],
+["offline","not connected to the internet"],
+["online","connected to the internet"],
+["download","to copy data from another system to your device"],
+["upload","to send data from your device to another system"],
+["save","to keep information for later use"],
+["screen","the surface on which digital information is displayed"],
+["keyboard","a device used to enter text"],
+["mouse","a pointing device used with a computer"],
+["tablet","a portable touchscreen computer"],
+["phone","a device used for communication"],
+["video","a recording or moving visual presentation"],
+["movie","a recorded visual story"],
+["episode","one part of a series"],
+["season","a group of episodes in a television series"],
+["pause","to temporarily stop an activity"],
+["resume","to continue after stopping"],
+["volume","the level of sound"],
+["filter","to show only items matching certain conditions"],
+["sort","to arrange items in an order"],
+["menu","a list of available choices"],
+["link","a connection that takes you to another page"],
+["document","a written or digital piece of information"],
+["digital","represented or stored electronically"],
+["PDF","a digital document format designed to preserve page layout"],
+
+["apple","a common round fruit"],
+["orange","a round citrus fruit"],
+["banana","a long curved fruit with a yellow peel"],
+["strawberry","a small red fruit with seeds on its surface"],
+["bread","food made from baked dough"],
+["rice","a grain used as food"],
+["sugar","a sweet substance used in food"],
+["salt","a mineral commonly used to season food"],
+["breakfast","the first meal of the day"],
+["lunch","a meal eaten around the middle of the day"],
+["dinner","a main meal often eaten in the evening"],
+["snack","a small amount of food eaten between meals"],
+["cook","to prepare food using heat"],
+["drink","to swallow liquid"],
+["taste","the sense or experience of flavor"],
+["sweet","having a taste like sugar"],
+["sour","having a sharp acidic taste"],
+["fresh","recently made, gathered, or prepared"],
+
+["sun","the star that provides Earth with light and heat"],
+["moon","Earth's natural satellite"],
+["star","a large glowing object in space"],
+["sky","the space above Earth"],
+["tree","a large plant with a woody trunk"],
+["flower","the colorful reproductive part of many plants"],
+["grass","plants with narrow green leaves"],
+["leaf","a flat green part of a plant"],
+["forest","a large area covered with trees"],
+["river","a natural stream of flowing water"],
+["lake","a large body of water surrounded by land"],
+["ocean","a very large body of salt water"],
+["mountain","a high natural elevation of land"],
+["hill","a raised area of land smaller than a mountain"],
+["rain","water falling from clouds"],
+["snow","frozen precipitation made of ice crystals"],
+["cloud","a visible mass of water droplets or ice in the sky"],
+
+["dog","a common domesticated animal"],
+["cat","a common domesticated animal"],
+["bird","an animal with feathers and wings"],
+["fish","an animal that lives in water and breathes through gills"],
+["horse","a large animal often used for riding"],
+["rabbit","a small mammal with long ears"],
+["bear","a large mammal with thick fur"],
+
+["morning","the early part of the day"],
+["afternoon","the period after midday"],
+["evening","the period near the end of the day"],
+["midnight","twelve o'clock at night"],
+["tomorrow","the day after today"],
+["yesterday","the day before today"],
+["month","one of twelve periods into which a year is divided"],
+["spring","the season between winter and summer"],
+["summer","the warmest season of the year"],
+["autumn","the season between summer and winter"],
+["winter","the coldest season of the year"],
+
+["science","the study of the natural world"],
+["math","the study of numbers, quantities, and patterns"],
+["history","the study of past events"],
+["geography","the study of Earth and its places"],
+["art","creative work expressing ideas or feelings"],
+["music","organized sound used for expression"],
+["color","a quality of light that we perceive as red, blue, green, and so on"],
+["shape","the form or outline of something"],
+["size","how large or small something is"],
+["picture","an image or visual representation"],
+["nature","the physical world and living things"],
+["energy","the ability to do work or cause change"],
+
+["goal","something you aim to achieve"],
+["task","a piece of work that needs to be done"],
+["success","the achievement of a desired result"],
+["progress","movement toward a goal"],
+["skill","an ability learned through practice"],
+["effort","an attempt that requires energy"],
+["result","what happens because of an action"],
+["cause","the reason something happens"],
+["effect","a result caused by something"],
+["fact","information that is true"],
+["opinion","a belief or view about something"],
+["truth","the state of being correct or real"],
+
+["brave","willing to face something difficult or frightening"],
+["honest","truthful and sincere"],
+["fair","reasonable and treating people equally"],
+["polite","showing good manners"],
+["patient","able to wait without becoming upset"],
+["friendly","kind and pleasant"],
+["supportive","helpful and encouraging"],
+["helpful","providing assistance"],
+["careful","taking care to avoid mistakes"],
+["comfortable","giving a feeling of ease"],
+["famous","widely known"],
+["favorite","liked more than others"],
+["interesting","holding attention or curiosity"],
+["wonderful","very good or pleasing"],
+["useful","helpful for a purpose"],
+["basic","simple and most important"],
+["possible","able to happen or be done"],
+["certain","known or believed to be true"],
+["special","different or important in a particular way"],
+["unique","one of a kind"]
 
 ];
 
+/*
+====================================================
+REMOVE DUPLICATES
+====================================================
+*/
 
-/* DISPLAY */
+const uniqueWords = new Map();
 
-const container =
-  document.getElementById(
-    "dictionary"
-  );
+for (const item of words) {
+  uniqueWords.set(item[0].toLowerCase(), {
+    word: item[0],
+    definition: item[1]
+  });
+}
 
+const dictionaryWords = Array.from(uniqueWords.values())
+  .sort((a,b) => a.word.localeCompare(b.word));
+
+/*
+====================================================
+DISPLAY
+====================================================
+*/
+
+const dictionary = document.getElementById("dictionary");
+const search = document.getElementById("search");
+const count = document.getElementById("count");
+
+function escapeHTML(text) {
+  return String(text)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 
 function displayWords(list) {
 
-  container.innerHTML = "";
+  dictionary.innerHTML = "";
 
+  if (list.length === 0) {
 
-  list.forEach(function(item) {
+    dictionary.innerHTML = `
+      <div class="no-results">
+        🔎 No words found.
+        <br><br>
+        Try another search.
+      </div>
+    `;
 
-    const div =
-      document.createElement(
-        "div"
-      );
+    count.textContent = "0 words found";
+    return;
+  }
 
+  let currentLetter = "";
 
-    div.className =
-      "word";
+  for (const item of list) {
 
+    const firstLetter =
+      item.word.charAt(0).toUpperCase();
 
-    div.innerHTML = `
+    if (firstLetter !== currentLetter) {
 
-      <div class="term">
-        ${item.word}
+      currentLetter = firstLetter;
+
+      const letter = document.createElement("div");
+
+      letter.className = "letter";
+
+      letter.textContent = currentLetter;
+
+      dictionary.appendChild(letter);
+    }
+
+    const card = document.createElement("div");
+
+    card.className = "word-card";
+
+    card.innerHTML = `
+      <div class="word">
+        ${escapeHTML(item.word)}
       </div>
 
       <div class="definition">
-        ${item.definition}
+        ${escapeHTML(item.definition)}
       </div>
-
     `;
 
+    dictionary.appendChild(card);
+  }
 
-    container.appendChild(
-      div
-    );
-
-  });
-
-
-  document.getElementById(
-    "count"
-  ).textContent =
+  count.textContent =
     list.length +
-    " words shown";
-
+    " word" +
+    (list.length === 1 ? "" : "s") +
+    " shown";
 }
 
+/*
+====================================================
+SEARCH
+====================================================
+*/
 
-displayWords(words);
+function searchDictionary() {
 
+  const query =
+    search.value.trim().toLowerCase();
 
-/* SEARCH */
+  if (query === "") {
 
-document
-  .getElementById("search")
-  .addEventListener(
-    "input",
-    function() {
+    displayWords(dictionaryWords);
 
-      const query =
-        this.value
+    return;
+  }
+
+  const results =
+    dictionaryWords.filter(item => {
+
+      return (
+        item.word
           .toLowerCase()
-          .trim();
+          .includes(query) ||
 
-
-      const results =
-        words.filter(
-          function(item) {
-
-            return (
-
-              item.word
-                .toLowerCase()
-                .includes(query)
-
-              ||
-
-              item.definition
-                .toLowerCase()
-                .includes(query)
-
-            );
-
-          }
-        );
-
-
-      displayWords(
-        results
+        item.definition
+          .toLowerCase()
+          .includes(query)
       );
 
-    }
-  );
+    });
+
+  displayWords(results);
+}
+
+search.addEventListener(
+  "input",
+  searchDictionary
+);
+
+/*
+====================================================
+START
+====================================================
+*/
+
+displayWords(dictionaryWords);
 
 </script>
 
