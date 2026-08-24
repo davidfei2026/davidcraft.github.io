@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BookShelf</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #eef2f7;
+  color: #172033;
+}
+
+body {
+  display: flex;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+  width: 250px;
+  min-height: 100vh;
+  background: #111827;
+  color: white;
+  padding: 22px 14px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  overflow-y: auto;
+}
+
+.logo {
+  font-size: 25px;
+  font-weight: bold;
+  padding: 8px 12px 24px;
+}
+
+.logo span {
+  font-size: 30px;
+}
+
+.nav-title {
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 12px;
+  text-transform: uppercase;
+}
+
+.nav-button {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: #e5e7eb;
+  padding: 13px 12px;
+  margin: 4px 0;
+  border-radius: 9px;
+  text-align: left;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.nav-button:hover {
+  background: #1f2937;
+  color: white;
+}
+
+.nav-button.active {
+  background: #2563eb;
+  color: white;
+}
+
+.epic-button {
+  background: #7c3aed;
+  color: white;
+}
+
+.epic-button:hover {
+  background: #6d28d9;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main {
+  margin-left: 250px;
+  width: calc(100% - 250px);
+  min-height: 100vh;
+}
+
+.topbar {
+  background: white;
+  border-bottom: 1px solid #dbe2ea;
+  padding: 20px 28px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.topbar p {
+  margin: 6px 0 0;
+  color: #64748b;
+}
+
+.content {
+  padding: 28px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  color: white;
+  border-radius: 18px;
+  padding: 32px;
+  margin-bottom: 28px;
+}
+
+.hero h2 {
+  margin: 0 0 10px;
+  font-size: 30px;
+}
+
+.hero p {
+  margin: 0;
+  line-height: 1.6;
+  max-width: 700px;
+}
+
+/* =========================
+   BOOK GRID
+========================= */
+
+.section-title {
+  font-size: 23px;
+  margin: 30px 0 15px;
+}
+
+.books {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fill, minmax(230px, 1fr));
+  gap: 18px;
+}
+
+.book {
+  background: white;
+  border: 1px solid #dbe2ea;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.book-cover {
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  background: #e0e7ff;
+}
+
+.book-info {
+  padding: 18px;
+}
+
+.book-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.book-author {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.book-description {
+  margin-top: 10px;
+  color: #475569;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+/* =========================
+   EPIC
+========================= */
+
+.epic-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #ddd6fe;
+  padding: 24px;
+  margin-top: 25px;
+}
+
+.epic-card h2 {
+  margin-top: 0;
+}
+
+.epic-card p {
+  color: #475569;
+  line-height: 1.6;
+}
+
+.epic-open {
+  display: inline-block;
+  margin-top: 8px;
+  background: #7c3aed;
+  color: white;
+  text-decoration: none;
+  padding: 12px 18px;
+  border-radius: 9px;
+  font-weight: bold;
+}
+
+.epic-open:hover {
+  background: #6d28d9;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 750px) {
+
+  .sidebar {
+    width: 72px;
+    padding: 15px 8px;
+  }
+
+  .logo {
+    text-align: center;
+    padding: 8px 0 18px;
+    font-size: 0;
+  }
+
+  .logo span {
+    font-size: 28px;
+  }
+
+  .nav-title {
+    display: none;
+  }
+
+  .nav-button {
+    text-align: center;
+    font-size: 0;
+    padding: 13px 5px;
+  }
+
+  .nav-button::first-letter {
+    font-size: 21px;
+  }
+
+  .main {
+    margin-left: 72px;
+    width: calc(100% - 72px);
+  }
+
+  .content {
+    padding: 16px;
+  }
+
+  .hero {
+    padding: 22px;
+  }
+
+  .hero h2 {
+    font-size: 24px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     SIDEBAR
+========================= -->
+
+<aside class="sidebar">
+
+  <div class="logo">
+    <span>📚</span>
+    BookShelf
+  </div>
+
+  <div class="nav-title">
+    Library
+  </div>
+
+  <a class="nav-button active" href="index.html">
+    🏠 Home
+  </a>
+
+  <a class="nav-button" href="dictionary.html">
+    📖 Dictionary
+  </a>
+
+  <a class="nav-button" href="browser.html">
+    🌐 Browser
+  </a>
+
+  <a class="nav-button" href="shows-v3.html">
+    📺 Shows
+  </a>
+
+  <a
+    class="nav-button epic-button"
+    href="https://www.getepic.com/"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    📚 Epic Books
+  </a>
+
+</aside>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<main class="main">
+
+  <header class="topbar">
+
+    <h1>📚 BookShelf</h1>
+
+    <p>
+      Your personal reading and learning center
+    </p>
+
+  </header>
+
+
+  <section class="content">
+
+    <div class="hero">
+
+      <h2>Welcome to BookShelf!</h2>
+
+      <p>
+        Read books, explore the dictionary, use your browser,
+        watch shows, and discover more reading resources.
+      </p>
+
+    </div>
+
+
+    <!-- BOOKS -->
+
+    <h2 class="section-title">
+      📚 My Books
+    </h2>
+
+    <div class="books">
+
+      <div class="book">
+
+        <div class="book-cover">
+          📘
+        </div>
+
+        <div class="book-info">
+
+          <div class="book-title">
+            Skylark
+          </div>
+
+          <div class="book-author">
+            Patricia MacLachlan
+          </div>
+
+          <div class="book-description">
+            Add your legally obtained PDF here
+            to read it with your PDF reader.
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="book">
+
+        <div class="book-cover">
+          📗
+        </div>
+
+        <div class="book-info">
+
+          <div class="book-title">
+            Caleb's Story
+          </div>
+
+          <div class="book-author">
+            Patricia MacLachlan
+          </div>
+
+          <div class="book-description">
+            Add your legally obtained PDF here
+            to read it with your PDF reader.
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="book">
+
+        <div class="book-cover">
+          📙
+        </div>
+
+        <div class="book-info">
+
+          <div class="book-title">
+            Sarah, Plain and Tall
+          </div>
+
+          <div class="book-author">
+            Patricia MacLachlan
+          </div>
+
+          <div class="book-description">
+            Add your legally obtained PDF here
+            to read it with your PDF reader.
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- EPIC -->
+
+    <div class="epic-card">
+
+      <h2>📚 Epic Books</h2>
+
+      <p>
+        Explore Epic's online children's digital library,
+        including books, audiobooks, and learning videos.
+      </p>
+
+      <a
+        class="epic-open"
+        href="https://www.getepic.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Open Epic Books →
+      </a>
+
+    </div>
+
+
+    <!-- DICTIONARY -->
+
+    <h2 class="section-title">
+      📖 Dictionary
+    </h2>
+
+    <div class="epic-card">
+
+      <p>
+        Your offline dictionary contains a large collection
+        of English vocabulary.
+      </p>
+
+      <a
+        class="epic-open"
+        href="dictionary.html"
+      >
+        Open Dictionary →
+      </a>
+
+    </div>
+
+
+    <!-- WINGS OF FIRE -->
+
+    <h2 class="section-title">
+      🐉 Wings of Fire
+    </h2>
+
+    <div class="books">
+
+      <div class="book">
+        <div class="book-cover">🐉</div>
+        <div class="book-info">
+          <div class="book-title">
+            The Dragonet Prophecy
+          </div>
+          <div class="book-author">
+            Tui T. Sutherland
+          </div>
+        </div>
+      </div>
+
+      <div class="book">
+        <div class="book-cover">🌊</div>
+        <div class="book-info">
+          <div class="book-title">
+            The Lost Heir
+          </div>
+          <div class="book-author">
+            Tui T. Sutherland
+          </div>
+        </div>
+      </div>
+
+      <div class="book">
+        <div class="book-cover">🌿</div>
+        <div class="book-info">
+          <div class="book-title">
+            The Hidden Kingdom
+          </div>
+          <div class="book-author">
+            Tui T. Sutherland
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<script>
+
+/*
+========================================
+BOOKSHELF STARTUP
+========================================
+*/
+
+console.log("BookShelf V2 loaded successfully.");
+
+</script>
+
+</body>
+</html>
