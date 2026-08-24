@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>BlockCraft V4</title>
+<title>BlockCraft V5</title>
 
 <style>
 *{
@@ -15,19 +15,353 @@ html,body{
     width:100%;
     height:100%;
     overflow:hidden;
-    background:#87ceeb;
     font-family:Arial,sans-serif;
+    background:#111;
 }
 
+button{
+    font-family:inherit;
+}
+
+/* =====================================================
+   GAME
+===================================================== */
+
 #game{
-    width:100vw;
-    height:100vh;
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
     display:block;
 }
 
-/* =========================
+/* =====================================================
+   TITLE SCREEN
+===================================================== */
+
+#home{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    overflow:hidden;
+    background:
+        linear-gradient(
+            rgba(0,0,0,.18),
+            rgba(0,0,0,.45)
+        );
+}
+
+/* Animated blocky background */
+
+#homeBackground{
+    position:absolute;
+    inset:-5%;
+    overflow:hidden;
+    background:
+        linear-gradient(
+            #78c8f0 0%,
+            #a9def5 52%,
+            #6cae42 52%,
+            #4c8e31 100%
+        );
+}
+
+.cloud{
+    position:absolute;
+    width:220px;
+    height:55px;
+    background:rgba(255,255,255,.72);
+    filter:blur(1px);
+    animation:cloudMove 35s linear infinite;
+}
+
+.cloud:before,
+.cloud:after{
+    content:"";
+    position:absolute;
+    background:inherit;
+}
+
+.cloud:before{
+    width:90px;
+    height:90px;
+    left:35px;
+    bottom:0;
+}
+
+.cloud:after{
+    width:110px;
+    height:75px;
+    right:30px;
+    bottom:0;
+}
+
+.cloud1{
+    top:13%;
+    left:-250px;
+}
+
+.cloud2{
+    top:28%;
+    left:-500px;
+    animation-delay:-16s;
+    transform:scale(.7);
+}
+
+@keyframes cloudMove{
+    from{
+        transform:translateX(0);
+    }
+    to{
+        transform:translateX(140vw);
+    }
+}
+
+/* distant mountains */
+
+.mountain{
+    position:absolute;
+    bottom:25%;
+    width:0;
+    height:0;
+    border-left:150px solid transparent;
+    border-right:150px solid transparent;
+    border-bottom:230px solid #608d55;
+    opacity:.8;
+}
+
+.m1{left:3%;}
+.m2{
+    left:25%;
+    border-bottom-color:#537d4b;
+    transform:scale(1.3);
+}
+.m3{
+    right:20%;
+    transform:scale(.9);
+}
+.m4{
+    right:0;
+    border-bottom-color:#527c47;
+    transform:scale(1.2);
+}
+
+/* blocky ground */
+
+#homeGround{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:29%;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            rgba(0,0,0,.04) 0 32px,
+            transparent 32px 64px
+        ),
+        #599638;
+    border-top:8px solid #7b4e2b;
+}
+
+#homeGround:after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:18px;
+    background:#68a83e;
+}
+
+/* =====================================================
+   LOGO
+===================================================== */
+
+#logo{
+    position:absolute;
+    top:6%;
+    left:50%;
+    transform:translateX(-50%) rotate(-2deg);
+    text-align:center;
+    z-index:5;
+    user-select:none;
+}
+
+#logoMain{
+    color:#fff;
+    font-size:clamp(50px,9vw,105px);
+    font-weight:1000;
+    letter-spacing:4px;
+    text-shadow:
+        0 8px 0 #252525,
+        5px 12px 0 #111,
+        -3px 5px 0 #444;
+}
+
+#logoSub{
+    display:inline-block;
+    margin-top:-5px;
+    padding:6px 20px;
+    color:white;
+    background:#4c8f38;
+    border:3px solid #284d20;
+    box-shadow:0 4px 0 #182d13;
+    font-weight:bold;
+    font-size:15px;
+    transform:rotate(2deg);
+}
+
+/* =====================================================
+   HOME BUTTONS
+===================================================== */
+
+#homeMenu{
+    position:absolute;
+    left:50%;
+    top:35%;
+    transform:translateX(-50%);
+    width:min(390px,88vw);
+    z-index:10;
+}
+
+.homeButton{
+    width:100%;
+    height:52px;
+    margin:6px 0;
+    border:3px solid #333;
+    background:
+        linear-gradient(
+            #707070,
+            #4e4e4e
+        );
+    color:white;
+    font-size:19px;
+    font-weight:bold;
+    text-shadow:2px 2px #222;
+    box-shadow:
+        0 4px 0 #202020,
+        inset 0 2px rgba(255,255,255,.18);
+    cursor:pointer;
+    transition:.12s;
+}
+
+.homeButton:hover{
+    background:
+        linear-gradient(
+            #8b8b8b,
+            #606060
+        );
+    transform:scale(1.025);
+}
+
+.homeButton:active{
+    transform:translateY(3px);
+    box-shadow:
+        0 1px 0 #202020;
+}
+
+.playButton{
+    background:
+        linear-gradient(
+            #67b94d,
+            #3d8c31
+        );
+    border-color:#254d20;
+}
+
+.playButton:hover{
+    background:
+        linear-gradient(
+            #79cf5a,
+            #4ba33c
+        );
+}
+
+#homeFooter{
+    position:absolute;
+    bottom:18px;
+    left:20px;
+    right:20px;
+    color:white;
+    text-align:center;
+    font-size:13px;
+    text-shadow:2px 2px #222;
+    z-index:10;
+}
+
+/* =====================================================
+   MODALS
+===================================================== */
+
+.modal{
+    position:fixed;
+    inset:0;
+    z-index:200;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.72);
+}
+
+.modalPanel{
+    width:min(560px,92vw);
+    max-height:85vh;
+    overflow:auto;
+    padding:25px;
+    color:white;
+    background:#262626;
+    border:4px solid #555;
+    box-shadow:
+        0 0 0 3px #151515,
+        0 20px 70px #000;
+}
+
+.modalPanel h2{
+    margin-top:0;
+    font-size:28px;
+}
+
+.modalButton{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:2px solid #444;
+    background:#555;
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.modalButton:hover{
+    background:#6d6d6d;
+}
+
+.worldCard{
+    padding:15px;
+    margin:10px 0;
+    background:#333;
+    border:2px solid #555;
+}
+
+.worldCard b{
+    font-size:18px;
+}
+
+.settingRow{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 0;
+    border-bottom:1px solid #444;
+}
+
+.settingRow select{
+    padding:7px;
+}
+
+/* =====================================================
    CROSSHAIR
-========================= */
+===================================================== */
 
 #crosshair{
     position:fixed;
@@ -37,16 +371,17 @@ html,body{
     height:20px;
     transform:translate(-50%,-50%);
     pointer-events:none;
-    z-index:20;
+    z-index:30;
+    display:none;
 }
 
 #crosshair:before{
     content:"";
     position:absolute;
-    width:2px;
-    height:20px;
     left:9px;
     top:0;
+    width:2px;
+    height:20px;
     background:white;
     box-shadow:0 0 3px black;
 }
@@ -54,17 +389,17 @@ html,body{
 #crosshair:after{
     content:"";
     position:absolute;
-    width:20px;
-    height:2px;
     left:0;
     top:9px;
+    width:20px;
+    height:2px;
     background:white;
     box-shadow:0 0 3px black;
 }
 
-/* =========================
-   HELP
-========================= */
+/* =====================================================
+   GAME HELP
+===================================================== */
 
 #help{
     position:fixed;
@@ -77,6 +412,7 @@ html,body{
     line-height:1.45;
     font-size:14px;
     z-index:30;
+    display:none;
 }
 
 #status{
@@ -88,11 +424,12 @@ html,body{
     color:white;
     border-radius:8px;
     z-index:30;
+    display:none;
 }
 
-/* =========================
+/* =====================================================
    HUD
-========================= */
+===================================================== */
 
 #hud{
     position:fixed;
@@ -101,6 +438,7 @@ html,body{
     transform:translateX(-50%);
     width:min(540px,94vw);
     z-index:30;
+    display:none;
 }
 
 #bars{
@@ -143,9 +481,9 @@ html,body{
     opacity:.35;
 }
 
-/* =========================
+/* =====================================================
    HOTBAR
-========================= */
+===================================================== */
 
 #hotbar{
     display:grid;
@@ -187,9 +525,9 @@ html,body{
     text-shadow:1px 1px 2px #000;
 }
 
-/* =========================
+/* =====================================================
    INVENTORY
-========================= */
+===================================================== */
 
 #inventoryScreen{
     position:fixed;
@@ -242,27 +580,6 @@ html,body{
     background:#aaa;
 }
 
-.inventorySlot.selectedInventory{
-    border-color:#fff;
-    box-shadow:inset 0 0 0 2px #222;
-}
-
-.itemImage{
-    width:65%;
-    height:65%;
-    image-rendering:pixelated;
-}
-
-.itemCount{
-    position:absolute;
-    right:3px;
-    bottom:1px;
-    color:white;
-    font-size:13px;
-    font-weight:bold;
-    text-shadow:2px 2px 2px black;
-}
-
 #inventoryHint{
     color:#222;
     text-align:center;
@@ -270,9 +587,9 @@ html,body{
     font-size:13px;
 }
 
-/* =========================
+/* =====================================================
    PAUSE MENU
-========================= */
+===================================================== */
 
 #pauseMenu{
     position:fixed;
@@ -320,57 +637,369 @@ html,body{
     background:#555;
     color:white;
 }
-
-#start{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.78);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    z-index:100;
-}
-
-#panel{
-    width:440px;
-    max-width:90%;
-    padding:30px;
-    text-align:center;
-    color:white;
-    background:#1b211b;
-    border:2px solid white;
-    border-radius:12px;
-}
-
-#panel h1{
-    margin-top:0;
-    font-size:36px;
-}
-
-#startButton{
-    border:0;
-    border-radius:8px;
-    padding:14px 28px;
-    font-size:18px;
-    color:white;
-    background:#45a049;
-    cursor:pointer;
-}
-
-#startButton:hover{
-    background:#58bd5d;
-}
 </style>
 </head>
 
 <body>
+
+<!-- =====================================================
+     HOME PAGE
+===================================================== -->
+
+<div id="home">
+
+    <div id="homeBackground">
+
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+
+        <div class="mountain m1"></div>
+        <div class="mountain m2"></div>
+        <div class="mountain m3"></div>
+        <div class="mountain m4"></div>
+
+        <div id="homeGround"></div>
+
+    </div>
+
+    <div id="logo">
+
+        <div id="logoMain">
+            BLOCKCRAFT
+        </div>
+
+        <div id="logoSub">
+            BUILD • EXPLORE • SURVIVE
+        </div>
+
+    </div>
+
+    <div id="homeMenu">
+
+        <button
+            class="homeButton playButton"
+            id="playButton"
+        >
+            ▶ PLAY
+        </button>
+
+        <button
+            class="homeButton"
+            id="worldsButton"
+        >
+            🌎 WORLDS
+        </button>
+
+        <button
+            class="homeButton"
+            id="profileButton"
+        >
+            👤 PROFILE
+        </button>
+
+        <button
+            class="homeButton"
+            id="storeButton"
+        >
+            🛒 BLOCKCRAFT STORE
+        </button>
+
+        <button
+            class="homeButton"
+            id="settingsButton"
+        >
+            ⚙ SETTINGS
+        </button>
+
+        <button
+            class="homeButton"
+            id="helpButton"
+        >
+            📖 HOW TO PLAY
+        </button>
+
+    </div>
+
+    <div id="homeFooter">
+        BlockCraft V5 • An original block-building game
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     WORLDS
+===================================================== -->
+
+<div
+    class="modal"
+    id="worldsModal"
+>
+
+    <div class="modalPanel">
+
+        <h2>🌎 Worlds</h2>
+
+        <div class="worldCard">
+
+            <b>BlockCraft Survival</b>
+
+            <p>
+                A large survival world filled with
+                forests, houses, farms, towers,
+                wells and castles.
+            </p>
+
+            <button
+                class="modalButton playWorld"
+            >
+                ▶ PLAY WORLD
+            </button>
+
+        </div>
+
+        <div class="worldCard">
+
+            <b>Coming Soon</b>
+
+            <p>
+                More worlds will be added in future
+                BlockCraft updates.
+            </p>
+
+        </div>
+
+        <button
+            class="modalButton closeModal"
+        >
+            BACK
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     PROFILE
+===================================================== -->
+
+<div
+    class="modal"
+    id="profileModal"
+>
+
+    <div class="modalPanel">
+
+        <h2>👤 Profile</h2>
+
+        <p>
+            <b>Player:</b> BlockCrafter
+        </p>
+
+        <p>
+            <b>Version:</b> V5
+        </p>
+
+        <p>
+            <b>Game Mode:</b> Survival
+        </p>
+
+        <p>
+            <b>Worlds Played:</b> 1
+        </p>
+
+        <button
+            class="modalButton closeModal"
+        >
+            BACK
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     STORE
+===================================================== -->
+
+<div
+    class="modal"
+    id="storeModal"
+>
+
+    <div class="modalPanel">
+
+        <h2>🛒 BlockCraft Store</h2>
+
+        <p>
+            The BlockCraft Store is coming soon!
+        </p>
+
+        <div class="worldCard">
+            🧱 Block Packs
+        </div>
+
+        <div class="worldCard">
+            🏠 Building Packs
+        </div>
+
+        <div class="worldCard">
+            🌎 World Packs
+        </div>
+
+        <button
+            class="modalButton closeModal"
+        >
+            BACK
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SETTINGS
+===================================================== -->
+
+<div
+    class="modal"
+    id="settingsModal"
+>
+
+    <div class="modalPanel">
+
+        <h2>⚙ Settings</h2>
+
+        <div class="settingRow">
+
+            <span>Graphics</span>
+
+            <select id="graphicsSetting">
+
+                <option>Fast</option>
+                <option selected>Fancy</option>
+
+            </select>
+
+        </div>
+
+        <div class="settingRow">
+
+            <span>Mouse Sensitivity</span>
+
+            <select id="sensitivitySetting">
+
+                <option>Low</option>
+                <option selected>Normal</option>
+                <option>High</option>
+
+            </select>
+
+        </div>
+
+        <div class="settingRow">
+
+            <span>Music</span>
+
+            <select>
+
+                <option selected>On</option>
+                <option>Off</option>
+
+            </select>
+
+        </div>
+
+        <button
+            class="modalButton closeModal"
+        >
+            BACK
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     HOW TO PLAY
+===================================================== -->
+
+<div
+    class="modal"
+    id="helpModal"
+>
+
+    <div class="modalPanel">
+
+        <h2>📖 How to Play</h2>
+
+        <p>
+            <b>W A S D</b> — Move
+        </p>
+
+        <p>
+            <b>SPACE</b> — Jump
+        </p>
+
+        <p>
+            <b>MOUSE</b> — Look around
+        </p>
+
+        <p>
+            <b>LEFT CLICK</b> — Break blocks
+        </p>
+
+        <p>
+            <b>RIGHT CLICK</b> — Place blocks
+        </p>
+
+        <p>
+            <b>1–9</b> — Select hotbar slot
+        </p>
+
+        <p>
+            <b>E</b> — Open inventory
+        </p>
+
+        <p>
+            <b>ESC</b> — Pause
+        </p>
+
+        <hr>
+
+        <p>
+            Walk for 20 seconds to lose 1 hunger.
+        </p>
+
+        <p>
+            Natural healing consumes 2 hunger.
+        </p>
+
+        <button
+            class="modalButton closeModal"
+        >
+            BACK
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     GAME
+===================================================== -->
 
 <canvas id="game"></canvas>
 
 <div id="crosshair"></div>
 
 <div id="help">
-    <b>BlockCraft V4</b><br>
+    <b>BlockCraft V5</b><br>
     WASD — Move<br>
     Space — Jump<br>
     Mouse — Look<br>
@@ -382,17 +1011,14 @@ html,body{
 </div>
 
 <div id="status">
-    V4 • Survival
+    V5 • Survival
 </div>
-
-<!-- HUD -->
 
 <div id="hud">
 
     <div id="bars">
 
         <div id="health"></div>
-
         <div id="hunger"></div>
 
     </div>
@@ -402,7 +1028,9 @@ html,body{
 </div>
 
 
-<!-- INVENTORY -->
+<!-- =====================================================
+     INVENTORY
+===================================================== -->
 
 <div id="inventoryScreen">
 
@@ -426,7 +1054,9 @@ html,body{
 </div>
 
 
-<!-- PAUSE MENU -->
+<!-- =====================================================
+     PAUSE
+===================================================== -->
 
 <div id="pauseMenu">
 
@@ -442,37 +1072,17 @@ html,body{
         </button>
 
         <button
+            id="pauseSettings"
+            class="menuButton"
+        >
+            ⚙ Settings
+        </button>
+
+        <button
             id="exitButton"
             class="menuButton titleButton"
         >
             Exit to Title
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- START -->
-
-<div id="start">
-
-    <div id="panel">
-
-        <h1>⛏️ BlockCraft V4</h1>
-
-        <p>
-            Explore a procedurally generated world
-            filled with structures.
-        </p>
-
-        <p>
-            Find villages, houses, towers,
-            farms and castles.
-        </p>
-
-        <button id="startButton">
-            Start Game
         </button>
 
     </div>
@@ -486,12 +1096,32 @@ import * as THREE from
 "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
 
 
-/* =========================================================
-   THREE.JS
-========================================================= */
+/* =====================================================
+   ELEMENTS
+===================================================== */
 
 const canvas =
     document.querySelector("#game");
+
+const home =
+    document.querySelector("#home");
+
+const crosshair =
+    document.querySelector("#crosshair");
+
+const help =
+    document.querySelector("#help");
+
+const status =
+    document.querySelector("#status");
+
+const hud =
+    document.querySelector("#hud");
+
+
+/* =====================================================
+   THREE
+===================================================== */
 
 const scene =
     new THREE.Scene();
@@ -510,7 +1140,7 @@ scene.fog =
 const camera =
     new THREE.PerspectiveCamera(
         75,
-        innerWidth / innerHeight,
+        innerWidth/innerHeight,
         .05,
         180
     );
@@ -525,10 +1155,7 @@ const renderer =
     });
 
 renderer.setPixelRatio(
-    Math.min(
-        devicePixelRatio,
-        2
-    )
+    Math.min(devicePixelRatio,2)
 );
 
 renderer.setSize(
@@ -539,19 +1166,17 @@ renderer.setSize(
 renderer.shadowMap.enabled=true;
 
 
-/* =========================================================
+/* =====================================================
    LIGHT
-========================================================= */
+===================================================== */
 
-const skyLight =
+scene.add(
     new THREE.HemisphereLight(
         0xbfe9ff,
         0x625238,
         1.8
-    );
-
-scene.add(skyLight);
-
+    )
+);
 
 const sun =
     new THREE.DirectionalLight(
@@ -560,9 +1185,7 @@ const sun =
     );
 
 sun.position.set(
-    30,
-    60,
-    20
+    30,60,20
 );
 
 sun.castShadow=true;
@@ -570,9 +1193,9 @@ sun.castShadow=true;
 scene.add(sun);
 
 
-/* =========================================================
+/* =====================================================
    TEXTURES
-========================================================= */
+===================================================== */
 
 function createTexture(
     base,
@@ -580,79 +1203,50 @@ function createTexture(
     pattern=""
 ){
 
-    const size=16;
+    const c =
+        document.createElement("canvas");
 
-    const c=
-        document.createElement(
-            "canvas"
-        );
+    c.width=16;
+    c.height=16;
 
-    c.width=size;
-    c.height=size;
-
-    const ctx=
+    const ctx =
         c.getContext("2d");
 
     ctx.imageSmoothingEnabled=false;
 
     ctx.fillStyle=base;
 
-    ctx.fillRect(
-        0,0,size,size
-    );
+    ctx.fillRect(0,0,16,16);
 
+    for(let i=0;i<100;i++){
 
-    for(
-        let i=0;
-        i<90;
-        i++
-    ){
-
-        ctx.fillStyle=
+        ctx.fillStyle =
             colors[
                 Math.floor(
-                    Math.random()*
-                    colors.length
+                    Math.random()*colors.length
                 )
             ];
 
-        const x=
-            Math.floor(
-                Math.random()*16
-            );
-
-        const y=
-            Math.floor(
-                Math.random()*16
-            );
-
         ctx.fillRect(
-            x,
-            y,
+            Math.floor(Math.random()*16),
+            Math.floor(Math.random()*16),
             Math.random()>.9?2:1,
             Math.random()>.9?2:1
         );
 
     }
 
-
     if(pattern==="wood"){
 
-        for(
-            let i=0;
-            i<7;
-            i++
-        ){
+        for(let i=0;i<7;i++){
 
-            ctx.fillStyle=
+            ctx.fillStyle =
                 i%2
-                ?"#633d1c"
-                :"#b47739";
+                ? "#633d1c"
+                : "#b47739";
 
             ctx.fillRect(
-                Math.floor(
-                    Math.random()*16
-                ),
+                Math.floor(Math.random()*16),
                 0,
                 1,
                 16
@@ -662,49 +1256,16 @@ function createTexture(
 
     }
 
-
-    if(pattern==="leaves"){
-
-        for(
-            let i=0;
-            i<35;
-            i++
-        ){
-
-            ctx.fillStyle=
-                colors[
-                    Math.floor(
-                        Math.random()*
-                        colors.length
-                    )
-                ];
-
-            ctx.fillRect(
-                Math.floor(
-                    Math.random()*16
-                ),
-                Math.floor(
-                    Math.random()*16
-                ),
-                1,
-                1
-            );
-
-        }
-
-    }
-
-
-    const texture=
+    const texture =
         new THREE.CanvasTexture(c);
 
-    texture.magFilter=
+    texture.magFilter =
         THREE.NearestFilter;
 
-    texture.minFilter=
+    texture.minFilter =
         THREE.NearestFilter;
 
-    texture.colorSpace=
+    texture.colorSpace =
         THREE.SRGBColorSpace;
 
     return texture;
@@ -713,105 +1274,104 @@ function createTexture(
 
 const textures={};
 
-textures.grassTop=
+textures.grassTop =
     createTexture(
         "#55a936",
         ["#4a962e","#67b83e","#3f882a"]
     );
 
-textures.grassSide=
+textures.grassSide =
     createTexture(
         "#87582c",
         ["#71461f","#9a6434","#6d411d"]
     );
 
-textures.dirt=
+textures.dirt =
     createTexture(
         "#8b5a2b",
         ["#70451f","#9d6936","#764a23"]
     );
 
-textures.stone=
+textures.stone =
     createTexture(
         "#858585",
-        ["#707070","#999999","#626262","#a2a2a2"]
+        ["#707070","#999","#626262"]
     );
 
-textures.cobble=
+textures.cobble =
     createTexture(
         "#707070",
-        ["#555","#858585","#646464","#999"]
+        ["#555","#858585","#999"]
     );
 
-textures.wood=
+textures.wood =
     createTexture(
         "#8b5a2b",
         ["#70431d","#a86f36","#633b1b"],
         "wood"
     );
 
-textures.woodTop=
+textures.woodTop =
     createTexture(
         "#a97943",
         ["#7d4f27","#c18b50","#633b1b"]
     );
 
-textures.leaves=
+textures.leaves =
     createTexture(
         "#368c38",
-        ["#28732c","#4ba747","#246728","#59b84c"],
-        "leaves"
+        ["#28732c","#4ba747","#246728"]
     );
 
-textures.sand=
+textures.sand =
     createTexture(
         "#d9c27a",
         ["#c5aa60","#ead58f","#bda25b"]
     );
 
-textures.planks=
+textures.planks =
     createTexture(
         "#b17a3f",
         ["#95622e","#c38c50","#7e5025"]
     );
 
-textures.brick=
+textures.brick =
     createTexture(
         "#a94732",
         ["#8d3626","#c45b40","#74291f"]
     );
 
-textures.snow=
+textures.snow =
     createTexture(
         "#eeeeee",
         ["#fff","#d9e4e8","#cbd7dc"]
     );
 
-textures.glass=
+textures.glass =
     createTexture(
         "#9edbe7",
         ["#d8f6fa","#72bac9","#bcecf2"]
     );
 
-textures.bedrock=
+textures.bedrock =
     createTexture(
         "#343434",
         ["#202020","#4b4b4b","#171717"]
     );
 
-textures.crafting=
+textures.crafting =
     createTexture(
         "#9a6235",
         ["#70421f","#b87942","#824d27"]
     );
 
-textures.gold=
+textures.gold =
     createTexture(
         "#e0b51c",
         ["#b98b08","#f4d24a","#c99c10"]
     );
 
-textures.iron=
+textures.iron =
     createTexture(
         "#b9b9b9",
         ["#8d8d8d","#dedede","#a5a5a5"]
@@ -827,10 +1387,6 @@ function mat(texture){
 }
 
 
-/* =========================================================
-   MATERIALS
-========================================================= */
-
 const materials={};
 
 materials.grass=[
@@ -842,11 +1398,8 @@ materials.grass=[
     mat(textures.grassSide)
 ];
 
-materials.dirt=
-    mat(textures.dirt);
-
-materials.stone=
-    mat(textures.stone);
+materials.dirt=mat(textures.dirt);
+materials.stone=mat(textures.stone);
 
 materials.wood=[
     mat(textures.wood),
@@ -857,29 +1410,20 @@ materials.wood=[
     mat(textures.wood)
 ];
 
-materials.leaves=
+materials.leaves =
     new THREE.MeshLambertMaterial({
         map:textures.leaves,
         transparent:true,
-        alphaTest:.45
+        alphaTest:.4
     });
 
-materials.sand=
-    mat(textures.sand);
+materials.sand=mat(textures.sand);
+materials.cobblestone=mat(textures.cobble);
+materials.planks=mat(textures.planks);
+materials.brick=mat(textures.brick);
+materials.snow=mat(textures.snow);
 
-materials.cobblestone=
-    mat(textures.cobble);
-
-materials.planks=
-    mat(textures.planks);
-
-materials.brick=
-    mat(textures.brick);
-
-materials.snow=
-    mat(textures.snow);
-
-materials.glass=
+materials.glass =
     new THREE.MeshLambertMaterial({
         map:textures.glass,
         transparent:true,
@@ -887,22 +1431,15 @@ materials.glass=
         depthWrite:false
     });
 
-materials.bedrock=
-    mat(textures.bedrock);
-
-materials.crafting=
-    mat(textures.crafting);
-
-materials.gold=
-    mat(textures.gold);
-
-materials.iron=
-    mat(textures.iron);
+materials.bedrock=mat(textures.bedrock);
+materials.crafting=mat(textures.crafting);
+materials.gold=mat(textures.gold);
+materials.iron=mat(textures.iron);
 
 
-/* =========================================================
-   BLOCK TYPES
-========================================================= */
+/* =====================================================
+   BLOCKS
+===================================================== */
 
 const blockTypes=[
     "grass",
@@ -922,14 +1459,9 @@ const blockTypes=[
     "iron"
 ];
 
-
-/* =========================================================
-   WORLD
-========================================================= */
-
 const blocks=new Map();
 
-const cubeGeometry=
+const cubeGeometry =
     new THREE.BoxGeometry(1,1,1);
 
 
@@ -938,26 +1470,18 @@ function blockKey(x,y,z){
 }
 
 
-function addBlock(
-    x,
-    y,
-    z,
-    type
-){
+function addBlock(x,y,z,type){
 
-    const key=
-        blockKey(x,y,z);
+    const key=blockKey(x,y,z);
 
     if(blocks.has(key))
         return;
 
-
-    const block=
+    const block =
         new THREE.Mesh(
             cubeGeometry,
             materials[type]
         );
-
 
     block.position.set(
         x+.5,
@@ -965,10 +1489,8 @@ function addBlock(
         z+.5
     );
 
-
     block.castShadow=true;
     block.receiveShadow=true;
-
 
     block.userData={
         x,
@@ -977,98 +1499,68 @@ function addBlock(
         type
     };
 
-
     scene.add(block);
 
-    blocks.set(
-        key,
-        block
-    );
+    blocks.set(key,block);
 }
 
 
-function removeBlock(
-    x,
-    y,
-    z
-){
+function removeBlock(x,y,z){
 
     if(y===0)
         return;
 
-
-    const key=
-        blockKey(x,y,z);
-
-    const block=
-        blocks.get(key);
-
+    const block =
+        blocks.get(
+            blockKey(x,y,z)
+        );
 
     if(!block)
         return;
 
-
     scene.remove(block);
 
-    blocks.delete(key);
+    blocks.delete(
+        blockKey(x,y,z)
+    );
 }
 
 
-/* =========================================================
+/* =====================================================
    TERRAIN
-========================================================= */
+===================================================== */
 
 function terrainHeight(x,z){
 
     return Math.max(
         2,
         Math.floor(
-            4
-            +Math.sin(x*.23)*1.6
-            +Math.cos(z*.19)*1.4
-            +Math.sin((x+z)*.11)*1.2
+            4+
+            Math.sin(x*.23)*1.6+
+            Math.cos(z*.19)*1.4+
+            Math.sin((x+z)*.11)*1.2
         )
     );
 }
 
 
-/* =========================================================
-   TERRAIN GENERATION
-========================================================= */
+for(let x=-32;x<=32;x++){
 
-for(
-    let x=-32;
-    x<=32;
-    x++
-){
+    for(let z=-32;z<=32;z++){
 
-    for(
-        let z=-32;
-        z<=32;
-        z++
-    ){
-
-        const h=
+        const h =
             terrainHeight(x,z);
 
-
-        for(
-            let y=0;
-            y<=h;
-            y++
-        ){
+        for(let y=0;y<=h;y++){
 
             let type;
 
             if(y===h)
                 type="grass";
-
             else if(y>h-3)
                 type="dirt";
-
             else
                 type="stone";
-
 
             addBlock(
                 x,y,z,type
@@ -1081,59 +1573,32 @@ for(
 }
 
 
-/* =========================================================
-   TREE
-========================================================= */
+/* =====================================================
+   STRUCTURES
+===================================================== */
 
 function tree(x,z){
 
-    const ground=
-        terrainHeight(x,z);
+    const g=terrainHeight(x,z);
 
+    for(let y=g+1;y<g+5;y++)
+        addBlock(x,y,z,"wood");
 
-    for(
-        let y=ground+1;
-        y<ground+5;
-        y++
-    ){
+    for(let dx=-2;dx<=2;dx++){
 
-        addBlock(
-            x,y,z,"wood"
-        );
+        for(let dz=-2;dz<=2;dz++){
 
-    }
-
-
-    for(
-        let dx=-2;
-        dx<=2;
-        dx++
-    ){
-
-        for(
-            let dz=-2;
-            dz<=2;
-            dz++
-        ){
-
-            for(
-                let dy=3;
-                dy<=5;
-                dy++
-            ){
+            for(let dy=3;dy<=5;dy++){
 
                 if(
-                    Math.abs(dx)
-                    +
-                    Math.abs(dz)
-                    +
-                    (dy===5?1:0)
-                    <5
+                    Math.abs(dx)+
+                    Math.abs(dz)+
+                    (dy===5?1:0)<5
                 ){
 
                     addBlock(
                         x+dx,
-                        ground+dy,
+                        g+dy,
                         z+dz,
                         "leaves"
                     );
@@ -1145,47 +1610,20 @@ function tree(x,z){
         }
 
     }
-
 }
 
 
-/* =========================================================
-   HOUSE
-========================================================= */
+function house(cx,cz){
 
-function house(
-    cx,
-    cz
-){
+    const g=terrainHeight(cx,cz);
 
-    const ground=
-        terrainHeight(
-            cx,
-            cz
-        );
+    for(let x=-3;x<=3;x++){
 
-
-    const width=7;
-    const depth=7;
-
-
-    /* Floor */
-
-    for(
-        let x=-3;
-        x<=3;
-        x++
-    ){
-
-        for(
-            let z=-3;
-            z<=3;
-            z++
-        ){
+        for(let z=-3;z<=3;z++){
 
             addBlock(
                 cx+x,
-                ground+1,
+                g+1,
                 cz+z,
                 "planks"
             );
@@ -1194,50 +1632,29 @@ function house(
 
     }
 
+    for(let y=2;y<=4;y++){
 
-    /* Walls */
+        for(let x=-3;x<=3;x++){
 
-    for(
-        let y=2;
-        y<=4;
-        y++
-    ){
-
-        for(
-            let x=-3;
-            x<=3;
-            x++
-        ){
-
-            for(
-                let z=-3;
-                z<=3;
-                z++
-            ){
+            for(let z=-3;z<=3;z++){
 
                 if(
-                    x===-3 ||
-                    x===3 ||
-                    z===-3 ||
+                    x===-3||
+                    x===3||
+                    z===-3||
                     z===3
                 ){
-
-                    /* Door opening */
 
                     if(
                         z===-3 &&
                         x===0 &&
                         y<=3
-                    ){
-
+                    )
                         continue;
-
-                    }
-
 
                     addBlock(
                         cx+x,
-                        ground+y,
+                        g+y,
                         cz+z,
                         "planks"
                     );
@@ -1250,14 +1667,7 @@ function house(
 
     }
 
-
-    /* Roof */
-
-    for(
-        let layer=0;
-        layer<4;
-        layer++
-    ){
+    for(let layer=0;layer<4;layer++){
 
         for(
             let x=-3+layer;
@@ -1273,7 +1683,7 @@ function house(
 
                 addBlock(
                     cx+x,
-                    ground+5+layer,
+                    g+5+layer,
                     cz+z,
                     "brick"
                 );
@@ -1284,71 +1694,30 @@ function house(
 
     }
 
-
-    /* Windows */
-
-    addBlock(
-        cx-3,
-        ground+3,
-        cz-1,
-        "glass"
-    );
-
-    addBlock(
-        cx+3,
-        ground+3,
-        cz-1,
-        "glass"
-    );
-
+    addBlock(cx-3,g+3,cz-1,"glass");
+    addBlock(cx+3,g+3,cz-1,"glass");
 }
 
 
-/* =========================================================
-   TOWER
-========================================================= */
+function tower(cx,cz){
 
-function tower(
-    cx,
-    cz
-){
+    const g=terrainHeight(cx,cz);
+    const r=3;
 
-    const ground=
-        terrainHeight(
-            cx,
-            cz
-        );
+    for(let y=1;y<=10;y++){
 
+        for(let x=-r;x<=r;x++){
 
-    const radius=3;
-
-
-    for(
-        let y=1;
-        y<=10;
-        y++
-    ){
-
-        for(
-            let x=-radius;
-            x<=radius;
-            x++
-        ){
-
-            for(
-                let z=-radius;
-                z<=radius;
-                z++
-            ){
+            for(let z=-r;z<=r;z++){
 
                 if(
-                    Math.abs(x)===radius ||
-                    Math.abs(z)===radius
+                    Math.abs(x)===r||
+                    Math.abs(z)===r
                 ){
 
                     addBlock(
                         cx+x,
-                        ground+y,
+                        g+y,
                         cz+z,
                         "cobblestone"
                     );
@@ -1361,78 +1730,46 @@ function tower(
 
     }
 
+    for(let x=-4;x<=4;x++){
 
-    /* top */
+        for(let z=-4;z<=4;z++){
 
-    for(
-        let x=-4;
-        x<=4;
-        x++
-    ){
+            if(
+                Math.abs(x)===4||
+                Math.abs(z)===4
+            ){
 
-        for(
-            let z=-4;
-        z<=4;
-        z++
-    ){
+                addBlock(
+                    cx+x,
+                    g+11,
+                    cz+z,
+                    "cobblestone"
+                );
 
-        if(
-            Math.abs(x)===4 ||
-            Math.abs(z)===4
-        ){
-
-            addBlock(
-                cx+x,
-                ground+11,
-                cz+z,
-                "cobblestone"
-            );
+            }
 
         }
 
     }
-
-    }
-
 }
 
 
-/* =========================================================
-   WELL
-========================================================= */
+function well(cx,cz){
 
-function well(
-    cx,
-    cz
-){
+    const g=terrainHeight(cx,cz);
 
-    const ground=
-        terrainHeight(
-            cx,
-            cz
-        );
+    for(let x=-2;x<=2;x++){
 
-
-    for(
-        let x=-2;
-        x<=2;
-        x++
-    ){
-
-        for(
-            let z=-2;
-            z<=2;
-            z++
-        ){
+        for(let z=-2;z<=2;z++){
 
             if(
-                Math.abs(x)===2 ||
+                Math.abs(x)===2||
                 Math.abs(z)===2
             ){
 
                 addBlock(
                     cx+x,
-                    ground+1,
+                    g+1,
                     cz+z,
                     "cobblestone"
                 );
@@ -1443,79 +1780,29 @@ function well(
 
     }
 
+    for(let y=2;y<=4;y++){
 
-    for(
-        let y=2;
-        y<=4;
-        y++
-    ){
-
-        addBlock(
-            cx-2,
-            ground+y,
-            cz-2,
-            "wood"
-        );
-
-        addBlock(
-            cx+2,
-            ground+y,
-            cz-2,
-            "wood"
-        );
+        addBlock(cx-2,g+y,cz-2,"wood");
+        addBlock(cx+2,g+y,cz-2,"wood");
 
     }
 
-
-    for(
-        let x=-2;
-        x<=2;
-        x++
-    ){
-
-        addBlock(
-            cx+x,
-            ground+5,
-            cz-2,
-            "wood"
-        );
-
-    }
-
+    for(let x=-2;x<=2;x++)
+        addBlock(cx+x,g+5,cz-2,"wood");
 }
 
 
-/* =========================================================
-   FARM
-========================================================= */
+function farm(cx,cz){
 
-function farm(
-    cx,
-    cz
-){
+    const g=terrainHeight(cx,cz);
 
-    const ground=
-        terrainHeight(
-            cx,
-            cz
-        );
+    for(let x=-4;x<=4;x++){
 
-
-    for(
-        let x=-4;
-        x<=4;
-        x++
-    ){
-
-        for(
-            let z=-3;
-            z<=3;
-            z++
-        ){
+        for(let z=-3;z<=3;z++){
 
             addBlock(
                 cx+x,
-                ground+1,
+                g+1,
                 cz+z,
                 "dirt"
             );
@@ -1524,176 +1811,60 @@ function farm(
 
     }
 
+    for(let x=-5;x<=5;x++){
 
-    for(
-        let x=-5;
-        x<=5;
-        x++
-    ){
-
-        addBlock(
-            cx+x,
-            ground+2,
-            cz-4,
-            "wood"
-        );
-
-        addBlock(
-            cx+x,
-            ground+2,
-            cz+4,
-            "wood"
-        );
+        addBlock(cx+x,g+2,cz-4,"wood");
+        addBlock(cx+x,g+2,cz+4,"wood");
 
     }
 
+    for(let z=-4;z<=4;z++){
 
-    for(
-        let z=-4;
-        z<=4;
-        z++
-    ){
-
-        addBlock(
-            cx-5,
-            ground+2,
-            cz+z,
-            "wood"
-        );
-
-        addBlock(
-            cx+5,
-            ground+2,
-            cz+z,
-            "wood"
-        );
+        addBlock(cx-5,g+2,cz+z,"wood");
+        addBlock(cx+5,g+2,cz+z,"wood");
 
     }
-
 }
 
 
-/* =========================================================
-   CASTLE
-========================================================= */
+function castle(cx,cz){
 
-function castle(
-    cx,
-    cz
-){
+    const g=terrainHeight(cx,cz);
+    const s=12;
 
-    const ground=
-        terrainHeight(
-            cx,
-            cz
-        );
+    for(let y=1;y<=5;y++){
 
+        for(let x=-s;x<=s;x++){
 
-    const size=12;
-
-
-    /* Outer walls */
-
-    for(
-        let y=1;
-        y<=5;
-        y++
-    ){
-
-        for(
-            let x=-size;
-            x<=size;
-            x++
-        ){
-
-            addBlock(
-                cx+x,
-                ground+y,
-                cz-size,
-                "stone"
-            );
-
-            addBlock(
-                cx+x,
-                ground+y,
-                cz+size,
-                "stone"
-            );
+            addBlock(cx+x,g+y,cz-s,"stone");
+            addBlock(cx+x,g+y,cz+s,"stone");
 
         }
 
+        for(let z=-s;z<=s;z++){
 
-        for(
-            let z=-size;
-            z<=size;
-            z++
-        ){
-
-            addBlock(
-                cx-size,
-                ground+y,
-                cz+z,
-                "stone"
-            );
-
-            addBlock(
-                cx+size,
-                ground+y,
-                cz+z,
-                "stone"
-            );
+            addBlock(cx-s,g+y,cz+z,"stone");
+            addBlock(cx+s,g+y,cz+z,"stone");
 
         }
 
     }
 
+    tower(cx-s,cz-s);
+    tower(cx+s,cz-s);
+    tower(cx-s,cz+s);
+    tower(cx+s,cz+s);
 
-    /* Four towers */
+    for(let y=1;y<=3;y++){
 
-    tower(
-        cx-size,
-        cz-size
-    );
+        for(let x=-2;x<=2;x++){
 
-    tower(
-        cx+size,
-        cz-size
-    );
-
-    tower(
-        cx-size,
-        cz+size
-    );
-
-    tower(
-        cx+size,
-        cz+size
-    );
-
-
-    /* Gate */
-
-    for(
-        let y=1;
-        y<=3;
-        y++
-    ){
-
-        for(
-            let x=-2;
-            x<=2;
-            x++
-        ){
-
-            if(
-                x!==0 ||
-                y===3
-            ){
+            if(x!==0||y===3){
 
                 addBlock(
                     cx+x,
-                    ground+y,
-                    cz-size,
+                    g+y,
+                    cz-s,
                     "brick"
                 );
 
@@ -1702,13 +1873,8 @@ function castle(
         }
 
     }
-
 }
 
-
-/* =========================================================
-   GENERATE STRUCTURES
-========================================================= */
 
 tree(-12,-8);
 tree(15,8);
@@ -1717,39 +1883,30 @@ tree(19,-17);
 tree(8,-20);
 tree(-7,21);
 
-
 house(-12,-2);
 house(13,13);
 house(-20,-18);
 house(20,4);
 
-
 tower(5,12);
 tower(-18,5);
 
-
 well(2,-10);
-
-
 farm(10,-10);
 
-
-castle(
-    -5,
-    -23
-);
+castle(-5,-23);
 
 
-/* =========================================================
+/* =====================================================
    PLAYER
-========================================================= */
+===================================================== */
 
 const player={
 
     position:
         new THREE.Vector3(
             .5,
-            terrainHeight(0,0)+1.05,
+            terrainHeight(0,0)+2,
             .5
         ),
 
@@ -1763,15 +1920,14 @@ const player={
 
 };
 
-
 camera.position.copy(
     player.position
 );
 
 
-/* =========================================================
-   SURVIVAL STATS
-========================================================= */
+/* =====================================================
+   SURVIVAL
+===================================================== */
 
 let health=9;
 let hunger=9;
@@ -1780,45 +1936,27 @@ let walkTimer=0;
 let healTimer=0;
 
 
-/* =========================================================
-   HEALTH HUD
-========================================================= */
+const healthElement =
+    document.querySelector("#health");
 
-const healthElement=
-    document.querySelector(
-        "#health"
-    );
-
-const hungerElement=
-    document.querySelector(
-        "#hunger"
-    );
+const hungerElement =
+    document.querySelector("#hunger");
 
 
 function drawStats(){
 
     healthElement.innerHTML="";
-
     hungerElement.innerHTML="";
 
+    for(let i=0;i<9;i++){
 
-    for(
-        let i=0;
-        i<9;
-        i++
-    ){
-
-        const heart=
-            document.createElement(
-                "div"
-            );
+        const heart =
+            document.createElement("div");
 
         heart.className="heart";
 
         if(i>=health)
-            heart.classList.add(
-                "empty"
-            );
+            heart.classList.add("empty");
 
         heart.textContent="♥";
 
@@ -1826,19 +1964,13 @@ function drawStats(){
             heart
         );
 
+        const food =
+            document.createElement("div");
 
-        const food=
-            document.createElement(
-                "div"
-            );
-
-        food.className=
-            "hungerIcon";
+        food.className="hungerIcon";
 
         if(i>=hunger)
-            food.classList.add(
-                "empty"
-            );
+            food.classList.add("empty");
 
         food.textContent="🍗";
 
@@ -1847,90 +1979,17 @@ function drawStats(){
         );
 
     }
-
 }
-
 
 drawStats();
 
 
-/* =========================================================
-   KEYBOARD
-========================================================= */
+/* =====================================================
+   INVENTORY
+===================================================== */
 
-const keys={};
-
-
-window.addEventListener(
-    "keydown",
-    event=>{
-
-        keys[event.code]=true;
-
-
-        if(
-            /^Digit[1-9]$/
-            .test(event.code)
-        ){
-
-            selectHotbar(
-                Number(
-                    event.code.slice(-1)
-                )-1
-            );
-
-        }
-
-
-        if(
-            event.code==="KeyE"
-        ){
-
-            toggleInventory();
-
-        }
-
-
-        if(
-            event.code==="Escape"
-        ){
-
-            if(
-                inventoryOpen
-            ){
-
-                closeInventory();
-
-            }
-            else{
-
-                togglePause();
-
-            }
-
-        }
-
-    }
-);
-
-
-window.addEventListener(
-    "keyup",
-    event=>{
-        keys[event.code]=false;
-    }
-);
-
-
-/* =========================================================
-   INVENTORY DATA
-========================================================= */
-
-const inventory=new Array(36)
-    .fill(null);
-
-
-/* Give player starting items */
+const inventory =
+    new Array(36).fill(null);
 
 inventory[0]="grass";
 inventory[1]="dirt";
@@ -1948,96 +2007,55 @@ inventory[12]="crafting";
 inventory[13]="gold";
 inventory[14]="iron";
 
-
-let hotbarSlots=
-    inventory.slice(
-        0,
-        9
-    );
-
-
-/* =========================================================
-   HOTBAR
-========================================================= */
+let hotbarSlots =
+    inventory.slice(0,9);
 
 let selectedHotbar=0;
 
-const hotbar=
-    document.querySelector(
-        "#hotbar"
-    );
+
+const hotbar =
+    document.querySelector("#hotbar");
 
 
-function textureFor(
-    type
-){
+function textureFor(type){
 
-    if(
-        !type
-    )
+    if(!type)
         return null;
 
+    const m=materials[type];
 
-    const material=
-        materials[type];
+    if(Array.isArray(m))
+        return m[2].map;
 
-
-    if(
-        Array.isArray(material)
-    ){
-
-        return material[2].map;
-
-    }
-
-
-    return material.map;
-
+    return m.map;
 }
 
 
-function makeImage(
-    type
-){
+function makeImage(type){
 
-    const image=
-        document.createElement(
-            "canvas"
-        );
+    const image =
+        document.createElement("canvas");
 
     image.width=16;
     image.height=16;
 
-    image.className=
-        "swatch";
+    image.className="swatch";
 
+    const ctx=image.getContext("2d");
 
-    const ctx=
-        image.getContext(
-            "2d"
-        );
-
-
-    const texture=
+    const texture =
         textureFor(type);
 
-
-    if(
-        texture &&
-        texture.image
-    ){
+    if(texture&&texture.image){
 
         ctx.drawImage(
             texture.image,
-            0,
-            0
+            0,0
         );
 
     }
 
-
     return image;
-
 }
 
 
@@ -2045,108 +2063,64 @@ function drawHotbar(){
 
     hotbar.innerHTML="";
 
+    for(let i=0;i<9;i++){
 
-    for(
-        let i=0;
-        i<9;
-        i++
-    ){
-
-        const slot=
-            document.createElement(
-                "div"
-            );
+        const slot =
+            document.createElement("div");
 
         slot.className="slot";
 
+        if(i===selectedHotbar)
+            slot.classList.add("selected");
 
-        if(
-            i===selectedHotbar
-        ){
-
-            slot.classList.add(
-                "selected"
-            );
-
-        }
-
-
-        const type=
-            hotbarSlots[i];
-
-
-        if(type){
-
+        if(hotbarSlots[i])
             slot.appendChild(
-                makeImage(type)
+                makeImage(
+                    hotbarSlots[i]
+                )
             );
 
-        }
+        const number =
+            document.createElement("div");
 
+        number.className="number";
+        number.textContent=i+1;
 
-        const number=
-            document.createElement(
-                "div"
-            );
-
-        number.className=
-            "number";
-
-        number.textContent=
-            i+1;
-
-
-        slot.appendChild(
-            number
-        );
-
+        slot.appendChild(number);
 
         slot.onclick=()=>{
             selectHotbar(i);
         };
 
-
-        hotbar.appendChild(
-            slot
-        );
-
+        hotbar.appendChild(slot);
     }
-
 }
 
 
-function selectHotbar(
-    index
-){
+function selectHotbar(index){
 
     selectedHotbar=
         Math.max(
             0,
-            Math.min(
-                8,
-                index
-            )
+            Math.min(8,index)
         );
 
-
     drawHotbar();
-
 }
-
 
 drawHotbar();
 
 
-/* =========================================================
-   INVENTORY
-========================================================= */
+/* =====================================================
+   INVENTORY UI
+===================================================== */
 
-const inventoryScreen=
+const inventoryScreen =
     document.querySelector(
         "#inventoryScreen"
     );
 
-const inventoryGrid=
+const inventoryGrid =
     document.querySelector(
         "#inventoryGrid"
     );
@@ -2158,14 +2132,9 @@ function drawInventory(){
 
     inventoryGrid.innerHTML="";
 
+    for(let i=0;i<36;i++){
 
-    for(
-        let i=0;
-        i<36;
-        i++
-    ){
-
-        const slot=
+        const slot =
             document.createElement(
                 "div"
             );
@@ -2173,58 +2142,34 @@ function drawInventory(){
         slot.className=
             "inventorySlot";
 
-
-        const type=
-            inventory[i];
-
-
-        if(type){
+        if(inventory[i]){
 
             slot.appendChild(
-                makeImage(type)
+                makeImage(
+                    inventory[i]
+                )
             );
 
         }
 
-
         slot.onclick=()=>{
 
-            if(type){
+            if(inventory[i]){
 
-                inventorySelected(type);
+                const index =
+                    blockTypes.indexOf(
+                        inventory[i]
+                    );
+
+                if(index>=0&&index<9)
+                    selectHotbar(index);
 
             }
 
         };
 
-
-        inventoryGrid.appendChild(
-            slot
-        );
-
+        inventoryGrid.appendChild(slot);
     }
-
-}
-
-
-function inventorySelected(
-    type
-){
-
-    const index=
-        blockTypes.indexOf(type);
-
-
-    if(
-        index>=0
-        &&
-        index<9
-    ){
-
-        selectHotbar(index);
-
-    }
-
 }
 
 
@@ -2232,13 +2177,11 @@ function openInventory(){
 
     inventoryOpen=true;
 
-    inventoryScreen.style.display=
-        "flex";
+    inventoryScreen.style.display="flex";
 
     document.exitPointerLock();
 
     drawInventory();
-
 }
 
 
@@ -2246,75 +2189,42 @@ function closeInventory(){
 
     inventoryOpen=false;
 
-    inventoryScreen.style.display=
-        "none";
-
+    inventoryScreen.style.display="none";
 }
 
 
 function toggleInventory(){
 
-    if(
-        inventoryOpen
-    ){
-
+    if(inventoryOpen)
         closeInventory();
-
-    }
-    else{
-
-        togglePause(false);
-
+    else
         openInventory();
-
-    }
 
 }
 
 
-/* =========================================================
-   PAUSE MENU
-========================================================= */
+/* =====================================================
+   PAUSE
+===================================================== */
 
-const pauseMenu=
-    document.querySelector(
-        "#pauseMenu"
-    );
+const pauseMenu =
+    document.querySelector("#pauseMenu");
 
 let paused=false;
 
 
-function togglePause(
-    force
-){
+function togglePause(force){
 
-    if(
-        typeof force==="boolean"
-    ){
-
+    if(typeof force==="boolean")
         paused=force;
-
-    }
-    else{
-
+    else
         paused=!paused;
 
-    }
+    pauseMenu.style.display =
+        paused?"flex":"none";
 
-
-    pauseMenu.style.display=
-        paused
-        ?"flex"
-        :"none";
-
-
-    if(
-        paused
-    ){
-
+    if(paused)
         document.exitPointerLock();
-
-    }
 
 }
 
@@ -2334,26 +2244,196 @@ document
 .querySelector("#exitButton")
 .onclick=()=>{
 
-    paused=false;
+    togglePause(false);
 
-    pauseMenu.style.display=
-        "none";
-
-    document
-        .querySelector("#start")
-        .style.display=
-        "flex";
-
-    document.exitPointerLock();
+    showHome();
 
 };
 
 
-/* =========================================================
-   RAYCASTING
-========================================================= */
+document
+.querySelector("#pauseSettings")
+.onclick=()=>{
 
-const raycaster=
+    togglePause(false);
+
+    document
+    .querySelector("#settingsModal")
+    .style.display="flex";
+
+};
+
+
+/* =====================================================
+   HOME NAVIGATION
+===================================================== */
+
+function hideModals(){
+
+    document
+    .querySelectorAll(".modal")
+    .forEach(m=>{
+        m.style.display="none";
+    });
+
+}
+
+
+function showHome(){
+
+    home.style.display="block";
+
+    crosshair.style.display="none";
+    help.style.display="none";
+    status.style.display="none";
+    hud.style.display="none";
+
+    document.exitPointerLock();
+
+    closeInventory();
+
+}
+
+
+function startGame(){
+
+    hideModals();
+
+    home.style.display="none";
+
+    crosshair.style.display="block";
+    help.style.display="block";
+    status.style.display="block";
+    hud.style.display="block";
+
+    canvas.requestPointerLock();
+
+}
+
+
+document
+.querySelector("#playButton")
+.onclick=startGame;
+
+
+document
+.querySelectorAll(".playWorld")
+.forEach(button=>{
+    button.onclick=startGame;
+});
+
+
+document
+.querySelector("#worldsButton")
+.onclick=()=>{
+    document
+    .querySelector("#worldsModal")
+    .style.display="flex";
+};
+
+
+document
+.querySelector("#profileButton")
+.onclick=()=>{
+    document
+    .querySelector("#profileModal")
+    .style.display="flex";
+};
+
+
+document
+.querySelector("#storeButton")
+.onclick=()=>{
+    document
+    .querySelector("#storeModal")
+    .style.display="flex";
+};
+
+
+document
+.querySelector("#settingsButton")
+.onclick=()=>{
+    document
+    .querySelector("#settingsModal")
+    .style.display="flex";
+};
+
+
+document
+.querySelector("#helpButton")
+.onclick=()=>{
+    document
+    .querySelector("#helpModal")
+    .style.display="flex";
+};
+
+
+document
+.querySelectorAll(".closeModal")
+.forEach(button=>{
+    button.onclick=()=>{
+        button.closest(".modal")
+            .style.display="none";
+    };
+});
+
+
+/* =====================================================
+   KEYBOARD
+===================================================== */
+
+const keys={};
+
+
+window.addEventListener(
+    "keydown",
+    event=>{
+
+        keys[event.code]=true;
+
+        if(
+            /^Digit[1-9]$/.test(
+                event.code
+            )
+        ){
+
+            selectHotbar(
+                Number(
+                    event.code.slice(-1)
+                )-1
+            );
+
+        }
+
+        if(event.code==="KeyE")
+            toggleInventory();
+
+        if(event.code==="Escape"){
+
+            if(inventoryOpen)
+                closeInventory();
+            else
+                togglePause();
+
+        }
+
+    }
+);
+
+
+window.addEventListener(
+    "keyup",
+    event=>{
+        keys[event.code]=false;
+    }
+);
+
+
+/* =====================================================
+   RAYCAST
+===================================================== */
+
+const raycaster =
     new THREE.Raycaster();
 
 raycaster.far=6;
@@ -2362,34 +2442,26 @@ raycaster.far=6;
 function getTargetBlock(){
 
     raycaster.setFromCamera(
-        {
-            x:0,
-            y:0
-        },
+        {x:0,y:0},
         camera
     );
 
-
-    const hits=
+    const hits =
         raycaster.intersectObjects(
             [...blocks.values()]
         );
 
-
     return hits[0]||null;
-
 }
 
 
-/* =========================================================
+/* =====================================================
    MOUSE
-========================================================= */
+===================================================== */
 
 canvas.addEventListener(
     "contextmenu",
-    e=>{
-        e.preventDefault();
-    }
+    e=>e.preventDefault()
 );
 
 
@@ -2397,12 +2469,8 @@ canvas.addEventListener(
     "mousedown",
     e=>{
 
-        if(
-            paused ||
-            inventoryOpen
-        )
+        if(paused||inventoryOpen)
             return;
-
 
         if(
             document.pointerLockElement
@@ -2410,85 +2478,55 @@ canvas.addEventListener(
         )
             return;
 
-
-        const hit=
-            getTargetBlock();
-
+        const hit=getTargetBlock();
 
         if(!hit)
             return;
 
+        const d=hit.object.userData;
 
-        const data=
-            hit.object.userData;
-
-
-        /* Break */
-
-        if(
-            e.button===0
-        ){
+        if(e.button===0){
 
             removeBlock(
-                data.x,
-                data.y,
-                data.z
+                d.x,
+                d.y,
+                d.z
             );
 
         }
 
+        if(e.button===2){
 
-        /* Place */
-
-        if(
-            e.button===2
-        ){
-
-            const type=
+            const type =
                 hotbarSlots[
                     selectedHotbar
                 ];
 
-
             if(!type)
                 return;
 
-
-            const normal=
+            const normal =
                 hit.face.normal.clone();
 
-
-            const pos=
+            const p =
                 hit.object.position
                 .clone()
                 .subScalar(.5)
                 .add(normal);
 
-
-            const x=
-                Math.floor(pos.x);
-
-            const y=
-                Math.floor(pos.y);
-
-            const z=
-                Math.floor(pos.z);
-
+            const x=Math.floor(p.x);
+            const y=Math.floor(p.y);
+            const z=Math.floor(p.z);
 
             if(
                 y>=0 &&
                 !blocks.has(
-                    blockKey(
-                        x,y,z
-                    )
+                    blockKey(x,y,z)
                 )
             ){
 
                 addBlock(
-                    x,
-                    y,
-                    z,
-                    type
+                    x,y,z,type
                 );
 
             }
@@ -2498,10 +2536,6 @@ canvas.addEventListener(
     }
 );
 
-
-/* =========================================================
-   MOUSE LOOK
-========================================================= */
 
 canvas.addEventListener(
     "click",
@@ -2530,27 +2564,19 @@ window.addEventListener(
         )
             return;
 
-
-        if(
-            paused ||
-            inventoryOpen
-        )
+        if(paused||inventoryOpen)
             return;
 
-
-        player.yaw-=
+        player.yaw -=
             e.movementX*.0025;
 
-
-        player.pitch-=
+        player.pitch -=
             e.movementY*.0025;
 
-
-        const limit=
+        const limit =
             Math.PI/2-.05;
 
-
-        player.pitch=
+        player.pitch =
             Math.max(
                 -limit,
                 Math.min(
@@ -2563,39 +2589,30 @@ window.addEventListener(
 );
 
 
-/* =========================================================
+/* =====================================================
    COLLISION
-========================================================= */
+===================================================== */
 
-function collides(
-    position
-){
+function collides(position){
 
     const radius=.28;
     const height=1.75;
-
 
     for(
         let x=Math.floor(
             position.x-radius
         );
-
         x<=Math.floor(
             position.x+radius
         );
-
         x++
     ){
 
         for(
-            let y=Math.floor(
-                position.y
-            );
-
+            let y=Math.floor(position.y);
             y<=Math.floor(
                 position.y+height
             );
-
             y++
         ){
 
@@ -2603,25 +2620,18 @@ function collides(
                 let z=Math.floor(
                     position.z-radius
                 );
-
                 z<=Math.floor(
                     position.z+radius
                 );
-
                 z++
             ){
 
                 if(
                     blocks.has(
-                        blockKey(
-                            x,y,z
-                        )
+                        blockKey(x,y,z)
                     )
-                ){
-
+                )
                     return true;
-
-                }
 
             }
 
@@ -2629,144 +2639,86 @@ function collides(
 
     }
 
-
     return false;
-
 }
 
 
-/* =========================================================
-   MOVE
-========================================================= */
+function moveAxis(axis,amount){
 
-function moveAxis(
-    axis,
-    amount
-){
-
-    const test=
+    const test =
         player.position.clone();
-
 
     test[axis]+=amount;
 
+    if(!collides(test)){
 
-    if(
-        !collides(test)
-    ){
-
-        player.position[axis]+=
-            amount;
+        player.position[axis]+=amount;
 
         return true;
 
     }
 
-
     return false;
-
 }
 
 
-/* =========================================================
-   GAMEPLAY
-========================================================= */
+/* =====================================================
+   GAME UPDATE
+===================================================== */
 
-const clock=
-    new THREE.Clock();
+const clock=new THREE.Clock();
 
 const moveSpeed=5.5;
 const gravity=18;
 const jumpPower=7.2;
 
 
-/* =========================================================
-   UPDATE
-========================================================= */
+function update(delta){
 
-function update(
-    delta
-){
-
-    if(
-        paused ||
-        inventoryOpen
-    )
+    if(paused||inventoryOpen)
         return;
-
 
     let forward=0;
     let sideways=0;
 
+    if(keys.KeyW) forward-=1;
+    if(keys.KeyS) forward+=1;
+    if(keys.KeyA) sideways-=1;
+    if(keys.KeyD) sideways+=1;
 
-    if(keys.KeyW)
-        forward-=1;
-
-    if(keys.KeyS)
-        forward+=1;
-
-    if(keys.KeyA)
-        sideways-=1;
-
-    if(keys.KeyD)
-        sideways+=1;
-
-
-    const moving=
-        forward!==0 ||
+    const moving =
+        forward!==0||
         sideways!==0;
 
-
-    const length=
+    const len =
         Math.hypot(
             forward,
             sideways
         )||1;
 
+    forward/=len;
+    sideways/=len;
 
-    forward/=length;
-    sideways/=length;
+    const sin=Math.sin(player.yaw);
+    const cos=Math.cos(player.yaw);
 
-
-    const sin=
-        Math.sin(player.yaw);
-
-    const cos=
-        Math.cos(player.yaw);
-
-
-    const velocityX=
+    const vx =
         (
-            sideways*cos
-            -
+            sideways*cos-
             forward*sin
-        )*
-        moveSpeed;
+        )*moveSpeed;
 
-
-    const velocityZ=
+    const vz =
         (
-            sideways*sin
-            +
+            sideways*sin+
             forward*cos
-        )*
-        moveSpeed;
+        )*moveSpeed;
+
+    moveAxis("x",vx*delta);
+    moveAxis("z",vz*delta);
 
 
-    moveAxis(
-        "x",
-        velocityX*delta
-    );
-
-    moveAxis(
-        "z",
-        velocityZ*delta
-    );
-
-
-    /* =====================================================
-       HUNGER FROM WALKING
-    ===================================================== */
+    /* Hunger */
 
     if(
         moving &&
@@ -2775,10 +2727,7 @@ function update(
 
         walkTimer+=delta;
 
-
-        if(
-            walkTimer>=20
-        ){
+        if(walkTimer>=20){
 
             hunger=
                 Math.max(
@@ -2795,15 +2744,11 @@ function update(
     }
 
 
-    /* =====================================================
-       GRAVITY
-    ===================================================== */
+    /* Gravity */
 
-    player.velocity.y-=
+    player.velocity.y -=
         gravity*delta;
 
-
-    /* Jump */
 
     if(
         keys.Space &&
@@ -2818,8 +2763,6 @@ function update(
     }
 
 
-    /* Vertical */
-
     if(
         !moveAxis(
             "y",
@@ -2827,14 +2770,8 @@ function update(
         )
     ){
 
-        if(
-            player.velocity.y<0
-        ){
-
+        if(player.velocity.y<0)
             player.onGround=true;
-
-        }
-
 
         player.velocity.y=0;
 
@@ -2846,9 +2783,7 @@ function update(
     }
 
 
-    /* =====================================================
-       NATURAL HEALING
-    ===================================================== */
+    /* Healing */
 
     if(
         hunger>=7 &&
@@ -2857,10 +2792,7 @@ function update(
 
         healTimer+=delta;
 
-
-        if(
-            healTimer>=10
-        ){
+        if(healTimer>=10){
 
             health=
                 Math.min(
@@ -2868,13 +2800,11 @@ function update(
                     health+1
                 );
 
-
             hunger=
                 Math.max(
                     0,
                     hunger-2
                 );
-
 
             healTimer=0;
 
@@ -2890,22 +2820,13 @@ function update(
     }
 
 
-    /* =====================================================
-       STARVATION
-    ===================================================== */
+    /* Starvation */
 
-    if(
-        hunger===0
-    ){
-
-        /* Slow health loss */
+    if(hunger===0){
 
         healTimer+=delta;
 
-
-        if(
-            healTimer>=8
-        ){
+        if(healTimer>=8){
 
             health=
                 Math.max(
@@ -2922,38 +2843,27 @@ function update(
     }
 
 
-    /* Death */
+    /* Respawn */
 
-    if(
-        health<=0
-    ){
+    if(health<=0){
 
         health=9;
         hunger=9;
 
         player.position.set(
             .5,
-            terrainHeight(
-                0,
-                0
-            )+3,
+            terrainHeight(0,0)+3,
             .5
         );
 
-        player.velocity.set(
-            0,0,0
-        );
+        player.velocity.set(0,0,0);
 
         drawStats();
 
     }
 
 
-    /* Fall */
-
-    if(
-        player.position.y<-10
-    ){
+    if(player.position.y<-10){
 
         health=
             Math.max(
@@ -2963,30 +2873,22 @@ function update(
 
         player.position.set(
             .5,
-            terrainHeight(
-                0,
-                0
-            )+3,
+            terrainHeight(0,0)+3,
             .5
         );
 
-        player.velocity.set(
-            0,0,0
-        );
+        player.velocity.set(0,0,0);
 
         drawStats();
 
     }
 
 
-    /* Camera */
-
     camera.position.set(
         player.position.x,
         player.position.y+.72,
         player.position.z
     );
-
 
     camera.rotation.set(
         player.pitch,
@@ -2997,26 +2899,21 @@ function update(
 }
 
 
-/* =========================================================
+/* =====================================================
    RENDER LOOP
-========================================================= */
+===================================================== */
 
 function animate(){
 
-    requestAnimationFrame(
-        animate
-    );
+    requestAnimationFrame(animate);
 
-
-    const delta=
+    const delta =
         Math.min(
             clock.getDelta(),
             .05
         );
 
-
     update(delta);
-
 
     renderer.render(
         scene,
@@ -3025,44 +2922,21 @@ function animate(){
 
 }
 
-
 animate();
 
 
-/* =========================================================
-   START GAME
-========================================================= */
-
-document
-.querySelector("#startButton")
-.onclick=()=>{
-
-    document
-    .querySelector("#start")
-    .style.display=
-        "none";
-
-
-    canvas.requestPointerLock();
-
-};
-
-
-/* =========================================================
+/* =====================================================
    RESIZE
-========================================================= */
+===================================================== */
 
 window.addEventListener(
     "resize",
     ()=>{
 
-        camera.aspect=
-            innerWidth/
-            innerHeight;
-
+        camera.aspect =
+            innerWidth/innerHeight;
 
         camera.updateProjectionMatrix();
-
 
         renderer.setSize(
             innerWidth,
@@ -3071,6 +2945,13 @@ window.addEventListener(
 
     }
 );
+
+
+/* =====================================================
+   INITIAL STATE
+===================================================== */
+
+showHome();
 
 </script>
 
