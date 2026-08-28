@@ -1,0 +1,3738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WorldWise Academy V4</title>
+
+<style>
+:root{
+  --bg:#f4f7fb;
+  --panel:#fff;
+  --text:#182033;
+  --muted:#687386;
+  --border:#dce3ef;
+  --primary:#3867ff;
+  --primary2:#254bd2;
+  --purple:#7548ff;
+  --green:#15965a;
+  --red:#d64545;
+  --orange:#df941b;
+  --shadow:0 8px 25px rgba(20,40,80,.08);
+}
+
+body.dark{
+  --bg:#0e1422;
+  --panel:#171f31;
+  --text:#f4f6fb;
+  --muted:#aab3c4;
+  --border:#303a51;
+  --primary:#6785ff;
+  --primary2:#8099ff;
+  --purple:#9c7fff;
+  --green:#38c980;
+  --red:#ff7777;
+  --orange:#e7ad4d;
+  --shadow:0 8px 25px rgba(0,0,0,.28);
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+button,input,select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+header{
+  background:linear-gradient(135deg,#14265a,#3867ff,#7548ff);
+  color:white;
+  padding:22px 18px;
+}
+
+.header{
+  max-width:1350px;
+  margin:auto;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+}
+
+.logo h1{
+  margin:0;
+  font-size:32px;
+}
+
+.logo p{
+  margin:5px 0 0;
+  opacity:.9;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.action{
+  border:1px solid rgba(255,255,255,.3);
+  background:rgba(255,255,255,.15);
+  color:white;
+  border-radius:10px;
+  padding:9px 12px;
+}
+
+.search-wrap{
+  margin-top:18px;
+  position:relative;
+}
+
+#globalSearch{
+  width:100%;
+  border:0;
+  outline:0;
+  padding:14px;
+  border-radius:12px;
+}
+
+.search-results{
+  display:none;
+  position:absolute;
+  z-index:20;
+  left:0;
+  right:0;
+  top:53px;
+  background:white;
+  color:#172033;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+
+.search-result{
+  width:100%;
+  text-align:left;
+  border:0;
+  background:white;
+  padding:12px 15px;
+  border-bottom:1px solid #e8ebf2;
+}
+
+.search-result:hover{
+  background:#eef2ff;
+}
+
+.layout{
+  max-width:1350px;
+  margin:20px auto;
+  padding:0 16px;
+  display:grid;
+  grid-template-columns:260px 1fr;
+  gap:20px;
+}
+
+nav{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:10px;
+  height:max-content;
+  position:sticky;
+  top:12px;
+  box-shadow:var(--shadow);
+}
+
+.nav-label{
+  font-size:11px;
+  font-weight:bold;
+  color:var(--muted);
+  padding:10px;
+  letter-spacing:.08em;
+}
+
+.nav-btn{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:var(--text);
+  text-align:left;
+  padding:11px;
+  border-radius:9px;
+  margin:2px 0;
+}
+
+.nav-btn:hover,
+.nav-btn.active{
+  background:#edf2ff;
+  color:var(--primary);
+  font-weight:bold;
+}
+
+body.dark .nav-btn:hover,
+body.dark .nav-btn.active{
+  background:#263252;
+}
+
+.mini{
+  margin:13px 5px;
+  padding:13px;
+  border-radius:12px;
+  background:#f2f5fa;
+}
+
+body.dark .mini{
+  background:#202a40;
+}
+
+.mini-title{
+  font-size:11px;
+  color:var(--muted);
+  font-weight:bold;
+}
+
+.track{
+  height:8px;
+  background:#dce2ed;
+  border-radius:99px;
+  overflow:hidden;
+  margin-top:8px;
+}
+
+.fill{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,var(--primary),var(--purple));
+}
+
+.xp-mini{
+  font-size:12px;
+  font-weight:bold;
+  margin-top:7px;
+}
+
+.page{
+  display:block;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.hero{
+  padding:28px;
+  border-radius:20px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+  margin-bottom:18px;
+}
+
+.hero h2{
+  margin:8px 0;
+  font-size:30px;
+}
+
+.hero p{
+  color:var(--muted);
+  line-height:1.65;
+  margin:0;
+}
+
+.badge{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:999px;
+  background:#edf2ff;
+  color:#3154bd;
+  font-size:11px;
+  font-weight:bold;
+}
+
+body.dark .badge{
+  background:#29375f;
+  color:#b6c5ff;
+}
+
+.card,
+.lesson,
+.quiz-card,
+.flash-card,
+.achievement,
+.stat{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:17px;
+  padding:20px;
+  box-shadow:var(--shadow);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+}
+
+.card{
+  margin-bottom:0;
+}
+
+.card .emoji{
+  font-size:38px;
+}
+
+.card h3{
+  margin:10px 0 7px;
+}
+
+.card p,
+.lesson p,
+.lesson li{
+  color:var(--muted);
+  line-height:1.7;
+}
+
+.lesson{
+  margin-bottom:16px;
+}
+
+.lesson h2,
+.lesson h3{
+  margin-top:0;
+}
+
+.primary{
+  border:0;
+  color:white;
+  background:var(--primary);
+  padding:10px 15px;
+  border-radius:9px;
+  font-weight:bold;
+}
+
+.primary:hover{
+  background:var(--primary2);
+}
+
+.secondary{
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:var(--text);
+  padding:10px 15px;
+  border-radius:9px;
+}
+
+.fact{
+  margin:15px 0;
+  padding:14px;
+  border-left:4px solid var(--primary);
+  background:#f0f4ff;
+  border-radius:8px;
+}
+
+body.dark .fact{
+  background:#202b49;
+}
+
+.warning{
+  border-left-color:var(--orange);
+}
+
+.danger{
+  border-left-color:var(--red);
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.stat{
+  text-align:center;
+}
+
+.stat-number{
+  color:var(--primary);
+  font-size:27px;
+  font-weight:900;
+}
+
+.stat-label{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:5px;
+}
+
+.level-box{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  margin-top:18px;
+}
+
+.level-circle{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--purple));
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  font-weight:900;
+}
+
+.level-info{
+  flex:1;
+}
+
+.level-info h3{
+  margin:0;
+}
+
+.level-track{
+  height:11px;
+  background:#dfe4ed;
+  border-radius:99px;
+  overflow:hidden;
+  margin-top:8px;
+}
+
+.level-fill{
+  width:0;
+  height:100%;
+  background:linear-gradient(90deg,var(--primary),var(--purple));
+}
+
+.timeline{
+  border-left:3px solid #b9c6ef;
+  padding-left:20px;
+  margin-left:8px;
+}
+
+.timeline-item{
+  position:relative;
+  margin-bottom:16px;
+  padding:18px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:15px;
+  box-shadow:var(--shadow);
+}
+
+.timeline-item:before{
+  content:"";
+  position:absolute;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:var(--primary);
+  left:-28px;
+  top:23px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:11px;
+  border-bottom:1px solid var(--border);
+  text-align:left;
+}
+
+th{
+  color:var(--primary);
+}
+
+.map-controls{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-bottom:15px;
+}
+
+.year{
+  padding:9px 13px;
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:var(--text);
+  border-radius:9px;
+}
+
+.year.active{
+  background:var(--primary);
+  color:white;
+  border-color:var(--primary);
+}
+
+.map-container{
+  overflow:auto;
+  background:#c7e4ef;
+  border-radius:15px;
+  padding:14px;
+}
+
+.map{
+  min-width:780px;
+  height:400px;
+  position:relative;
+  background:#b9dce7;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.land{
+  position:absolute;
+  left:4%;
+  top:9%;
+  width:88%;
+  height:80%;
+  background:#ced8bb;
+  border:1px solid #9ba98a;
+  border-radius:48% 53% 44% 51%;
+}
+
+.country{
+  position:absolute;
+  padding:7px 4px;
+  border-radius:7px;
+  text-align:center;
+  font-size:11px;
+  font-weight:bold;
+  border:2px solid #755d43;
+  transition:.3s;
+}
+
+.axis{
+  background:#d99b9b;
+}
+
+.allied{
+  background:#9ebbdc;
+}
+
+.soviet{
+  background:#c89a9a;
+}
+
+.neutral{
+  background:#d2d2d2;
+}
+
+.occupied{
+  background:#e3c17e;
+}
+
+.legend{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-top:12px;
+  font-size:12px;
+  color:#394757;
+}
+
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+
+.legend-square{
+  width:14px;
+  height:14px;
+  border:1px solid #666;
+  border-radius:3px;
+}
+
+.flash-card{
+  min-height:230px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  margin-bottom:15px;
+}
+
+.flash-content{
+  max-width:700px;
+}
+
+.flash-term{
+  font-size:31px;
+  font-weight:900;
+  color:var(--primary);
+}
+
+.flash-definition{
+  margin-top:20px;
+  font-size:17px;
+  line-height:1.7;
+  color:var(--muted);
+}
+
+.flash-buttons{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.question{
+  font-size:19px;
+  font-weight:bold;
+  line-height:1.5;
+}
+
+.option{
+  display:block;
+  width:100%;
+  padding:13px;
+  margin:8px 0;
+  text-align:left;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--panel);
+  color:var(--text);
+}
+
+.option:hover{
+  border-color:var(--primary);
+}
+
+.option.correct{
+  background:#e5f8ed!important;
+  border-color:#34a66a!important;
+  color:#12643c!important;
+}
+
+.option.wrong{
+  background:#fff0ef!important;
+  border-color:#d74f4b!important;
+  color:#8c2925!important;
+}
+
+body.dark .option.correct{
+  background:#173a2a!important;
+  color:#81e3ad!important;
+}
+
+body.dark .option.wrong{
+  background:#3a2023!important;
+  color:#ff9999!important;
+}
+
+.quiz-progress{
+  height:10px;
+  background:#dfe4ed;
+  border-radius:99px;
+  overflow:hidden;
+  margin:13px 0 20px;
+}
+
+.quiz-bar{
+  width:0;
+  height:100%;
+  background:linear-gradient(90deg,var(--primary),var(--purple));
+}
+
+.achievement-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+
+.achievement{
+  text-align:center;
+}
+
+.achievement.locked{
+  opacity:.42;
+  filter:grayscale(1);
+}
+
+.achievement-icon{
+  font-size:35px;
+}
+
+.achievement h3{
+  margin:7px 0;
+}
+
+.achievement p{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.search{
+  width:100%;
+  padding:13px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--panel);
+  color:var(--text);
+  outline:none;
+  margin-bottom:15px;
+}
+
+.term{
+  padding:16px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  margin-bottom:10px;
+}
+
+.term h3{
+  margin:0 0 5px;
+  color:var(--primary);
+}
+
+.term p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.country-list{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.country-btn{
+  padding:13px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  color:var(--text);
+  border-radius:10px;
+  text-align:left;
+}
+
+.country-btn:hover{
+  border-color:var(--primary);
+}
+
+footer{
+  text-align:center;
+  color:var(--muted);
+  padding:35px;
+}
+
+@media(max-width:1000px){
+
+  .layout{
+    grid-template-columns:1fr;
+  }
+
+  nav{
+    position:static;
+  }
+
+  .stats{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .achievement-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+}
+
+@media(max-width:650px){
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .country-list{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .logo h1{
+    font-size:26px;
+  }
+
+  .topbar{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+}
+</style>
+<style id="v5-subjects-css">.v5grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.v5card,.v5lesson,.v5quiz{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px;margin:14px 0;box-shadow:var(--shadow)}.v5lesson h3,.v5quiz h3{margin-top:0}.v5example{padding:12px;background:var(--bg);border-left:4px solid var(--primary);border-radius:8px;margin:12px 0}.v5opt{display:block;width:100%;text-align:left;margin:8px 0;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer}.v5opt.correct{outline:2px solid #22c55e}.v5opt.wrong{outline:2px solid #ef4444}@media(max-width:700px){.v5grid{grid-template-columns:1fr}}</style></head>
+
+<body>
+
+<header>
+
+<div class="header">
+
+<div class="topbar">
+
+<div class="logo">
+<h1>🌎 WorldWise Academy V4</h1>
+<p>History • Geography • Economics • Science • Chinese Learning</p>
+</div>
+
+<div class="actions">
+
+<button class="action" onclick="toggleDark()">
+🌙 Theme
+</button>
+
+<button class="action" onclick="resetAll()">
+↻ Reset
+</button>
+
+</div>
+
+</div>
+
+<div class="search-wrap">
+
+<input
+id="globalSearch"
+placeholder="🔎 Search lessons, subjects, countries, wars..."
+oninput="globalSearch()"
+>
+
+<div id="searchResults" class="search-results"></div>
+
+</div>
+
+</div>
+
+</header>
+
+
+<div class="layout">
+
+<nav>
+
+<div class="nav-label">
+LEARN
+</div>
+
+<button class="nav-btn active" onclick="showPage('dashboard',this)">
+🏠 Dashboard
+</button>
+
+<button class="nav-btn" onclick="showPage('history',this)">
+🏛️ Human History
+</button>
+
+<button class="nav-btn" onclick="showPage('wars',this)">
+⚔️ Wars & Conflicts
+</button>
+
+<button class="nav-btn" onclick="showPage('ww1',this)">
+🌍 World War I
+</button>
+
+<button class="nav-btn" onclick="showPage('ww2',this)">
+🗺️ World War II
+</button>
+
+<button class="nav-btn" onclick="showPage('maps',this)">
+🗺️ WWII Maps
+</button>
+
+<button class="nav-btn" onclick="showPage('coldwar',this)">
+☢️ Cold War
+</button>
+
+<button class="nav-btn" onclick="showPage('koreanwar',this)">
+🇰🇷 Korean War
+</button>
+
+<button class="nav-btn" onclick="showPage('vietnamwar',this)">
+🇻🇳 Vietnam War
+</button>
+
+<button class="nav-btn" onclick="showPage('geography',this)">
+🌎 Geography
+</button>
+
+<button class="nav-btn" onclick="showPage('countries',this)">
+🌐 Country Explorer
+</button>
+
+<button class="nav-btn" onclick="showPage('economics',this)">
+💰 Economics
+</button>
+
+<button class="nav-btn" onclick="showPage('science',this)">
+🔬 Science
+</button><button class="nav-btn" onclick="showPage('writing',this)">✍️ Writing</button><button class="nav-btn" onclick="showPage('math',this)">➗ Math</button><button class="nav-btn" onclick="showPage('social',this)">🏛️ Social Studies</button><button class="nav-btn" onclick="showPage('technology',this)">💻 Technology</button>
+
+<button class="nav-btn" onclick="showPage('chinese',this)">
+🇨🇳 Chinese Learning
+</button>
+
+
+<div class="nav-label">
+PRACTICE
+</div>
+
+<button class="nav-btn" onclick="showPage('quiz',this)">
+🧠 Quiz Center
+</button>
+
+<button class="nav-btn" onclick="showPage('flashcards',this)">
+🃏 Flashcards
+</button>
+
+
+<div class="nav-label">
+REFERENCE
+</div>
+
+<button class="nav-btn" onclick="showPage('timeline',this)">
+📅 Timeline
+</button>
+
+<button class="nav-btn" onclick="showPage('achievements',this)">
+🏆 Achievements
+</button>
+
+<button class="nav-btn" onclick="showPage('glossary',this)">
+📚 Glossary
+</button>
+
+
+<div class="mini">
+
+<div class="mini-title">
+LEVEL PROGRESS
+</div>
+
+<div class="track">
+<div id="miniFill" class="fill"></div>
+</div>
+
+<div id="miniXP" class="xp-mini">
+0 XP
+</div>
+
+</div>
+
+</nav>
+
+
+<main>
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="page">
+
+<div class="hero">
+
+<span class="badge">V4 LEARNING CENTER</span>
+
+<h2>Welcome to WorldWise Academy 🌎</h2>
+
+<p>
+Explore human history, major wars, world geography,
+modern economics and science. Complete lessons,
+answer questions, collect XP and unlock achievements.
+</p>
+
+<div class="level-box">
+
+<div id="levelCircle" class="level-circle">
+1
+</div>
+
+<div class="level-info">
+
+<h3 id="levelName">
+WorldWise Beginner
+</h3>
+
+<div class="level-track">
+<div id="levelFill" class="level-fill"></div>
+</div>
+
+<p id="levelText">
+0 / 100 XP to next level
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="stats">
+
+<div class="stat">
+<div id="xpStat" class="stat-number">0</div>
+<div class="stat-label">XP</div>
+</div>
+
+<div class="stat">
+<div id="lessonStat" class="stat-number">0</div>
+<div class="stat-label">Lessons</div>
+</div>
+
+<div class="stat">
+<div id="quizStat" class="stat-number">0</div>
+<div class="stat-label">Questions</div>
+</div>
+
+<div class="stat">
+<div id="streakStat" class="stat-number">0</div>
+<div class="stat-label">Day Streak</div>
+</div>
+
+<div class="stat">
+<div id="achievementStat" class="stat-number">0</div>
+<div class="stat-label">Achievements</div>
+</div>
+
+</div>
+
+
+<div class="grid">
+
+<div class="card">
+<div class="emoji">🏛️</div>
+<h3>Human History</h3>
+<p>Explore civilization from early humans through the modern era.</p>
+<button class="primary" onclick="go('history')">Learn History</button>
+</div>
+
+<div class="card">
+<div class="emoji">⚔️</div>
+<h3>Wars & Conflicts</h3>
+<p>Study major conflicts and the historical forces behind them.</p>
+<button class="primary" onclick="go('wars')">Explore Wars</button>
+</div>
+
+<div class="card">
+<div class="emoji">🌍</div>
+<h3>World War I</h3>
+<p>Learn about 1914–1918, alliances, trenches and the aftermath.</p>
+<button class="primary" onclick="go('ww1')">Study WWI</button>
+</div>
+
+<div class="card">
+<div class="emoji">🗺️</div>
+<h3>World War II</h3>
+<p>Study the global conflict from 1939–1945.</p>
+<button class="primary" onclick="go('ww2')">Study WWII</button>
+</div>
+
+<div class="card">
+<div class="emoji">🌎</div>
+<h3>Global Geography</h3>
+<p>Learn continents, oceans, climate, maps and human geography.</p>
+<button class="primary" onclick="go('geography')">Explore Geography</button>
+</div>
+
+<div class="card">
+<div class="emoji">💰</div>
+<h3>Modern Economics</h3>
+<p>Learn scarcity, markets, GDP, inflation and economic systems.</p>
+<button class="primary" onclick="go('economics')">Learn Economics</button>
+</div>
+
+<div class="card">
+<div class="emoji">🔬</div>
+<h3>Science</h3>
+<p>Explore biology, chemistry, physics, Earth science and astronomy.</p>
+<button class="primary" onclick="go('science')">Study Science</button>
+</div>
+
+<div class="card">
+<div class="emoji">🇨🇳</div>
+<h3>Chinese Learning</h3>
+<p>Learn Chinese with the full Chinese Learning course, including lessons, characters, words, practice, homework, quizzes and progress.</p>
+<button class="primary" onclick="go('chinese')">Learn Chinese</button>
+</div>
+
+<div class="card">
+<div class="emoji">🧠</div>
+<h3>Quiz Center</h3>
+<p>Test yourself with questions from every course.</p>
+<button class="primary" onclick="go('quiz')">Take Quiz</button>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- HISTORY -->
+
+<section id="history" class="page hidden">
+
+<div class="hero">
+<span class="badge">HUMAN HISTORY</span>
+<h2>🏛️ Human History</h2>
+<p>A chronological journey through major developments in human civilization.</p>
+</div>
+
+<div class="lesson">
+<h2>1. Early Humans</h2>
+<p>
+Human evolution occurred over a very long period. Homo sapiens
+evolved in Africa and eventually spread into many parts of the world.
+</p>
+<div class="fact">
+<b>Key idea:</b> Human history is shaped by both environmental
+conditions and decisions made by individuals and societies.
+</div>
+</div>
+
+<div class="lesson">
+<h2>2. The Agricultural Revolution</h2>
+<p>
+Beginning roughly 12,000 years ago in several regions,
+people increasingly domesticated plants and animals.
+</p>
+<ul>
+<li>Permanent settlements became more common.</li>
+<li>Food production increased in many regions.</li>
+<li>Population sizes grew.</li>
+<li>New forms of social organization developed.</li>
+</ul>
+</div>
+
+<div class="lesson">
+<h2>3. First Cities and States</h2>
+<p>
+Large settlements emerged in places such as Mesopotamia,
+the Nile Valley, the Indus Valley and ancient China.
+</p>
+<p>
+Governments, taxation, writing, specialized labor and
+long-distance trade became increasingly important.
+</p>
+</div>
+
+<div class="lesson">
+<h2>4. Ancient Civilizations</h2>
+<ul>
+<li>Mesopotamia</li>
+<li>Ancient Egypt</li>
+<li>Indus Valley civilizations</li>
+<li>Ancient China</li>
+<li>Ancient Greece</li>
+<li>Ancient Rome</li>
+<li>Mesoamerican civilizations</li>
+<li>Andean civilizations</li>
+</ul>
+</div>
+
+<div class="lesson">
+<h2>5. Medieval Worlds</h2>
+<p>
+The medieval period saw powerful kingdoms and empires,
+growing cities, trade networks and major intellectual traditions.
+</p>
+<p>
+Important developments occurred throughout Europe, Africa,
+Asia, the Islamic world and the Americas.
+</p>
+</div>
+
+<div class="lesson">
+<h2>6. Global Trade Networks</h2>
+<p>
+Silk Roads, Indian Ocean trade and trans-Saharan trade connected
+distant societies through commerce and cultural exchange.
+</p>
+</div>
+
+<div class="lesson">
+<h2>7. The Age of Exploration</h2>
+<p>
+From the late 1400s onward, European maritime voyages connected
+the Americas, Europe, Africa and Asia more directly.
+</p>
+<div class="fact warning">
+These connections produced trade and exchange, but also
+colonization, exploitation, warfare and the spread of diseases.
+</div>
+</div>
+
+<div class="lesson">
+<h2>8. Industrial Revolution</h2>
+<p>
+Industrialization transformed manufacturing, transportation,
+energy use, cities and labor.
+</p>
+<ul>
+<li>Steam engines</li>
+<li>Factories</li>
+<li>Railroads</li>
+<li>Coal</li>
+<li>Later electricity and petroleum</li>
+</ul>
+</div>
+
+<div class="lesson">
+<h2>9. Nationalism & Nation-States</h2>
+<p>
+During the 1800s, nationalism became an important political force.
+States such as Germany and Italy unified during this period.
+</p>
+</div>
+
+<div class="lesson">
+<h2>10. The 20th Century</h2>
+<p>
+The twentieth century included two world wars, revolutions,
+decolonization, the Cold War, rapid technological change
+and major social transformations.
+</p>
+</div>
+
+</section>
+
+
+<!-- WARS -->
+
+<section id="wars" class="page hidden">
+
+<div class="hero">
+<span class="badge">WARS & CONFLICTS</span>
+<h2>⚔️ Wars & Conflicts</h2>
+<p>
+Study major conflicts and the political, economic and social
+conditions surrounding them.
+</p>
+</div>
+
+<div class="lesson">
+<h2>How historians study wars</h2>
+<p>
+Historians examine causes, decisions, military strategy,
+technology, geography, civilian experiences, economic resources
+and the aftermath of conflicts.
+</p>
+</div>
+
+<div class="timeline">
+
+<div class="timeline-item">
+<b>1618–1648</b>
+<h3>Thirty Years' War</h3>
+<p>A major European conflict that combined religious divisions, dynastic rivalries and competition among European states. Fighting devastated parts of Central Europe and changed the political balance of the continent.</p>
+</div>
+
+<div class="timeline-item">
+<b>1775–1783</b>
+<h3>American Revolutionary War</h3>
+<p>The thirteen American colonies fought Great Britain for independence. The conflict developed from disputes over taxation, representation and imperial authority, and ended with British recognition of American independence in the Treaty of Paris.</p>
+</div>
+
+<div class="timeline-item">
+<b>1792–1815</b>
+<h3>French Revolutionary & Napoleonic Wars</h3>
+<p>A series of wars connected to the French Revolution and the rise of Napoleon Bonaparte. French armies fought coalitions of European powers, and the conflicts redrew borders, spread political ideas and eventually ended with Napoleon's defeat in 1815.</p>
+</div>
+
+<div class="timeline-item">
+<b>1853–1856</b>
+<h3>Crimean War</h3>
+<p>A war centered on competition around the Black Sea and the declining Ottoman Empire. Britain and France supported the Ottoman Empire against Russia, and the conflict exposed weaknesses in military organization and logistics while influencing later reforms.</p>
+</div>
+
+<div class="timeline-item">
+<b>1861–1865</b>
+<h3>American Civil War</h3>
+<p>A U.S. civil war between the Union and the Confederacy. Slavery was central to the conflict, alongside disputes over secession, federal authority and the future of the country. The Union victory preserved the United States and led to the abolition of slavery.</p>
+</div>
+
+<div class="timeline-item">
+<b>1914–1918</b>
+<h3>World War I</h3>
+<p>A global conflict triggered by the July Crisis after the assassination of Archduke Franz Ferdinand. Alliance commitments, mobilization, nationalism and imperial rivalry helped turn a regional crisis into a prolonged war involving Europe, the Middle East, Africa and other regions.</p>
+</div>
+
+<div class="timeline-item">
+<b>1939–1945</b>
+<h3>World War II</h3>
+<p>A worldwide conflict fought across multiple theaters after Germany invaded Poland in 1939 and later expanded across Europe, North Africa and Asia-Pacific. The war involved the Allied and Axis powers and resulted in enormous military and civilian losses, the Holocaust, major territorial changes and the creation of the United Nations.</p>
+</div>
+
+<div class="timeline-item">
+<b>1947–1991</b>
+<h3>Cold War</h3>
+<p>A prolonged geopolitical rivalry between the United States and Soviet Union. It involved competing political and economic systems, military alliances, nuclear deterrence, intelligence competition, technological rivalry and conflicts in which the superpowers supported opposing sides.</p>
+</div>
+
+<div class="timeline-item">
+<b>1950–1953</b>
+<h3>Korean War</h3>
+<p>A war on the Korean Peninsula that began when North Korean forces crossed the 38th parallel. The conflict became an international Cold War confrontation involving United Nations forces led largely by the United States and Chinese forces supporting North Korea. An armistice ended active fighting in 1953 without a formal peace treaty.</p>
+</div>
+
+<div class="timeline-item">
+<b>1955–1975</b>
+<h3>Vietnam War</h3>
+<p>A prolonged conflict in Vietnam involving North Vietnamese and Viet Cong forces against South Vietnam and, especially during the later stages, substantial U.S. military involvement. It was shaped by Vietnamese political struggles, decolonization and Cold War rivalry. The conflict ended with the fall of Saigon in 1975 and the reunification of Vietnam.</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- WWI -->
+
+<section id="ww1" class="page hidden">
+
+<div class="hero">
+<span class="badge">1914–1918</span>
+<h2>🌍 World War I</h2>
+<p>The First World War transformed Europe and international politics.</p>
+</div>
+
+<div class="lesson">
+<h2>Long-term causes</h2>
+<ul>
+<li>Nationalism</li>
+<li>Military competition</li>
+<li>Alliance systems</li>
+<li>Imperial competition</li>
+<li>Political tensions</li>
+</ul>
+</div>
+
+<div class="lesson">
+<h2>The assassination at Sarajevo</h2>
+<p>
+On June 28, 1914, Archduke Franz Ferdinand of Austria-Hungary
+was assassinated in Sarajevo.
+</p>
+<p>
+The resulting diplomatic crisis escalated into a wider European war.
+</p>
+</div>
+
+<div class="lesson">
+<h2>The major alliances</h2>
+
+<table>
+<tr>
+<th>Group</th>
+<th>Important members</th>
+</tr>
+<tr>
+<td>Central Powers</td>
+<td>Germany, Austria-Hungary, Ottoman Empire, Bulgaria</td>
+</tr>
+<tr>
+<td>Allied Powers</td>
+<td>France, Britain, Russia, Italy, United States and others</td>
+</tr>
+</table>
+
+</div>
+
+<div class="lesson">
+<h2>Trench warfare</h2>
+<p>
+On the Western Front, opposing armies constructed extensive
+fortifications. Machine guns, artillery and defensive positions
+made attacks extremely costly.
+</p>
+</div>
+
+<div class="lesson">
+<h2>New technology</h2>
+<ul>
+<li>Aircraft</li>
+<li>Tanks</li>
+<li>Machine guns</li>
+<li>Submarines</li>
+<li>Heavy artillery</li>
+<li>Chemical weapons</li>
+</ul>
+</div>
+
+<div class="lesson">
+<h2>The United States enters the war</h2>
+<p>
+The United States entered the war in 1917.
+American involvement added significant economic and military resources
+to the Allied side.
+</p>
+</div>
+
+<div class="lesson">
+<h2>1918 and the armistice</h2>
+<p>
+The German Spring Offensive failed to achieve its objectives.
+The Allies then launched a series of successful offensives.
+</p>
+<p>
+An armistice took effect on November 11, 1918.
+</p>
+</div>
+
+<div class="lesson">
+<h2>Aftermath</h2>
+<p>
+The war caused enormous casualties and political change.
+The Austro-Hungarian, Ottoman, German and Russian empires
+were profoundly transformed or collapsed.
+</p>
+</div>
+
+</section>
+
+
+<!-- WWII -->
+
+<section id="ww2" class="page hidden">
+
+<div class="hero">
+<span class="badge">1939–1945</span>
+<h2>🗺️ World War II</h2>
+<p>The largest global conflict of the twentieth century.</p>
+</div>
+
+<div class="lesson">
+<h2>Europe after World War I</h2>
+<p>
+The postwar period included political instability, economic crises,
+territorial disputes and competing ideologies.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🇩🇪 Nazi Germany</h2>
+<p>
+Adolf Hitler and the Nazi Party established a dictatorship
+in Germany in 1933.
+</p>
+<p>
+The Nazi regime destroyed democratic institutions,
+persecuted political opponents, promoted antisemitism and
+racist ideology, and pursued territorial expansion.
+</p>
+
+<div class="fact danger">
+<b>Historical context:</b>
+Nazi ideology was based on racism, antisemitism and dictatorship.
+The regime's policies led to persecution, war and mass murder.
+This section is educational history, not an endorsement of the ideology.
+</div>
+</div>
+
+<div class="lesson">
+<h2>Expansion before the war</h2>
+<ul>
+<li>Remilitarization of the Rhineland — 1936</li>
+<li>Anschluss with Austria — 1938</li>
+<li>Munich Agreement — 1938</li>
+<li>Occupation of the Czech lands — 1939</li>
+<li>Invasion of Poland — 1939</li>
+</ul>
+</div>
+
+<div class="lesson">
+<h2>September 1, 1939</h2>
+<p>
+Germany invaded Poland. Britain and France declared war on Germany,
+beginning World War II in Europe.
+</p>
+</div>
+
+<div class="lesson">
+<h2>1940 — Western Europe</h2>
+<p>
+Germany defeated France and occupied large parts of Western Europe.
+Britain continued the war after the evacuation from Dunkirk.
+</p>
+</div>
+
+<div class="lesson">
+<h2>1941 — The war becomes global</h2>
+<p>
+Germany invaded the Soviet Union in June 1941.
+In December, Japan attacked Pearl Harbor, bringing the United States
+directly into the war.
+</p>
+</div>
+
+<div class="lesson">
+<h2>✡️ The Holocaust</h2>
+<p>
+The Holocaust was the systematic persecution and murder of
+approximately six million Jews by Nazi Germany and its collaborators.
+</p>
+<p>
+Millions of other people were also persecuted and murdered,
+including Roma, disabled people, political opponents and Soviet
+prisoners of war.
+</p>
+</div>
+
+<div class="lesson">
+<h2>Major turning points</h2>
+<ul>
+<li>Battle of Britain</li>
+<li>Operation Barbarossa</li>
+<li>Pearl Harbor</li>
+<li>Battle of Midway</li>
+<li>Battle of Stalingrad</li>
+<li>Second Battle of El Alamein</li>
+<li>D-Day / Normandy invasion</li>
+<li>Soviet advances into Eastern Europe</li>
+</ul>
+</div>
+
+<div class="lesson">
+<h2>1944 — D-Day</h2>
+<p>
+On June 6, 1944, Allied forces landed in Normandy.
+The operation opened a major Western Allied front in Europe.
+</p>
+</div>
+
+<div class="lesson">
+<h2>1945 — End of the European war</h2>
+<p>
+Soviet forces reached Berlin while Western Allied forces advanced
+from the west. Nazi Germany surrendered in May 1945.
+</p>
+</div>
+
+<div class="lesson">
+<h2>Japan and the end of World War II</h2>
+<p>
+The war in the Pacific continued after Germany's surrender.
+Japan surrendered in August 1945, ending World War II.
+</p>
+</div>
+
+<div class="lesson">
+<h2>The aftermath</h2>
+<ul>
+<li>United Nations founded in 1945</li>
+<li>Europe devastated by war</li>
+<li>Germany divided into occupation zones</li>
+<li>United States and Soviet Union emerged as superpowers</li>
+<li>Cold War began</li>
+<li>Decolonization accelerated</li>
+</ul>
+</div>
+
+</section>
+
+
+<!-- COLD WAR -->
+<section id="coldwar" class="page hidden">
+<div class="hero"><span class="badge">1947–1991</span><h2>☢️ The Cold War</h2><p>A decades-long global rivalry between the United States and Soviet Union and their respective allies.</p></div>
+<div class="lesson"><h2>What was the Cold War?</h2><p>The Cold War was not a single continuous battlefield war between the two superpowers. Instead, it was a broad competition over political systems, military power, economics, technology and global influence. The United States generally promoted liberal democracy and a market-oriented economy, while the Soviet Union led a communist political and economic bloc.</p></div>
+<div class="lesson"><h2>Military alliances</h2><p>NATO was established in 1949, while the Soviet-led Warsaw Pact was created in 1955. Both alliances were designed around collective security and became major parts of the military division of Europe.</p></div>
+<div class="lesson"><h2>Nuclear deterrence</h2><p>Both superpowers developed large nuclear arsenals. The possibility that a nuclear exchange could cause catastrophic destruction encouraged leaders to avoid direct war while still competing intensely through diplomacy, arms development and proxy conflicts.</p></div>
+<div class="lesson"><h2>Major Cold War crises</h2><ul><li>Berlin Blockade and Airlift — 1948–1949</li><li>Korean War — 1950–1953</li><li>Cuban Missile Crisis — 1962</li><li>Vietnam War — major U.S. involvement during the 1960s and early 1970s</li><li>Soviet invasion of Afghanistan — 1979</li><li>Fall of the Berlin Wall — 1989</li><li>Dissolution of the Soviet Union — 1991</li></ul></div>
+<div class="lesson"><h2>How did it end?</h2><p>During the 1980s, reforms in the Soviet Union, political changes in Eastern Europe and growing economic pressures weakened the Soviet system. Communist governments across Eastern Europe fell in 1989, the Berlin Wall opened, and the Soviet Union dissolved in December 1991.</p></div>
+</section>
+
+<!-- KOREAN WAR -->
+<section id="koreanwar" class="page hidden">
+<div class="hero"><span class="badge">1950–1953</span><h2>🇰🇷 Korean War</h2><p>A major Cold War conflict that divided the Korean Peninsula and drew in international forces.</p></div>
+<div class="lesson"><h2>Background</h2><p>After World War II, Korea was divided near the 38th parallel into Soviet- and U.S.-occupied zones. Two separate governments emerged in 1948: North Korea and South Korea. Both claimed legitimacy over the entire peninsula.</p></div>
+<div class="lesson"><h2>The war begins</h2><p>On June 25, 1950, North Korean forces crossed the 38th parallel and advanced south. South Korean and United Nations forces, with the United States providing the largest contingent, attempted to stop the advance.</p></div>
+<div class="lesson"><h2>International intervention</h2><p>The United Nations authorized a multinational force. After UN forces pushed north, China entered the war in late 1950 on North Korea's side. Fighting then moved back and forth across the peninsula before settling near the original dividing line.</p></div>
+<div class="lesson"><h2>Armistice and legacy</h2><p>An armistice was signed on July 27, 1953. It created a Demilitarized Zone, or DMZ, near the fighting line. The armistice stopped large-scale fighting but did not create a permanent peace treaty, so the peninsula remains technically in a state of war.</p></div>
+</section>
+
+<!-- VIETNAM WAR -->
+<section id="vietnamwar" class="page hidden">
+<div class="hero"><span class="badge">1955–1975</span><h2>🇻🇳 Vietnam War</h2><p>A long conflict shaped by Vietnamese political struggles, decolonization and Cold War rivalry.</p></div>
+<div class="lesson"><h2>Historical background</h2><p>Vietnam had been part of French Indochina. After World War II, Vietnamese independence forces fought France. The French defeat at Dien Bien Phu in 1954 was followed by the Geneva Accords, which temporarily divided Vietnam near the 17th parallel.</p></div>
+<div class="lesson"><h2>North and South Vietnam</h2><p>North Vietnam, led by the communist government of Ho Chi Minh, sought reunification. South Vietnam had a separate government supported by the United States and other anti-communist partners. Political and military conflict intensified during the 1950s and 1960s.</p></div>
+<div class="lesson"><h2>U.S. involvement</h2><p>The United States gradually expanded its military role, sending large numbers of troops and conducting extensive air operations. The war also involved the Viet Cong, North Vietnamese forces and South Vietnamese forces. The conflict caused major disruption and loss of life throughout Vietnam and neighboring countries.</p></div>
+<div class="lesson"><h2>Ending of the war</h2><p>The Paris Peace Accords were signed in 1973, after which U.S. combat forces withdrew. Fighting between North and South continued. In April 1975, North Vietnamese forces captured Saigon, and Vietnam was later reunified under the communist government.</p></div>
+<div class="lesson"><h2>Historical significance</h2><p>The war had lasting effects on Vietnam, the United States and Southeast Asia. It influenced U.S. foreign policy, public opinion, military strategy and debates over government credibility, while Vietnam faced enormous reconstruction challenges.</p></div>
+</section>
+
+<!-- MAPS -->
+
+<section id="maps" class="page hidden">
+
+<div class="hero">
+<span class="badge">WWII MAP EXPLORER</span>
+<h2>🗺️ Europe 1939–1945</h2>
+<p>
+Select a year to explore a simplified educational map.
+</p>
+</div>
+
+<div class="lesson">
+
+<div class="map-controls">
+
+<button class="year active" onclick="mapYear(1939,this)">1939</button>
+<button class="year" onclick="mapYear(1940,this)">1940</button>
+<button class="year" onclick="mapYear(1941,this)">1941</button>
+<button class="year" onclick="mapYear(1942,this)">1942</button>
+<button class="year" onclick="mapYear(1943,this)">1943</button>
+<button class="year" onclick="mapYear(1944,this)">1944</button>
+<button class="year" onclick="mapYear(1945,this)">1945</button>
+
+</div>
+
+<div class="map-container">
+
+<h3 id="mapTitle" style="text-align:center;color:#20384b;">
+Europe — 1939
+</h3>
+
+<div class="map">
+
+<div class="land"></div>
+
+<div id="uk" class="country allied"
+style="left:8%;top:38%;width:13%">
+United Kingdom
+</div>
+
+<div id="france" class="country allied"
+style="left:23%;top:53%;width:13%">
+France
+</div>
+
+<div id="germany" class="country axis"
+style="left:41%;top:39%;width:16%">
+Nazi Germany
+</div>
+
+<div id="italy" class="country axis"
+style="left:45%;top:67%;width:10%">
+Italy
+</div>
+
+<div id="poland" class="country neutral"
+style="left:56%;top:43%;width:11%">
+Poland
+</div>
+
+<div id="ussr" class="country soviet"
+style="left:64%;top:25%;width:22%">
+Soviet Union
+</div>
+
+<div id="spain" class="country neutral"
+style="left:17%;top:68%;width:11%">
+Spain
+</div>
+
+<div id="balkans" class="country neutral"
+style="left:57%;top:62%;width:13%">
+Balkans
+</div>
+
+<div id="africa" class="country neutral"
+style="left:23%;top:84%;width:25%">
+North Africa
+</div>
+
+</div>
+
+<div class="legend">
+
+<div class="legend-item">
+<span class="legend-square" style="background:#d99b9b"></span>
+Axis
+</div>
+
+<div class="legend-item">
+<span class="legend-square" style="background:#9ebbdc"></span>
+Allied
+</div>
+
+<div class="legend-item">
+<span class="legend-square" style="background:#c89a9a"></span>
+Soviet
+</div>
+
+<div class="legend-item">
+<span class="legend-square" style="background:#e3c17e"></span>
+Occupied / changing
+</div>
+
+<div class="legend-item">
+<span class="legend-square" style="background:#d2d2d2"></span>
+Other / simplified
+</div>
+
+</div>
+
+<p id="mapNote" class="fact">
+1939: Germany invades Poland and Britain and France declare war.
+</p>
+
+</div>
+
+</div>
+
+<div class="lesson">
+<h2>Map note</h2>
+<p>
+This is a simplified educational visualization. It does not represent
+exact borders, military fronts or every occupation zone.
+</p>
+</div>
+
+</section>
+
+
+<!-- GEOGRAPHY -->
+
+<section id="geography" class="page hidden">
+
+<div class="hero">
+<span class="badge">GLOBAL GEOGRAPHY</span>
+<h2>🌎 Global Geography</h2>
+<p>Understand Earth's physical and human geography.</p>
+</div>
+
+<div class="grid">
+
+<div class="lesson">
+<h2>🌍 Continents</h2>
+<p>
+Africa, Antarctica, Asia, Europe, North America,
+South America and Australia/Oceania.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🌊 Oceans</h2>
+<p>
+Pacific, Atlantic, Indian, Southern and Arctic Oceans.
+</p>
+</div>
+
+<div class="lesson">
+<h2>📍 Latitude</h2>
+<p>
+Measures position north or south of the Equator.
+</p>
+</div>
+
+<div class="lesson">
+<h2>📍 Longitude</h2>
+<p>
+Measures position east or west of the Prime Meridian.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🏔️ Landforms</h2>
+<p>
+Mountains, plateaus, plains, valleys and deserts
+are important physical features.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🌊 Water Systems</h2>
+<p>
+Rivers, lakes, groundwater, glaciers and oceans
+shape landscapes and human settlement.
+</p>
+</div>
+
+<div class="lesson">
+<h2>☀️ Climate</h2>
+<p>
+Climate is affected by latitude, elevation,
+ocean currents, atmospheric circulation and geography.
+</p>
+</div>
+
+<div class="lesson">
+<h2>👥 Population</h2>
+<p>
+Human geography studies population distribution,
+migration, cities, culture and economic activity.
+</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- COUNTRIES -->
+
+<section id="countries" class="page hidden">
+
+<div class="hero">
+<span class="badge">COUNTRY EXPLORER</span>
+<h2>🌐 Country Explorer</h2>
+<p>Select a country for a quick geographic and historical overview.</p>
+</div>
+
+<div id="countryGrid" class="country-list"></div>
+
+<div id="countryInfo" class="lesson hidden"></div>
+
+</section>
+
+
+<!-- ECONOMICS -->
+
+<section id="economics" class="page hidden">
+
+<div class="hero">
+<span class="badge">MODERN ECONOMICS • LIFE SKILLS</span>
+<h2>💰 Modern Economics</h2>
+<p>Understand how economies work, how money moves, and the financial concepts people encounter in everyday adult life.</p>
+</div>
+
+<div class="lesson">
+<h2>📘 What Economics Is</h2>
+<p>
+Economics is the study of how people, businesses, governments and societies make choices when resources are limited. It helps explain why prices change, why businesses compete, why governments collect taxes, why unemployment rises and falls, and how decisions in one part of an economy can affect people somewhere else. Economics is not simply about money: it also examines time, labor, natural resources, technology, trade and the choices people make about competing goals.
+</p>
+<p>
+A useful way to think about economics is to ask three questions: What resources are available? What choices are being made? What are the costs and benefits of those choices? Learning these ideas can help you understand news reports, government policies, business decisions and ordinary household decisions.
+</p>
+</div>
+
+<div class="grid">
+
+<div class="lesson">
+<h2>⚖️ Scarcity</h2>
+<p>
+Scarcity means that resources are limited compared with the many things people want or need. A household has a limited amount of income and time. A business has limited workers, equipment and materials. A government also faces limits on its available resources. Because resources are scarce, every society has to make choices about what to produce, how to produce it and who receives the resulting goods and services.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🔀 Opportunity Cost</h2>
+<p>
+Opportunity cost is the next-best alternative given up when a choice is made. If someone spends an hour studying, the opportunity cost could be the other useful activity they could have done during that hour. Understanding opportunity cost is useful because a decision can have a cost even when no money changes hands. Businesses, governments and families all use this idea when comparing different options.
+</p>
+</div>
+
+<div class="lesson">
+<h2>📦 Supply</h2>
+<p>
+Supply describes how much of a good or service producers are willing and able to sell at different prices. When producing something becomes more expensive, difficult or risky, businesses may have less incentive to supply it. Technology, wages, raw-material costs, taxes, regulations and expectations about future conditions can all influence supply. Supply is one part of the interaction that helps determine market prices.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🛒 Demand</h2>
+<p>
+Demand describes how much of a good or service consumers are willing and able to buy at different prices. Demand can change because of income, preferences, population, expectations, the prices of related products and other circumstances. A popular product may experience strong demand, while demand for another product may fall when consumers find alternatives or when their budgets become tighter.
+</p>
+</div>
+
+<div class="lesson">
+<h2>📈 GDP</h2>
+<p>
+Gross Domestic Product, or GDP, measures the market value of final goods and services produced within an economy during a period. Economists use GDP as one important indicator of economic activity and the size of an economy. GDP can rise because an economy produces more goods and services, because prices increase, or for other reasons, so it should not be treated as a complete measure of people's well-being. GDP also does not by itself show how income is distributed.
+</p>
+</div>
+
+<div class="lesson">
+<h2>💵 Inflation</h2>
+<p>
+Inflation is a sustained increase in the general price level of goods and services. When inflation occurs, a unit of currency generally buys fewer goods and services than before. Inflation can have many causes, including changes in demand, production costs and the overall supply of money and credit. Economists usually look at broad price indexes rather than a single product because individual prices can rise or fall for many different reasons.
+</p>
+</div>
+
+<div class="lesson">
+<h2>👷 Unemployment</h2>
+<p>
+Unemployment measures people who are without jobs and are actively seeking and available for work. Economists distinguish among different types of unemployment, including temporary unemployment while people change jobs, unemployment connected to changes in industries and skills, and unemployment associated with economic downturns. The unemployment rate is important, but it does not capture every aspect of the labor market or every person's experience with work.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🏦 Interest Rates</h2>
+<p>
+Interest is the cost of borrowing money or the return earned from lending or saving. Interest rates affect the cost of loans and can influence decisions by households, businesses and governments. Higher rates can make borrowing more expensive and can encourage saving, while lower rates can make borrowing less expensive. The actual effect depends on the type of loan or account, its terms, fees, inflation and other conditions.
+</p>
+</div>
+
+</div>
+
+<div class="lesson">
+<h2>🏛️ Economic Systems</h2>
+<p>
+Economic systems describe how societies organize production, ownership and decision-making. Market economies rely heavily on voluntary exchange and price signals. Command economies place more production and allocation decisions under centralized authority. Mixed economies combine market activity with government programs, laws and regulation. In practice, countries use different combinations of these approaches, and their systems can change over time.
+</p>
+<ul>
+<li><b>Market economies:</b> prices and production are influenced substantially by buyers and sellers.</li>
+<li><b>Command economies:</b> centralized authorities make major decisions about production and allocation.</li>
+<li><b>Mixed economies:</b> markets operate alongside government services, taxation and regulation.</li>
+</ul>
+</div>
+
+<div class="lesson">
+<h2>👔 Jobs, Wages & Paychecks</h2>
+<p>
+For many adults, employment is the main source of income. A job offer may list a gross wage or salary, but the amount that reaches a worker's bank account can be lower because of taxes and other deductions. Benefits such as health coverage, paid time off or retirement contributions can also affect the overall value of a job. When comparing employment, it is useful to understand the difference between gross pay, take-home pay, hourly pay, salary, overtime rules and employer-provided benefits.
+</p>
+<p>
+Labor markets are influenced by workers' skills, employer demand, productivity, education, location, working conditions and broader economic conditions. Wages can differ between occupations and regions, and they can change as demand for particular skills changes.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🧾 Taxes</h2>
+<p>
+Taxes are payments collected by governments to help fund public services and programs. Common examples include income taxes, sales taxes and property taxes, although the exact tax system depends on the country and jurisdiction. A paycheck may have taxes withheld before the worker receives it. Some taxes are paid directly by individuals, while others are collected by businesses and passed to the government.
+</p>
+<p>
+A basic adult financial skill is learning to read important tax documents, keep records, understand which taxes apply to a situation, and meet filing or payment deadlines. Tax rules can be complicated and change over time, so people should use current official information or qualified professional help when they need specific tax guidance.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🧮 Budgeting & Cash Flow</h2>
+<p>
+A budget is a plan for how income will be used. A simple budget separates money coming in from regular and irregular expenses. Essential expenses can include housing, food, utilities, transportation and required payments, while other spending may be optional. Tracking actual spending can reveal patterns that are difficult to notice when expenses are considered one purchase at a time.
+</p>
+<p>
+Cash flow matters because the timing of income and bills can be important even when total income over a month seems sufficient. A person may need to plan for annual or irregular expenses rather than treating them as surprises. The goal of budgeting is to understand choices and tradeoffs, not to make every person's spending look the same.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🏦 Banking</h2>
+<p>
+Banks and credit unions provide services such as checking accounts, savings accounts, payments and loans. Adults should understand account fees, minimum-balance requirements, transaction limits, interest rates and how to review statements. Keeping account information secure is also important: strong passwords, multi-factor authentication and careful handling of unexpected messages can reduce the risk of account takeover.
+</p>
+</div>
+
+<div class="lesson">
+<h2>💳 Credit & Credit Scores</h2>
+<p>
+Credit allows someone to borrow money or obtain goods and services with an agreement to pay later. A credit card is not free money: purchases create an obligation to repay according to the account terms, and interest may apply when a balance is carried. Loans can also include interest, fees and other costs.
+</p>
+<p>
+Credit reports contain information about borrowing and repayment history, while credit scores are numerical measures calculated using information in credit reports. Different scoring systems can use different methods. Adults should review important credit information, understand the terms of borrowing, and avoid taking on payments they cannot reasonably afford.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🏠 Housing & Major Purchases</h2>
+<p>
+Housing is often one of the largest expenses in an adult household. Renting may involve rent, deposits, utilities, insurance and other costs. Buying a home can involve a down payment, a mortgage, interest, taxes, insurance, maintenance and transaction costs. The advertised price of a major purchase is therefore not always the same as its total long-term cost.
+</p>
+<p>
+Before signing an important agreement, adults should read the terms carefully, understand recurring costs and know what happens if circumstances change. Contracts can create legal and financial obligations, so unclear terms should be investigated before signing.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🛡️ Insurance</h2>
+<p>
+Insurance is a way of transferring certain financial risks to an insurer in exchange for premiums. Depending on the policy, insurance can help cover specified losses involving health, vehicles, homes, renters' property or other risks. Important terms include the premium, deductible, coverage limits, exclusions and claims process.
+</p>
+<p>
+Insurance does not cover every possible event. Adults should understand what a policy actually covers rather than assuming that a policy protects against every loss. Comparing policies requires looking at both price and coverage details.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🌱 Saving & Emergency Funds</h2>
+<p>
+Saving means setting aside part of current income for future needs or goals. An emergency fund is money reserved for unexpected expenses such as repairs, urgent travel or a temporary loss of income. The appropriate amount depends on a person's circumstances, income stability and expenses. Keeping emergency savings accessible can make it easier to handle surprises without immediately relying on expensive borrowing.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🕰️ Retirement & Long-Term Planning</h2>
+<p>
+Retirement planning involves preparing for a period when a person may no longer receive regular employment income. Long-term planning can involve workplace retirement programs, individual accounts, savings and other sources of future income. The earlier money is saved, the more time there may be for growth, but outcomes depend on contributions, fees, investment performance, inflation and many other factors.
+</p>
+<p>
+A key concept is compound growth: money that remains invested or saved can potentially earn returns, and those returns can themselves contribute to future growth. Because financial products and tax rules vary, adults should learn the terms and risks of an account before using it.
+</p>
+</div>
+
+<div class="lesson">
+<h2>📊 Investing: Risk & Return</h2>
+<p>
+Investing means putting money into assets with the expectation that they may produce a return. Different assets can have different levels of risk, possible returns, fees and time horizons. Diversification means spreading money among different investments rather than relying entirely on one asset. It can reduce the effect of a poor result from one investment, although it cannot eliminate investment risk.
+</p>
+<p>
+A basic rule of financial literacy is that higher potential returns generally come with greater uncertainty or risk. Past performance does not guarantee future results. Adults should understand what they are buying, what fees apply, how easily they can access the money, and what could cause its value to fall.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🌎 Trade & Globalization</h2>
+<p>
+Countries trade because different places have different resources, skills, technologies, climates and production costs. Comparative advantage describes how specializing in activities with lower opportunity costs can create gains from trade. International trade can increase access to products and markets, while also creating adjustment costs for industries and workers affected by competition or changes in global demand.
+</p>
+<p>
+Global supply chains connect businesses across countries. A disruption in transportation, energy, raw materials or manufacturing in one region can therefore affect prices and availability somewhere else.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🏛️ Central Banks & Monetary Policy</h2>
+<p>
+Central banks are institutions responsible for important parts of a country's monetary and financial system. Depending on the country, a central bank may influence short-term interest rates, provide banking-system services and work toward goals such as price stability and sustainable economic conditions. Monetary policy can affect borrowing, saving, spending and inflation, but it does not control every part of the economy.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🏛️ Government Spending & Fiscal Policy</h2>
+<p>
+Fiscal policy refers to government decisions about taxation and spending. Governments may spend money on areas such as infrastructure, education, public safety, health programs and other services. They may also collect taxes and borrow money. During economic downturns, governments can sometimes change spending or taxes in an effort to support economic activity, while fiscal decisions can also create long-term budget pressures.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🚨 Financial Scams & Consumer Protection</h2>
+<p>
+Financial scams often use urgency, fear, promises of easy money or requests for sensitive information. Common warning signs include pressure to act immediately, unexpected requests for passwords or account codes, demands for unusual payments, and promises of guaranteed profits. Adults should verify requests independently instead of trusting the contact information provided in a suspicious message.
+</p>
+<p>
+Before sending money or signing an agreement, check who you are dealing with, read the terms, and be cautious when someone says you must keep the transaction secret. When something seems too good to be true, slowing down is often safer than acting immediately.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🧠 What Adults Should Know About Money</h2>
+<p>
+Adult financial life combines many of the concepts above. A person may receive income, pay taxes, manage a bank account, use credit, pay for housing and insurance, save for emergencies, plan for long-term goals and make major purchases. Each decision involves tradeoffs. A strong foundation in financial literacy helps people understand those tradeoffs and ask better questions.
+</p>
+<ul>
+<li>Understand the difference between <b>gross income and take-home income</b>.</li>
+<li>Know what recurring expenses and irregular expenses you have.</li>
+<li>Read the terms before agreeing to a loan, subscription, lease or other contract.</li>
+<li>Understand interest, fees, minimum payments and total repayment costs before borrowing.</li>
+<li>Keep important financial records organized and protect account credentials.</li>
+<li>Build savings for expected and unexpected expenses when possible.</li>
+<li>Understand the risks, fees and time horizon of investments before using them.</li>
+<li>Be cautious with unsolicited financial offers and promises of guaranteed returns.</li>
+<li>Use current official information when dealing with taxes, government programs or legal requirements.</li>
+</ul>
+</div>
+
+<div class="lesson">
+<h2>📚 Economics in the Real World</h2>
+<p>
+Economic concepts appear in everyday headlines: inflation affects purchasing power, interest rates affect borrowing conditions, unemployment affects the labor market, GDP provides information about economic activity, and international trade affects businesses and consumers. No single statistic tells the whole story. Good economic reasoning means looking at several pieces of evidence, asking what a measurement actually represents, and recognizing uncertainty.
+</p>
+<p>
+Economics can also help explain disagreements about public policy. Two people may agree about a goal but disagree about which policy will achieve it, who should pay for it, what unintended effects could occur, or how the benefits and costs should be distributed. Studying economics does not require agreeing with one particular political or economic viewpoint; it provides tools for evaluating claims and understanding tradeoffs.
+</p>
+</div>
+
+</section>
+
+
+<!-- SCIENCE -->
+
+<section id="science" class="page hidden">
+
+<div class="hero">
+<span class="badge">SCIENCE</span>
+<h2>🔬 Science</h2>
+<p>Explore the major branches of modern science.</p>
+</div>
+
+<div class="grid">
+
+<div class="lesson">
+<h2>🧬 Biology</h2>
+<p>
+The study of living organisms, cells, genetics,
+evolution and ecosystems.
+</p>
+</div>
+
+<div class="lesson">
+<h2>⚛️ Chemistry</h2>
+<p>
+The study of matter, atoms, molecules and chemical reactions.
+</p>
+</div>
+
+<div class="lesson">
+<h2>⚙️ Physics</h2>
+<p>
+The study of matter, energy, forces, motion, space and time.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🌋 Earth Science</h2>
+<p>
+The study of Earth's rocks, atmosphere, oceans and processes.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🌌 Astronomy</h2>
+<p>
+The study of stars, planets, galaxies and the universe.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🧪 Scientific Method</h2>
+<p>
+Science uses observation, questions, hypotheses,
+evidence, analysis and communication.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🧬 DNA</h2>
+<p>
+DNA stores genetic information in living organisms.
+</p>
+</div>
+
+<div class="lesson">
+<h2>🌱 Ecosystems</h2>
+<p>
+Ecosystems contain interacting organisms and their physical environment.
+</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- QUIZ -->
+
+<section id="quiz" class="page hidden">
+
+<div class="hero">
+<span class="badge">QUIZ CENTER</span>
+<h2>🧠 Knowledge Challenge</h2>
+<p>Answer questions from every WorldWise subject.</p>
+</div>
+
+<div class="quiz-card">
+
+<div id="quizScore">
+Score: 0 / 0
+</div>
+
+<div class="quiz-progress">
+<div id="quizBar" class="quiz-bar"></div>
+</div>
+
+<div id="quizBox"></div>
+
+<button class="secondary" onclick="startQuiz()">
+↻ Restart Quiz
+</button>
+
+</div>
+
+</section>
+
+
+<!-- FLASHCARDS -->
+
+<section id="flashcards" class="page hidden">
+
+<div class="hero">
+<span class="badge">FLASHCARDS</span>
+<h2>🃏 Study Flashcards</h2>
+<p>Flip through important terms and concepts.</p>
+</div>
+
+<div class="flash-card" onclick="flipCard()">
+
+<div class="flash-content">
+
+<div id="flashTerm" class="flash-term">
+Loading...
+</div>
+
+<div id="flashDefinition" class="flash-definition hidden">
+</div>
+
+</div>
+
+</div>
+
+<div class="flash-buttons">
+
+<button class="primary" onclick="flipCard()">
+🔄 Flip
+</button>
+
+<button class="secondary" onclick="nextFlash()">
+➡️ Next
+</button>
+
+</div>
+
+</section>
+
+
+<!-- TIMELINE -->
+
+<section id="timeline" class="page hidden">
+
+<div class="hero">
+<span class="badge">MASTER TIMELINE</span>
+<h2>📅 World History Timeline</h2>
+<p>Important events from ancient history to the modern world.</p>
+</div>
+
+<div class="timeline">
+
+<div class="timeline-item">
+<b>c. 3000 BCE</b>
+<h3>Early Urban Civilizations</h3>
+<p>Large cities and states developed in several regions.</p>
+</div>
+
+<div class="timeline-item">
+<b>c. 2500 BCE</b>
+<h3>Great Pyramid of Giza</h3>
+<p>A major monument of ancient Egypt.</p>
+</div>
+
+<div class="timeline-item">
+<b>776 BCE</b>
+<h3>Traditional date of first ancient Olympic Games</h3>
+<p>The Olympic tradition became an important feature of ancient Greek culture.</p>
+</div>
+
+<div class="timeline-item">
+<b>27 BCE</b>
+<h3>Roman Empire</h3>
+<p>Augustus became the first Roman emperor.</p>
+</div>
+
+<div class="timeline-item">
+<b>622 CE</b>
+<h3>Hijra</h3>
+<p>Muhammad's migration from Mecca to Medina became a foundational event in Islamic history.</p>
+</div>
+
+<div class="timeline-item">
+<b>1492</b>
+<h3>Columbus reaches the Americas</h3>
+<p>A major event in the history of Atlantic connections and European expansion.</p>
+</div>
+
+<div class="timeline-item">
+<b>1776</b>
+<h3>United States Declaration of Independence</h3>
+<p>The thirteen colonies declared independence from Britain.</p>
+</div>
+
+<div class="timeline-item">
+<b>1789</b>
+<h3>French Revolution</h3>
+<p>A major political and social transformation in France.</p>
+</div>
+
+<div class="timeline-item">
+<b>1760s–1800s</b>
+<h3>Industrial Revolution</h3>
+<p>Mechanized production transformed economies and societies.</p>
+</div>
+
+<div class="timeline-item">
+<b>1914</b>
+<h3>World War I begins</h3>
+<p>A European crisis expands into a global conflict.</p>
+</div>
+
+<div class="timeline-item">
+<b>1918</b>
+<h3>World War I ends</h3>
+<p>The November 11 armistice stops fighting on the Western Front.</p>
+</div>
+
+<div class="timeline-item">
+<b>1933</b>
+<h3>Nazi dictatorship established</h3>
+<p>Adolf Hitler becomes chancellor and the Nazi regime dismantles German democracy.</p>
+</div>
+
+<div class="timeline-item">
+<b>1939</b>
+<h3>World War II begins in Europe</h3>
+<p>Germany invades Poland.</p>
+</div>
+
+<div class="timeline-item">
+<b>1945</b>
+<h3>World War II ends</h3>
+<p>Germany and Japan surrender.</p>
+</div>
+
+<div class="timeline-item">
+<b>1945</b>
+<h3>United Nations founded</h3>
+<p>The UN begins its work as an international organization.</p>
+</div>
+
+<div class="timeline-item">
+<b>1969</b>
+<h3>First humans land on the Moon</h3>
+<p>Apollo 11 carries astronauts to the lunar surface.</p>
+</div>
+
+<div class="timeline-item">
+<b>1989</b>
+<h3>Berlin Wall falls</h3>
+<p>A symbolic turning point in the end of the Cold War.</p>
+</div>
+
+<div class="timeline-item">
+<b>1991</b>
+<h3>Soviet Union dissolves</h3>
+<p>The Cold War era comes to an end.</p>
+</div>
+
+</div>
+
+</section>
+
+
+
+
+<!-- CHINESE LEARNING COURSE -->
+<section id="chinese" class="page hidden">
+<div class="hero">
+<span class="badge">🇨🇳 CHINESE LEARNING</span>
+<h2>中文学习</h2>
+<p>Your full Chinese Learning course is built into WorldWise V4.</p>
+</div>
+<div style="background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);">
+<iframe title="Chinese Learning" style="display:block;width:100%;height:900px;border:0;background:white;" src="data:text/html;base64,PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9InpoLUNOIj4KPGhlYWQ+CjxtZXRhIGNoYXJzZXQ9IlVURi04Ij4KPG1ldGEgbmFtZT0idmlld3BvcnQiIGNvbnRlbnQ9IndpZHRoPWRldmljZS13aWR0aCxpbml0aWFsLXNjYWxlPTEuMCI+CjxtZXRhIG5hbWU9InRoZW1lLWNvbG9yIiBjb250ZW50PSIjZDcxOTIwIj4KPG1ldGEgbmFtZT0iYXBwbGUtbW9iaWxlLXdlYi1hcHAtY2FwYWJsZSIgY29udGVudD0ieWVzIj4KPG1ldGEgbmFtZT0iYXBwbGUtbW9iaWxlLXdlYi1hcHAtdGl0bGUiIGNvbnRlbnQ9IuS4reaWh+WtpuS5oCI+Cgo8dGl0bGU+5Lit5paH5a2m5LmgPC90aXRsZT4KCjxzdHlsZT4KKiB7CiAgYm94LXNpemluZzogYm9yZGVyLWJveDsKfQoKYm9keSB7CiAgbWFyZ2luOiAwOwogIGZvbnQtZmFtaWx5OiAtYXBwbGUtc3lzdGVtLCBCbGlua01hY1N5c3RlbUZvbnQsICJTZWdvZSBVSSIsCiAgICAgICAgICAgICAgICJQaW5nRmFuZyBTQyIsICJNaWNyb3NvZnQgWWFIZWkiLCBBcmlhbCwgc2Fucy1zZXJpZjsKICBiYWNrZ3JvdW5kOiAjZjRmNWY3OwogIGNvbG9yOiAjMjIyOwp9Cgpib2R5LmRhcmsgewogIGJhY2tncm91bmQ6ICMxMTE4Mjc7CiAgY29sb3I6IHdoaXRlOwp9CgpoZWFkZXIgewogIGhlaWdodDogNjRweDsKICBiYWNrZ3JvdW5kOiB3aGl0ZTsKICBib3JkZXItYm90dG9tOiAxcHggc29saWQgI2RkZDsKICBkaXNwbGF5OiBmbGV4OwogIGFsaWduLWl0ZW1zOiBjZW50ZXI7CiAgZ2FwOiAxMnB4OwogIHBhZGRpbmc6IDEwcHggMThweDsKICBwb3NpdGlvbjogZml4ZWQ7CiAgdG9wOiAwOwogIGxlZnQ6IDA7CiAgcmlnaHQ6IDA7CiAgei1pbmRleDogMTA7Cn0KCi5kYXJrIGhlYWRlciB7CiAgYmFja2dyb3VuZDogIzFmMjkzNzsKICBib3JkZXItY29sb3I6ICMzNzQxNTE7Cn0KCi5sb2dvIHsKICBmb250LXNpemU6IDIxcHg7CiAgZm9udC13ZWlnaHQ6IGJvbGQ7CiAgY29sb3I6ICNkNzE5MjA7CiAgd2hpdGUtc3BhY2U6IG5vd3JhcDsKfQoKLnNlYXJjaCB7CiAgZmxleDogMTsKICBkaXNwbGF5OiBmbGV4OwogIG1heC13aWR0aDogNjUwcHg7CiAgbWFyZ2luOiBhdXRvOwogIGJvcmRlcjogMnB4IHNvbGlkICNkNzE5MjA7CiAgYm9yZGVyLXJhZGl1czogMTJweDsKICBvdmVyZmxvdzogaGlkZGVuOwp9Cgouc2VhcmNoIGlucHV0IHsKICBmbGV4OiAxOwogIGJvcmRlcjogMDsKICBwYWRkaW5nOiAxMXB4OwogIG91dGxpbmU6IG5vbmU7CiAgYmFja2dyb3VuZDogdHJhbnNwYXJlbnQ7CiAgY29sb3I6IGluaGVyaXQ7Cn0KCi5zZWFyY2ggYnV0dG9uIHsKICBib3JkZXI6IDA7CiAgYmFja2dyb3VuZDogI2Q3MTkyMDsKICBjb2xvcjogd2hpdGU7CiAgcGFkZGluZzogMCAxOHB4OwogIGN1cnNvcjogcG9pbnRlcjsKfQoKYnV0dG9uIHsKICBjdXJzb3I6IHBvaW50ZXI7Cn0KCi50b3BCdXR0b24gewogIGJvcmRlcjogMDsKICBib3JkZXItcmFkaXVzOiAxMHB4OwogIHBhZGRpbmc6IDEwcHggMTNweDsKfQoKLnNpZGViYXIgewogIHBvc2l0aW9uOiBmaXhlZDsKICB0b3A6IDY0cHg7CiAgbGVmdDogMDsKICBib3R0b206IDA7CiAgd2lkdGg6IDIzNXB4OwogIGJhY2tncm91bmQ6IHdoaXRlOwogIGJvcmRlci1yaWdodDogMXB4IHNvbGlkICNkZGQ7CiAgcGFkZGluZzogMTVweDsKICBvdmVyZmxvdy15OiBhdXRvOwogIHotaW5kZXg6IDk7Cn0KCi5kYXJrIC5zaWRlYmFyIHsKICBiYWNrZ3JvdW5kOiAjMWYyOTM3OwogIGJvcmRlci1jb2xvcjogIzM3NDE1MTsKfQoKLm5hdiB7CiAgd2lkdGg6IDEwMCU7CiAgYm9yZGVyOiAwOwogIGJhY2tncm91bmQ6IHRyYW5zcGFyZW50OwogIGNvbG9yOiBpbmhlcml0OwogIHBhZGRpbmc6IDEycHg7CiAgbWFyZ2luLWJvdHRvbTogNHB4OwogIGJvcmRlci1yYWRpdXM6IDEwcHg7CiAgdGV4dC1hbGlnbjogbGVmdDsKICBmb250LXNpemU6IDE1cHg7Cn0KCi5uYXY6aG92ZXIsCi5uYXYuYWN0aXZlIHsKICBiYWNrZ3JvdW5kOiAjZmVlMmUyOwogIGNvbG9yOiAjYjkxYzFjOwogIGZvbnQtd2VpZ2h0OiBib2xkOwp9CgouZGFyayAubmF2OmhvdmVyLAouZGFyayAubmF2LmFjdGl2ZSB7CiAgYmFja2dyb3VuZDogIzNmMWQyMDsKICBjb2xvcjogI2ZlY2FjYTsKfQoKLm1vcmVNZW51IHsKICBkaXNwbGF5OiBub25lOwogIHBhZGRpbmctbGVmdDogMTBweDsKfQoKbWFpbiB7CiAgbWFyZ2luLWxlZnQ6IDIzNXB4OwogIHBhZGRpbmctdG9wOiA2NHB4Owp9CgouaGVybyB7CiAgYmFja2dyb3VuZDogI2Q3MTkyMDsKICBjb2xvcjogd2hpdGU7CiAgcGFkZGluZzogMjhweDsKfQoKLmNvbnRlbnQgewogIG1heC13aWR0aDogMTEwMHB4OwogIG1hcmdpbjogYXV0bzsKICBwYWRkaW5nOiAyMHB4Owp9CgoucGFnZSB7CiAgZGlzcGxheTogbm9uZTsKfQoKLmNhcmQgewogIGJhY2tncm91bmQ6IHdoaXRlOwogIGJvcmRlcjogMXB4IHNvbGlkICNkZGQ7CiAgYm9yZGVyLXJhZGl1czogMThweDsKICBwYWRkaW5nOiAyMHB4OwogIG1hcmdpbi1ib3R0b206IDE4cHg7Cn0KCi5kYXJrIC5jYXJkIHsKICBiYWNrZ3JvdW5kOiAjMWYyOTM3OwogIGJvcmRlci1jb2xvcjogIzM3NDE1MTsKfQoKLmhvbWUgewogIHRleHQtYWxpZ246IGNlbnRlcjsKICBwYWRkaW5nOiA1MHB4IDIwcHg7Cn0KCi5mbGFnIHsKICBmb250LXNpemU6IDY1cHg7Cn0KCi5wcmltYXJ5IHsKICBiYWNrZ3JvdW5kOiAjZDcxOTIwOwogIGNvbG9yOiB3aGl0ZTsKICBib3JkZXI6IDA7CiAgYm9yZGVyLXJhZGl1czogMTBweDsKICBwYWRkaW5nOiAxMXB4IDE2cHg7Cn0KCi5zZWNvbmRhcnkgewogIGJhY2tncm91bmQ6ICMyNTYzZWI7CiAgY29sb3I6IHdoaXRlOwogIGJvcmRlcjogMDsKICBib3JkZXItcmFkaXVzOiAxMHB4OwogIHBhZGRpbmc6IDExcHggMTZweDsKfQoKLmdyYXkgewogIGJhY2tncm91bmQ6ICNlNWU3ZWI7CiAgY29sb3I6ICMyMjI7CiAgYm9yZGVyOiAwOwogIGJvcmRlci1yYWRpdXM6IDEwcHg7CiAgcGFkZGluZzogMTFweCAxNnB4Owp9CgouZGFyayAuZ3JheSB7CiAgYmFja2dyb3VuZDogIzM3NDE1MTsKICBjb2xvcjogd2hpdGU7Cn0KCi5sZXNzb24gewogIGZvbnQtc2l6ZTogMjBweDsKICBsaW5lLWhlaWdodDogMi4wNTsKfQoKLmxlc3NvblRpdGxlIHsKICB0ZXh0LWFsaWduOiBjZW50ZXI7Cn0KCi5sZXNzb25UaXRsZSAuY24gewogIGZvbnQtc2l6ZTogMzhweDsKICBmb250LXdlaWdodDogYm9sZDsKfQoKLmxlc3NvblRpdGxlIC5lbiB7CiAgY29sb3I6ICM3Nzc7Cn0KCi5pbmZvIHsKICBkaXNwbGF5OiBub25lOwogIGJhY2tncm91bmQ6ICNmM2Y0ZjY7CiAgY29sb3I6ICM1NTU7CiAgcGFkZGluZzogOHB4OwogIGJvcmRlci1yYWRpdXM6IDhweDsKICBmb250LXNpemU6IDE1cHg7Cn0KCi5jaGFyYWN0ZXJHcmlkIHsKICBkaXNwbGF5OiBncmlkOwogIGdyaWQtdGVtcGxhdGUtY29sdW1uczogcmVwZWF0KDUsIDFmcik7CiAgZ2FwOiAxMnB4Owp9CgouY2hhcmFjdGVyIHsKICBib3JkZXI6IDJweCBzb2xpZCAjZGRkOwogIGJvcmRlci1yYWRpdXM6IDE1cHg7CiAgcGFkZGluZzogMTRweDsKICB0ZXh0LWFsaWduOiBjZW50ZXI7CiAgY3Vyc29yOiBwb2ludGVyOwogIHRyYW5zaXRpb246IC4xNXM7Cn0KCi5jaGFyYWN0ZXI6aG92ZXIgewogIHRyYW5zZm9ybTogdHJhbnNsYXRlWSgtMnB4KTsKfQoKLmNoYXJhY3Rlci5zZWxlY3RlZCB7CiAgYm9yZGVyLWNvbG9yOiAjZDcxOTIwOwogIGJhY2tncm91bmQ6ICNmZmYxZjI7Cn0KCi5kYXJrIC5jaGFyYWN0ZXIuc2VsZWN0ZWQgewogIGJhY2tncm91bmQ6ICMzZjFkMjA7Cn0KCi5jaGFyYWN0ZXIgLmhhbnppIHsKICBmb250LXNpemU6IDQ4cHg7CiAgY29sb3I6ICNkNzE5MjA7CiAgZm9udC13ZWlnaHQ6IGJvbGQ7Cn0KCi5jaGFyYWN0ZXIgLnBpbnlpbiB7CiAgY29sb3I6ICM3Nzc7Cn0KCi5zdHJva2VBcmVhIHsKICB0ZXh0LWFsaWduOiBjZW50ZXI7Cn0KCiNzdHJva2VDYW52YXMgewogIGRpc3BsYXk6IGJsb2NrOwogIHdpZHRoOiAzNDBweDsKICBoZWlnaHQ6IDM0MHB4OwogIG1heC13aWR0aDogMTAwJTsKICBtYXJnaW46IDE1cHggYXV0bzsKICBib3JkZXI6IDNweCBzb2xpZCAjZDcxOTIwOwogIGJvcmRlci1yYWRpdXM6IDE2cHg7CiAgYmFja2dyb3VuZDogd2hpdGU7Cn0KCi5jdXJyZW50Q2hhcmFjdGVyIHsKICBmb250LXNpemU6IDcwcHg7CiAgZm9udC13ZWlnaHQ6IGJvbGQ7CiAgY29sb3I6ICNkNzE5MjA7Cn0KCi53b3JkcyB7CiAgZGlzcGxheTogZ3JpZDsKICBncmlkLXRlbXBsYXRlLWNvbHVtbnM6IHJlcGVhdChhdXRvLWZpdCwgbWlubWF4KDIxMHB4LCAxZnIpKTsKICBnYXA6IDEycHg7Cn0KCi53b3JkIHsKICBib3JkZXI6IDFweCBzb2xpZCAjZGRkOwogIGJvcmRlci1yYWRpdXM6IDE0cHg7CiAgcGFkZGluZzogMTRweDsKICBjdXJzb3I6IHBvaW50ZXI7Cn0KCi53b3JkIC5tZWFuaW5nIHsKICBkaXNwbGF5OiBub25lOwogIGNvbG9yOiAjNjY2Owp9Cgoud29yZC5vcGVuIC5tZWFuaW5nIHsKICBkaXNwbGF5OiBibG9jazsKfQoKLm1pY0JveCB7CiAgbWFyZ2luLXRvcDogMjVweDsKICB0ZXh0LWFsaWduOiBjZW50ZXI7CiAgYmFja2dyb3VuZDogI2ZmZjFmMjsKICBib3JkZXItcmFkaXVzOiAxNXB4OwogIHBhZGRpbmc6IDIycHg7Cn0KCi5taWNCdXR0b24gewogIHdpZHRoOiA3MnB4OwogIGhlaWdodDogNzJweDsKICBib3JkZXItcmFkaXVzOiA1MCU7CiAgYm9yZGVyOiAwOwogIGJhY2tncm91bmQ6ICNkNzE5MjA7CiAgY29sb3I6IHdoaXRlOwogIGZvbnQtc2l6ZTogMzBweDsKfQoKLnByb2dyZXNzIHsKICBoZWlnaHQ6IDE0cHg7CiAgYmFja2dyb3VuZDogI2RkZDsKICBib3JkZXItcmFkaXVzOiAyMHB4OwogIG92ZXJmbG93OiBoaWRkZW47Cn0KCi5wcm9ncmVzc0JhciB7CiAgaGVpZ2h0OiAxMDAlOwogIHdpZHRoOiAwJTsKICBiYWNrZ3JvdW5kOiAjZDcxOTIwOwogIHRyYW5zaXRpb246IC4zczsKfQoKI2JvYXJkIHsKICB3aWR0aDogMTAwJTsKICBoZWlnaHQ6IDUwMHB4OwogIGJhY2tncm91bmQ6IHdoaXRlOwogIGRpc3BsYXk6IGJsb2NrOwogIHRvdWNoLWFjdGlvbjogbm9uZTsKfQoKLmJvYXJkV3JhcCB7CiAgYm9yZGVyOiAycHggc29saWQgI2RkZDsKICBib3JkZXItcmFkaXVzOiAxNXB4OwogIG92ZXJmbG93OiBoaWRkZW47CiAgbWFyZ2luLXRvcDogMTVweDsKfQoKLmhvbWV3b3JrIHsKICBib3JkZXI6IDFweCBzb2xpZCAjZGRkOwogIGJvcmRlci1yYWRpdXM6IDE0cHg7CiAgcGFkZGluZzogMTVweDsKICBtYXJnaW46IDEwcHggMDsKfQoKLmhvbWV3b3JrIGlucHV0LAouaG9tZXdvcmsgdGV4dGFyZWEgewogIHdpZHRoOiAxMDAlOwogIHBhZGRpbmc6IDEwcHg7CiAgYm9yZGVyOiAxcHggc29saWQgI2NjYzsKICBib3JkZXItcmFkaXVzOiA5cHg7CiAgYmFja2dyb3VuZDogdHJhbnNwYXJlbnQ7CiAgY29sb3I6IGluaGVyaXQ7Cn0KCi5jb21pbmcgewogIHRleHQtYWxpZ246IGNlbnRlcjsKICBwYWRkaW5nOiA3MHB4Owp9CgouY29taW5nSWNvbiB7CiAgZm9udC1zaXplOiA3MHB4Owp9CgoubW9iaWxlTWVudSB7CiAgZGlzcGxheTogbm9uZTsKfQoKQG1lZGlhKG1heC13aWR0aDo4MDBweCkgewoKICAubG9nbyB7CiAgICBkaXNwbGF5OiBub25lOwogIH0KCiAgLnNpZGViYXIgewogICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVYKC0xMDAlKTsKICAgIHRyYW5zaXRpb246IC4yczsKICB9CgogIC5zaWRlYmFyLm9wZW4gewogICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVYKDApOwogIH0KCiAgbWFpbiB7CiAgICBtYXJnaW4tbGVmdDogMDsKICB9CgogIC5tb2JpbGVNZW51IHsKICAgIGRpc3BsYXk6IGJsb2NrOwogICAgcG9zaXRpb246IGZpeGVkOwogICAgdG9wOiA3MnB4OwogICAgbGVmdDogMTBweDsKICAgIHotaW5kZXg6IDExOwogICAgYm9yZGVyOiAwOwogICAgYm9yZGVyLXJhZGl1czogMTBweDsKICAgIHBhZGRpbmc6IDEwcHggMTNweDsKICAgIGJhY2tncm91bmQ6IHdoaXRlOwogIH0KCiAgLmhlcm8gewogICAgcGFkZGluZy1sZWZ0OiA2NXB4OwogIH0KCiAgLmNoYXJhY3RlckdyaWQgewogICAgZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOiByZXBlYXQoMywgMWZyKTsKICB9Cn0KCkBtZWRpYShtYXgtd2lkdGg6NTAwcHgpIHsKCiAgLmNoYXJhY3RlckdyaWQgewogICAgZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOiByZXBlYXQoMiwgMWZyKTsKICB9CgogIC5jb250ZW50IHsKICAgIHBhZGRpbmc6IDEycHg7CiAgfQoKICAubGVzc29uIHsKICAgIGZvbnQtc2l6ZTogMThweDsKICB9Cn0KPC9zdHlsZT4KPC9oZWFkPgoKPGJvZHk+Cgo8aGVhZGVyPgoKICA8ZGl2IGNsYXNzPSJsb2dvIj4KICAgIPCfh6jwn4ezIOS4reaWh+WtpuS5oAogIDwvZGl2PgoKICA8ZGl2IGNsYXNzPSJzZWFyY2giPgogICAgPGlucHV0CiAgICAgIGlkPSJzZWFyY2hJbnB1dCIKICAgICAgcGxhY2Vob2xkZXI9IuaQnOe0ouS4reaWh+OAgeaLvOmfs+aIluiLseaWhy4uLiIKICAgICAgb25rZXlkb3duPSJpZihldmVudC5rZXk9PT0nRW50ZXInKSBzZWFyY2goKSIKICAgID4KCiAgICA8YnV0dG9uIG9uY2xpY2s9InNlYXJjaCgpIj7wn5SOPC9idXR0b24+CiAgPC9kaXY+CgogIDxidXR0b24KICAgIGNsYXNzPSJ0b3BCdXR0b24iCiAgICBvbmNsaWNrPSJ0b2dnbGVEYXJrKCkiPgogICAg8J+MmQogIDwvYnV0dG9uPgoKPC9oZWFkZXI+Cgo8YnV0dG9uCiAgY2xhc3M9Im1vYmlsZU1lbnUiCiAgb25jbGljaz0idG9nZ2xlU2lkZWJhcigpIj4KICDimLAKPC9idXR0b24+Cgo8YXNpZGUgY2xhc3M9InNpZGViYXIiIGlkPSJzaWRlYmFyIj4KCiAgPGgyPuS4reaWh+WtpuS5oDwvaDI+CgogIDxidXR0b24gY2xhc3M9Im5hdiBhY3RpdmUiCiAgICBvbmNsaWNrPSJvcGVuUGFnZSgnaG9tZScsdGhpcykiPgogICAg8J+PoCDpppbpobUKICA8L2J1dHRvbj4KCiAgPGJ1dHRvbiBjbGFzcz0ibmF2IgogICAgb25jbGljaz0ib3BlblBhZ2UoJ2xlc3NvbicsdGhpcykiPgogICAg8J+TliDor77mlocKICA8L2J1dHRvbj4KCiAgPGJ1dHRvbiBjbGFzcz0ibmF2IgogICAgb25jbGljaz0ib3BlblBhZ2UoJ2NoYXJhY3RlcnMnLHRoaXMpIj4KICAgIPCflKQg55Sf5a2XCiAgPC9idXR0b24+CgogIDxidXR0b24gY2xhc3M9Im5hdiIKICAgIG9uY2xpY2s9Im9wZW5QYWdlKCd3b3JkcycsdGhpcykiPgogICAg8J+TmiDor43or60KICA8L2J1dHRvbj4KCiAgPGJ1dHRvbiBjbGFzcz0ibmF2IgogICAgb25jbGljaz0ib3BlblBhZ2UoJ3ByYWN0aWNlJyx0aGlzKSI+CiAgICDinI/vuI8g57uD5LmgCiAgPC9idXR0b24+CgogIDxidXR0b24gY2xhc3M9Im5hdiIKICAgIG9uY2xpY2s9Im9wZW5QYWdlKCdwcm9ncmVzcycsdGhpcykiPgogICAg8J+TiiDlrabkuaDov5vluqYKICA8L2J1dHRvbj4KCiAgPGJ1dHRvbiBjbGFzcz0ibmF2IgogICAgb25jbGljaz0ib3BlblBhZ2UoJ3NlYXJjaFBhZ2UnLHRoaXMpIj4KICAgIPCflI4g5pCc57SiCiAgPC9idXR0b24+CgogIDxidXR0b24gY2xhc3M9Im5hdiIKICAgIG9uY2xpY2s9InRvZ2dsZU1vcmUoKSI+CiAgICDii68g5pu05aSaCiAgPC9idXR0b24+CgogIDxkaXYKICAgIGNsYXNzPSJtb3JlTWVudSIKICAgIGlkPSJtb3JlTWVudSI+CgogICAgPGJ1dHRvbiBjbGFzcz0ibmF2IgogICAgICBvbmNsaWNrPSJvcGVuUGFnZSgnYm9hcmQnLHRoaXMpIj4KICAgICAg8J+Wiu+4jyDoh6rnlLHnlLvmnb8KICAgIDwvYnV0dG9uPgoKICAgIDxidXR0b24gY2xhc3M9Im5hdiIKICAgICAgb25jbGljaz0ib3BlblBhZ2UoJ2hvbWV3b3JrJyx0aGlzKSI+CiAgICAgIPCfk50g5L2c5LiaCiAgICA8L2J1dHRvbj4KCiAgICA8YnV0dG9uIGNsYXNzPSJuYXYiCiAgICAgIG9uY2xpY2s9Im9wZW5QYWdlKCdxdWl6emVzJyx0aGlzKSI+CiAgICAgIPCfp6Ag5rWL6aqMCiAgICA8L2J1dHRvbj4KCiAgICA8YnV0dG9uIGNsYXNzPSJuYXYiCiAgICAgIG9uY2xpY2s9Im9wZW5QYWdlKCdwZGYnLHRoaXMpIj4KICAgICAg8J+ThCBQREYKICAgIDwvYnV0dG9uPgoKICA8L2Rpdj4KCjwvYXNpZGU+Cgo8bWFpbj4KCjxkaXYgY2xhc3M9Imhlcm8iPgoKICA8aDE+5Lit5paH5a2m5LmgPC9oMT4KCiAgPHA+CiAgICBDaGluZXNlIExlYXJuaW5nCiAgPC9wPgoKPC9kaXY+Cgo8ZGl2IGNsYXNzPSJjb250ZW50Ij4KCjwhLS0gSE9NRSAtLT4KCjxzZWN0aW9uCmlkPSJob21lIgpjbGFzcz0icGFnZSIKc3R5bGU9ImRpc3BsYXk6YmxvY2siPgoKPGRpdiBjbGFzcz0iY2FyZCBob21lIj4KCiAgPGRpdiBjbGFzcz0iZmxhZyI+CiAgICDwn4eo8J+HswogIDwvZGl2PgoKICA8aDI+CiAgICDmrKLov47mnaXliLDkuK3mloflrabkuaDvvIEKICA8L2gyPgoKICA8cD4KICAgIFJlYWRpbmcgwrcgVm9jYWJ1bGFyeSDCtyBXcml0aW5nIMK3IEhvbWV3b3JrCiAgPC9wPgoKICA8YnV0dG9uCiAgICBjbGFzcz0icHJpbWFyeSIKICAgIG9uY2xpY2s9Im9wZW5QYWdlKCdsZXNzb24nKSI+CiAgICDwn5OWIOivvuaWhwogIDwvYnV0dG9uPgoKICA8YnV0dG9uCiAgICBjbGFzcz0ic2Vjb25kYXJ5IgogICAgb25jbGljaz0ib3BlblBhZ2UoJ2NoYXJhY3RlcnMnKSI+CiAgICDwn5SkIOeUn+WtlwogIDwvYnV0dG9uPgoKICA8YnV0dG9uCiAgICBjbGFzcz0iZ3JheSIKICAgIG9uY2xpY2s9Im9wZW5QYWdlKCdib2FyZCcpIj4KICAgIPCflorvuI8g55S75p2/CiAgPC9idXR0b24+Cgo8L2Rpdj4KCjwvc2VjdGlvbj4KCgo8IS0tIExFU1NPTiAtLT4KCjxzZWN0aW9uCmlkPSJsZXNzb24iCmNsYXNzPSJwYWdlIj4KCjxkaXYgY2xhc3M9ImNhcmQiPgoKPGRpdiBjbGFzcz0ibGVzc29uVGl0bGUiPgoKPGRpdiBjbGFzcz0iY24iPgox44CA5Lmw5paH5YW3CjwvZGl2PgoKPGRpdiBjbGFzcz0iZW4iPgpCdXkgU3RhdGlvbmVyeQo8L2Rpdj4KCjwvZGl2PgoKPGJyPgoKPGJ1dHRvbgpjbGFzcz0ic2Vjb25kYXJ5IgpvbmNsaWNrPSJyZWFkTGVzc29uKCkiPgrwn5SKIOWQrOivvuaWhwo8L2J1dHRvbj4KCjxidXR0b24KY2xhc3M9ImdyYXkiCm9uY2xpY2s9InRvZ2dsZUluZm8oJ3BpbnlpbkluZm8nKSI+CvCfkYHvuI8g5ou86Z+zCjwvYnV0dG9uPgoKPGJ1dHRvbgpjbGFzcz0iZ3JheSIKb25jbGljaz0idG9nZ2xlSW5mbygnZW5nbGlzaEluZm8nKSI+CvCfh7rwn4e4IEVuZ2xpc2gKPC9idXR0b24+Cgo8aHI+Cgo8ZGl2IGNsYXNzPSJsZXNzb24iPgoKPHA+CuW/q+W8gOWtpuS6hu+8jOWJjeWkqeaIkeWSjOWmiOWmiOWOu+i2heW4guS5sOaWh+WFt+OAggo8L3A+Cgo8ZGl2CmlkPSJwaW55aW5JbmZvIgpjbGFzcz0iaW5mbyI+CgpLdcOgaSBrxIFpeHXDqSBsZSwgcWnDoW50acSBbiB3x5IgaMOpIG3EgW1hIHHDuSBjaMSBb3Now6wgbceOaSB3w6luasO5LgoKPC9kaXY+Cgo8ZGl2CmlkPSJlbmdsaXNoSW5mbyIKY2xhc3M9ImluZm8iPgoKU2Nob29sIGlzIGFib3V0IHRvIHN0YXJ0LiBUaGUgZGF5IGJlZm9yZSB5ZXN0ZXJkYXksIG15IG1vbSBhbmQgSSB3ZW50IHRvIHRoZSBzdXBlcm1hcmtldCB0byBidXkgc3RhdGlvbmVyeS4KCjwvZGl2PgoKPHA+Cui2heW4gumHjOeahOaWh+WFt+WPr+WkmuWVpu+8jOacieWQhOenjeWQhOagt+eahOeslO+8jOWQhOenjeminOiJsueahOe7g+S5oOacrO+8jOi/mOacieiuuOWkmua8guS6rueahOWwuuWtkOOAgeWwj+WIgOWSjOS5puWMheOAggo8L3A+Cgo8cD4K5oiR5Lmw5LqG5Yeg5pSv5ZyG54+g56yU5ZKM55S756yU77yM6L+Y5Lmw5LqG5Yeg5pys57uD5Lmg5pys44CCCjwvcD4KCjxwPgrlv6vnprvlvIDml7bvvIzmiJHnnIvop4HkuIDkuKrnuqLoibLnmoTkuabljIXjgIIKPC9wPgoKPHA+CuaIkeWvueWmiOWmiOivtO+8muKAnOi/meS4quS5puWMheeahOminOiJsuWkmuWlveeci+WViu+8geWmiOWmiO+8jOe7meaIkeS5sOS4gOS4quWlveWQl++8n+KAnQo8L3A+Cgo8cD4K5aaI5aaI6K+077ya4oCc6KaB5piv5L2g5Zac5qyi77yM5bCx57uZ5L2g5Lmw5Liq5ZCn44CC4oCdCjwvcD4KCjxwPgrmiJHnnIvliLDkuabljIXkuIrmnInkuIDooYzlsI/lsI/nmoToi7HmloflrZfigJTigJRNYWRlIGluIENoaW5h44CCCjwvcD4KCjwvZGl2PgoKPGRpdiBjbGFzcz0ibWljQm94Ij4KCjxoMz4K8J+OpCDmnJfor7vnu4PkuaAKPC9oMz4KCjxidXR0b24KY2xhc3M9Im1pY0J1dHRvbiIKb25jbGljaz0ic3RhcnRNaWNyb3Bob25lKCkiPgrwn46kCjwvYnV0dG9uPgoKPHAgaWQ9Im1pY1N0YXR1cyI+ClJlYWR5Lgo8L3A+Cgo8cCBpZD0ibWljUmVzdWx0Ij48L3A+Cgo8L2Rpdj4KCjwvZGl2PgoKPC9zZWN0aW9uPgoKCjwhLS0gQ0hBUkFDVEVSUyAtLT4KCjxzZWN0aW9uCmlkPSJjaGFyYWN0ZXJzIgpjbGFzcz0icGFnZSI+Cgo8ZGl2IGNsYXNzPSJjYXJkIj4KCjxoMj4K8J+UpCDnlJ/lrZcKPC9oMj4KCjxwPgpUYXAgYSBjaGFyYWN0ZXIgdG8gcHJhY3RpY2UgaXQuCjwvcD4KCjxkaXYKaWQ9ImNoYXJhY3RlckdyaWQiCmNsYXNzPSJjaGFyYWN0ZXJHcmlkIj4KPC9kaXY+Cgo8L2Rpdj4KCgo8ZGl2IGNsYXNzPSJjYXJkIHN0cm9rZUFyZWEiPgoKPGgyPgrinI3vuI8g56yU6aG657uD5LmgCjwvaDI+Cgo8ZGl2CmlkPSJjdXJyZW50Q2hhcmFjdGVyIgpjbGFzcz0iY3VycmVudENoYXJhY3RlciI+Cui2hQo8L2Rpdj4KCjxwIGlkPSJjdXJyZW50UGlueWluIj4KY2jEgW8KPC9wPgoKPGNhbnZhcwppZD0ic3Ryb2tlQ2FudmFzIgp3aWR0aD0iNjQwIgpoZWlnaHQ9IjY0MCI+CjwvY2FudmFzPgoKPGJ1dHRvbgpjbGFzcz0ic2Vjb25kYXJ5IgpvbmNsaWNrPSJwbGF5U3Ryb2tlKCkiPgrilrbvuI8gUGxheQo8L2J1dHRvbj4KCjxidXR0b24KY2xhc3M9ImdyYXkiCm9uY2xpY2s9InJlc2V0U3Ryb2tlKCkiPgrihrsgUmVzZXQKPC9idXR0b24+Cgo8YnV0dG9uCmNsYXNzPSJwcmltYXJ5IgpvbmNsaWNrPSJtYXJrTGVhcm5lZCgpIj4K4pyFIExlYXJuZWQKPC9idXR0b24+Cgo8cCBpZD0ic3Ryb2tlU3RhdHVzIj4KUmVhZHkuCjwvcD4KCjwvZGl2PgoKPC9zZWN0aW9uPgoKCjwhLS0gV09SRFMgLS0+Cgo8c2VjdGlvbgppZD0id29yZHMiCmNsYXNzPSJwYWdlIj4KCjxkaXYgY2xhc3M9ImNhcmQiPgoKPGgyPgrwn5OaIOivjeivrQo8L2gyPgoKPGRpdgppZD0id29yZEdyaWQiCmNsYXNzPSJ3b3JkcyI+CjwvZGl2PgoKPC9kaXY+Cgo8L3NlY3Rpb24+CgoKPCEtLSBQUkFDVElDRSAtLT4KCjxzZWN0aW9uCmlkPSJwcmFjdGljZSIKY2xhc3M9InBhZ2UiPgoKPGRpdiBjbGFzcz0iY2FyZCI+Cgo8aDI+CuKcj++4jyDnu4PkuaAKPC9oMj4KCjxoMz4K4oCc5Lmm5YyF4oCdIG1lYW5zOgo8L2gzPgoKPGJ1dHRvbgpjbGFzcz0iZ3JheSIKb25jbGljaz0iYW5zd2VyKGZhbHNlKSI+CkJvb2sKPC9idXR0b24+Cgo8YnV0dG9uCmNsYXNzPSJncmF5IgpvbmNsaWNrPSJhbnN3ZXIodHJ1ZSkiPgpTY2hvb2xiYWcKPC9idXR0b24+Cgo8YnV0dG9uCmNsYXNzPSJncmF5IgpvbmNsaWNrPSJhbnN3ZXIoZmFsc2UpIj4KU3RvcmUKPC9idXR0b24+Cgo8cCBpZD0iYW5zd2VyUmVzdWx0Ij48L3A+Cgo8L2Rpdj4KCjwvc2VjdGlvbj4KCgo8IS0tIFBST0dSRVNTIC0tPgoKPHNlY3Rpb24KaWQ9InByb2dyZXNzIgpjbGFzcz0icGFnZSI+Cgo8ZGl2IGNsYXNzPSJjYXJkIj4KCjxoMj4K8J+TiiDlrabkuaDov5vluqYKPC9oMj4KCjxoMz4KPHNwYW4gaWQ9ImxlYXJuZWRDb3VudCI+CjAKPC9zcGFuPgovCjE1IOeUn+Wtlwo8L2gzPgoKPGRpdiBjbGFzcz0icHJvZ3Jlc3MiPgoKPGRpdgppZD0icHJvZ3Jlc3NCYXIiCmNsYXNzPSJwcm9ncmVzc0JhciI+CjwvZGl2PgoKPC9kaXY+Cgo8YnI+Cgo8YnV0dG9uCmNsYXNzPSJwcmltYXJ5IgpvbmNsaWNrPSJyZXNldFByb2dyZXNzKCkiPgpSZXNldCBQcm9ncmVzcwo8L2J1dHRvbj4KCjwvZGl2PgoKPC9zZWN0aW9uPgoKCjwhLS0gU0VBUkNIIC0tPgoKPHNlY3Rpb24KaWQ9InNlYXJjaFBhZ2UiCmNsYXNzPSJwYWdlIj4KCjxkaXYgY2xhc3M9ImNhcmQiPgoKPGgyPgrwn5SOIOaQnOe0oue7k+aenAo8L2gyPgoKPGRpdiBpZD0ic2VhcmNoUmVzdWx0cyI+ClNlYXJjaCBzb21ldGhpbmcgYWJvdmUuCjwvZGl2PgoKPC9kaXY+Cgo8L3NlY3Rpb24+CgoKPCEtLSBCT0FSRCAtLT4KCjxzZWN0aW9uCmlkPSJib2FyZCIKY2xhc3M9InBhZ2UiPgoKPGRpdiBjbGFzcz0iY2FyZCI+Cgo8aDI+CvCflorvuI8g6Ieq55Sx55S75p2/CjwvaDI+Cgo8cD4KVXNlIHlvdXIgZmluZ2VyLCBtb3VzZSwgb3IgQXBwbGUgUGVuY2lsLgo8L3A+Cgo8YnV0dG9uCmNsYXNzPSJzZWNvbmRhcnkiCm9uY2xpY2s9InNldFRvb2woJ3BlbmNpbCcpIj4K4pyP77iPIFBlbmNpbAo8L2J1dHRvbj4KCjxidXR0b24KY2xhc3M9ImdyYXkiCm9uY2xpY2s9InNldFRvb2woJ2VyYXNlcicpIj4K8J+nvSBFcmFzZXIKPC9idXR0b24+Cgo8YnV0dG9uCmNsYXNzPSJncmF5IgpvbmNsaWNrPSJ1bmRvQm9hcmQoKSI+CuKGtiBVbmRvCjwvYnV0dG9uPgoKPGJ1dHRvbgpjbGFzcz0iZ3JheSIKb25jbGljaz0iY2xlYXJCb2FyZCgpIj4K8J+Xke+4jyBDbGVhcgo8L2J1dHRvbj4KCjxidXR0b24KY2xhc3M9ImdyYXkiCm9uY2xpY2s9InNhdmVCb2FyZCgpIj4K8J+SviBTYXZlCjwvYnV0dG9uPgoKPGxhYmVsPgpTaXplCjxpbnB1dAppZD0iYnJ1c2hTaXplIgp0eXBlPSJyYW5nZSIKbWluPSIxIgptYXg9IjMwIgp2YWx1ZT0iNSI+CjwvbGFiZWw+Cgo8ZGl2IGNsYXNzPSJib2FyZFdyYXAiPgoKPGNhbnZhcyBpZD0iYm9hcmRDYW52YXMiPgo8L2NhbnZhcz4KCjwvZGl2PgoKPC9kaXY+Cgo8L3NlY3Rpb24+CgoKPCEtLSBIT01FV09SSyAtLT4KCjxzZWN0aW9uCmlkPSJob21ld29yayIKY2xhc3M9InBhZ2UiPgoKPGRpdiBjbGFzcz0iY2FyZCI+Cgo8aDI+CvCfk50g5L2c5LiaCjwvaDI+Cgo8cD4KUHJhY3RpY2UgYmFzZWQgb24g5Lmw5paH5YW3Lgo8L3A+Cgo8YnV0dG9uCmNsYXNzPSJzZWNvbmRhcnkiCm9uY2xpY2s9InNhdmVIb21ld29yaygpIj4K8J+SviBTYXZlCjwvYnV0dG9uPgoKPGJ1dHRvbgpjbGFzcz0iZ3JheSIKb25jbGljaz0iY2xlYXJIb21ld29yaygpIj4K8J+Xke+4jyBDbGVhcgo8L2J1dHRvbj4KCgo8ZGl2IGNsYXNzPSJob21ld29yayI+Cgo8Yj4KMS4gVm9jYWJ1bGFyeQo8L2I+Cgo8cD4KV3JpdGUgdGhlIEVuZ2xpc2ggbWVhbmluZyBvZiDkuabljIUuCjwvcD4KCjxpbnB1dApkYXRhLWhvbWV3b3JrPSIxIj4KCjwvZGl2PgoKCjxkaXYgY2xhc3M9ImhvbWV3b3JrIj4KCjxiPgoyLiBQaW55aW4KPC9iPgoKPHA+CldyaXRlIHRoZSBwaW55aW4gZm9yIOminOiJsi4KPC9wPgoKPGlucHV0CmRhdGEtaG9tZXdvcms9IjIiPgoKPC9kaXY+CgoKPGRpdiBjbGFzcz0iaG9tZXdvcmsiPgoKPGI+CjMuIFNlbnRlbmNlCjwvYj4KCjxwPgpNYWtlIGEgc2VudGVuY2Ugd2l0aCDotoXluIIuCjwvcD4KCjx0ZXh0YXJlYQpyb3dzPSIzIgpkYXRhLWhvbWV3b3JrPSIzIj4KPC90ZXh0YXJlYT4KCjwvZGl2PgoKCjxkaXYgY2xhc3M9ImhvbWV3b3JrIj4KCjxiPgo0LiBDaGFyYWN0ZXIgUHJhY3RpY2UKPC9iPgoKPHA+ClByYWN0aWNlIHlvdXIgY2hhcmFjdGVycyBvbiB0aGUgZnJlZSBib2FyZC4KPC9wPgoKPGJ1dHRvbgpjbGFzcz0iZ3JheSIKb25jbGljaz0ib3BlblBhZ2UoJ2JvYXJkJykiPgrwn5aK77iPIE9wZW4gQm9hcmQKPC9idXR0b24+Cgo8L2Rpdj4KCjxwIGlkPSJob21ld29ya1N0YXR1cyI+PC9wPgoKPC9kaXY+CgoKPGRpdiBjbGFzcz0iY2FyZCI+Cgo8aDM+CvCfk4QgT2ZmaWNpYWwgV29ya2Jvb2sKPC9oMz4KCjxhCmNsYXNzPSJzZWNvbmRhcnkiCnRhcmdldD0iX2JsYW5rIgpocmVmPSJodHRwOi8vb2xkLmh3anl3LmNvbS9mai9qY3h6L3p3bHhjYS81LzEucGRmIj4KCuKGlyBPcGVuIFdvcmtib29rIFBERgoKPC9hPgoKPC9kaXY+Cgo8L3NlY3Rpb24+CgoKPCEtLSBRVUlaWkVTIC0tPgoKPHNlY3Rpb24KaWQ9InF1aXp6ZXMiCmNsYXNzPSJwYWdlIj4KCjxkaXYgY2xhc3M9ImNhcmQgY29taW5nIj4KCjxkaXYgY2xhc3M9ImNvbWluZ0ljb24iPgrwn6egCjwvZGl2PgoKPGgyPgrmtYvpqowgUXVpenplcwo8L2gyPgoKPHA+CkNvbWluZyBTb29uCjwvcD4KCjwvZGl2PgoKPC9zZWN0aW9uPgoKCjwhLS0gUERGIC0tPgoKPHNlY3Rpb24KaWQ9InBkZiIKY2xhc3M9InBhZ2UiPgoKPGRpdiBjbGFzcz0iY2FyZCI+Cgo8aDI+CvCfk4QgUERGCjwvaDI+Cgo8YQpjbGFzcz0ic2Vjb25kYXJ5Igp0YXJnZXQ9Il9ibGFuayIKaHJlZj0iaHR0cDovL29sZC5od2p5dy5jb20vZmovamN4ei96aG9uZ3dlbi8xLzEucGRmIj4KCuKGlyBPcGVuIFRleHRib29rIFBERgoKPC9hPgoKPC9kaXY+Cgo8L3NlY3Rpb24+Cgo8L2Rpdj4KCjwvbWFpbj4KCgo8c2NyaXB0PgoKLyogPT09PT09PT09PT09PT09PT09PT09PT09PQogICBEQVRBCj09PT09PT09PT09PT09PT09PT09PT09PT0gKi8KCmNvbnN0IGNoYXJhY3RlcnMgPSBbCgpbIui2hSIsImNoxIFvIl0sClsi5biCIiwic2jDrCJdLApbIuWQhCIsImfDqCJdLApbIuminCIsInnDoW4iXSwKWyLnu4MiLCJsacOgbiJdLApbIuiuuCIsInjHlCJdLApbIua8giIsInBpw6BvIl0sClsi5bC6IiwiY2jHkCJdLApbIuWIgCIsImTEgW8iXSwKWyLmlK8iLCJ6aMSrIl0sClsi6KGMIiwieMOtbmciXSwKWyLllYYiLCJzaMSBbmciXSwKWyLpnosiLCJ4acOpIl0sClsi5ZOBIiwicMeQbiJdLApbIuWItiIsInpow6wiXQoKXTsKCmNvbnN0IHdvcmRzID0gWwoKWyLliY3lpKkiLCJxacOhbnRpxIFuIiwidGhlIGRheSBiZWZvcmUgeWVzdGVyZGF5Il0sClsi5ZCE56eNIiwiZ8OoemjHkm5nIiwidmFyaW91cyJdLApbIuminOiJsiIsInnDoW5zw6giLCJjb2xvciJdLApbIue7g+S5oCIsImxpw6BueMOtIiwicHJhY3RpY2UiXSwKWyLorrjlpJoiLCJ4x5RkdcWNIiwibWFueSJdLApbIua8guS6riIsInBpw6BvbGlhbmciLCJiZWF1dGlmdWwiXSwKWyLlnIbnj6DnrJQiLCJ5dcOhbnpoxatix5AiLCJiYWxscG9pbnQgcGVuIl0sClsi56a75byAIiwibMOta8SBaSIsImxlYXZlIl0sClsi5Lmm5YyFIiwic2jFq2LEgW8iLCJzY2hvb2xiYWciXSwKWyLov5nkuKoiLCJ6aMOoZ2UiLCJ0aGlzIl0sClsi6KaB5pivIiwiecOgb3NoaSIsImlmIl0sClsi6Iux5paHIiwiWcSrbmd3w6luIiwiRW5nbGlzaCJdLApbIuWVhuW6lyIsInNoxIFuZ2Rpw6BuIiwic3RvcmUiXSwKWyLooaPmnI0iLCJ5xKtmdSIsImNsb3RoZXMiXSwKWyLml6XnlKjlk4EiLCJyw6x5w7JuZ3DHkG4iLCJkYWlseSBuZWNlc3NpdGllcyJdLApbIuWItumAoCIsInpow6x6w6BvIiwibWFudWZhY3R1cmUiXQoKXTsKCgovKiA9PT09PT09PT09PT09PT09PT09PT09PT09CiAgIFBBR0UgTkFWSUdBVElPTgo9PT09PT09PT09PT09PT09PT09PT09PT09ICovCgpmdW5jdGlvbiBvcGVuUGFnZShpZCwgYnV0dG9uKSB7CgogIGRvY3VtZW50CiAgICAucXVlcnlTZWxlY3RvckFsbCgiLnBhZ2UiKQogICAgLmZvckVhY2gocGFnZSA9PiB7CiAgICAgIHBhZ2Uuc3R5bGUuZGlzcGxheSA9ICJub25lIjsKICAgIH0pOwoKICBkb2N1bWVudAogICAgLmdldEVsZW1lbnRCeUlkKGlkKQogICAgLnN0eWxlLmRpc3BsYXkgPSAiYmxvY2siOwoKICBkb2N1bWVudAogICAgLnF1ZXJ5U2VsZWN0b3JBbGwoIi5uYXYiKQogICAgLmZvckVhY2gobmF2ID0+IHsKICAgICAgbmF2LmNsYXNzTGlzdC5yZW1vdmUoImFjdGl2ZSIpOwogICAgfSk7CgogIGlmIChidXR0b24pIHsKICAgIGJ1dHRvbi5jbGFzc0xpc3QuYWRkKCJhY3RpdmUiKTsKICB9CgogIGlmICh3aW5kb3cuaW5uZXJXaWR0aCA8IDgwMCkgewogICAgZG9jdW1lbnQKICAgICAgLmdldEVsZW1lbnRCeUlkKCJzaWRlYmFyIikKICAgICAgLmNsYXNzTGlzdC5yZW1vdmUoIm9wZW4iKTsKICB9Cgp9CgoKLyogPT09PT09PT09PT09PT09PT09PT09PT09PQogICBTSURFQkFSCj09PT09PT09PT09PT09PT09PT09PT09PT0gKi8KCmZ1bmN0aW9uIHRvZ2dsZVNpZGViYXIoKSB7CgogIGRvY3VtZW50CiAgICAuZ2V0RWxlbWVudEJ5SWQoInNpZGViYXIiKQogICAgLmNsYXNzTGlzdC50b2dnbGUoIm9wZW4iKTsKCn0KCmZ1bmN0aW9uIHRvZ2dsZU1vcmUoKSB7CgogIGNvbnN0IG1lbnUgPQogICAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoIm1vcmVNZW51Iik7CgogIG1lbnUuc3R5bGUuZGlzcGxheSA9CiAgICBtZW51LnN0eWxlLmRpc3BsYXkgPT09ICJibG9jayIKICAgICAgPyAibm9uZSIKICAgICAgOiAiYmxvY2siOwoKfQoKCi8qID09PT09PT09PT09PT09PT09PT09PT09PT0KICAgREFSSyBNT0RFCj09PT09PT09PT09PT09PT09PT09PT09PT0gKi8KCmZ1bmN0aW9uIHRvZ2dsZURhcmsoKSB7CgogIGRvY3VtZW50LmJvZHkuY2xhc3NMaXN0LnRvZ2dsZSgiZGFyayIpOwoKICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbSgKICAgICJkYXJrTW9kZSIsCiAgICBkb2N1bWVudC5ib2R5LmNsYXNzTGlzdC5jb250YWlucygiZGFyayIpCiAgKTsKCn0KCmlmICgKICBsb2NhbFN0b3JhZ2UuZ2V0SXRlbSgiZGFya01vZGUiKSA9PT0gInRydWUiCikgewogIGRvY3VtZW50LmJvZHkuY2xhc3NMaXN0LmFkZCgiZGFyayIpOwp9CgoKLyogPT09PT09PT09PT09PT09PT09PT09PT09PQogICBMRVNTT04KPT09PT09PT09PT09PT09PT09PT09PT09PSAqLwoKZnVuY3Rpb24gcmVhZExlc3NvbigpIHsKCiAgY29uc3QgdGV4dCA9CmDlv6vlvIDlrabkuobvvIzliY3lpKnmiJHlkozlpojlpojljrvotoXluILkubDmloflhbfjgIIK6LaF5biC6YeM55qE5paH5YW35Y+v5aSa5ZWm77yM5pyJ5ZCE56eN5ZCE5qC355qE56yU77yM5ZCE56eN6aKc6Imy55qE57uD5Lmg5pys77yM6L+Y5pyJ6K645aSa5ryC5Lqu55qE5bC65a2Q44CB5bCP5YiA5ZKM5Lmm5YyF44CCCuaIkeS5sOS6huWHoOaUr+WchuePoOeslOWSjOeUu+eslO+8jOi/mOS5sOS6huWHoOacrOe7g+S5oOacrOOAggrlv6vnprvlvIDml7bvvIzmiJHnnIvop4HkuIDkuKrnuqLoibLnmoTkuabljIXjgIIK5oiR5a+55aaI5aaI6K+077yM6L+Z5Liq5Lmm5YyF55qE6aKc6Imy5aSa5aW955yL5ZWK77yB5aaI5aaI77yM57uZ5oiR5Lmw5LiA5Liq5aW95ZCX77yfCuWmiOWmiOivtO+8jOimgeaYr+S9oOWWnOasou+8jOWwsee7meS9oOS5sOS4quWQp+OAggrmiJHnnIvliLDkuabljIXkuIrmnInkuIDooYzlsI/lsI/nmoToi7HmloflrZfjgIJgOwoKICBzcGVhayh0ZXh0KTsKCn0KCgpmdW5jdGlvbiBzcGVhayh0ZXh0KSB7CgogIGlmICghd2luZG93LnNwZWVjaFN5bnRoZXNpcykgewogICAgcmV0dXJuOwogIH0KCiAgc3BlZWNoU3ludGhlc2lzLmNhbmNlbCgpOwoKICBjb25zdCBzcGVlY2ggPQogICAgbmV3IFNwZWVjaFN5bnRoZXNpc1V0dGVyYW5jZSh0ZXh0KTsKCiAgc3BlZWNoLmxhbmcgPSAiemgtQ04iOwogIHNwZWVjaC5yYXRlID0gLjg7CgogIHNwZWVjaFN5bnRoZXNpcy5zcGVhayhzcGVlY2gpOwoKfQoKCmZ1bmN0aW9uIHRvZ2dsZUluZm8oaWQpIHsKCiAgY29uc3QgZWxlbWVudCA9CiAgICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZChpZCk7CgogIGVsZW1lbnQuc3R5bGUuZGlzcGxheSA9CiAgICBlbGVtZW50LnN0eWxlLmRpc3BsYXkgPT09ICJibG9jayIKICAgICAgPyAibm9uZSIKICAgICAgOiAiYmxvY2siOwoKfQoKCi8qID09PT09PT09PT09PT09PT09PT09PT09PT0KICAgTUlDUk9QSE9ORQo9PT09PT09PT09PT09PT09PT09PT09PT09ICovCgpmdW5jdGlvbiBzdGFydE1pY3JvcGhvbmUoKSB7CgogIGNvbnN0IFJlY29nbml0aW9uID0KICAgIHdpbmRvdy5TcGVlY2hSZWNvZ25pdGlvbiB8fAogICAgd2luZG93LndlYmtpdFNwZWVjaFJlY29nbml0aW9uOwoKICBpZiAoIVJlY29nbml0aW9uKSB7CgogICAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoIm1pY1N0YXR1cyIpCiAgICAgIC50ZXh0Q29udGVudCA9CiAgICAgICJTcGVlY2ggcmVjb2duaXRpb24gaXMgbm90IHN1cHBvcnRlZCBpbiB0aGlzIGJyb3dzZXIuIjsKCiAgICByZXR1cm47CgogIH0KCiAgY29uc3QgcmVjb2duaXRpb24gPQogICAgbmV3IFJlY29nbml0aW9uKCk7CgogIHJlY29nbml0aW9uLmxhbmcgPSAiemgtQ04iOwoKICByZWNvZ25pdGlvbi5vbnN0YXJ0ID0gZnVuY3Rpb24oKSB7CgogICAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoIm1pY1N0YXR1cyIpCiAgICAgIC50ZXh0Q29udGVudCA9CiAgICAgICLwn46kIExpc3RlbmluZy4uLiI7CgogIH07CgogIHJlY29nbml0aW9uLm9ucmVzdWx0ID0gZnVuY3Rpb24oZXZlbnQpIHsKCiAgICBjb25zdCByZXN1bHQgPQogICAgICBldmVudC5yZXN1bHRzWzBdWzBdLnRyYW5zY3JpcHQ7CgogICAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoIm1pY1Jlc3VsdCIpCiAgICAgIC50ZXh0Q29udGVudCA9CiAgICAgICLkvaDor7TnmoTmmK/vvJoiICsgcmVzdWx0OwoKICB9OwoKICByZWNvZ25pdGlvbi5vbmVuZCA9IGZ1bmN0aW9uKCkgewoKICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJtaWNTdGF0dXMiKQogICAgICAudGV4dENvbnRlbnQgPQogICAgICAiRmluaXNoZWQuIjsKCiAgfTsKCiAgcmVjb2duaXRpb24uc3RhcnQoKTsKCn0KCgovKiA9PT09PT09PT09PT09PT09PT09PT09PT09CiAgIENIQVJBQ1RFUlMKPT09PT09PT09PT09PT09PT09PT09PT09PSAqLwoKbGV0IHNlbGVjdGVkQ2hhcmFjdGVyID0gMDsKCmxldCBsZWFybmVkID0KICBKU09OLnBhcnNlKAogICAgbG9jYWxTdG9yYWdlLmdldEl0ZW0oImxlYXJuZWRDaGFyYWN0ZXJzIikgfHwgIltdIgogICk7CgoKZnVuY3Rpb24gYnVpbGRDaGFyYWN0ZXJzKCkgewoKICBjb25zdCBncmlkID0KICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJjaGFyYWN0ZXJHcmlkIik7CgogIGdyaWQuaW5uZXJIVE1MID0gIiI7CgogIGNoYXJhY3RlcnMuZm9yRWFjaCgoY2hhcmFjdGVyLGluZGV4KSA9PiB7CgogICAgY29uc3QgZGl2ID0KICAgICAgZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgiZGl2Iik7CgogICAgZGl2LmNsYXNzTmFtZSA9CiAgICAgICJjaGFyYWN0ZXIiICsKICAgICAgKGluZGV4ID09PSBzZWxlY3RlZENoYXJhY3RlcgogICAgICAgID8gIiBzZWxlY3RlZCIKICAgICAgICA6ICIiKTsKCiAgICBkaXYuaW5uZXJIVE1MID0gYAoKICAgICAgPGRpdiBjbGFzcz0iaGFuemkiPgogICAgICAgICR7Y2hhcmFjdGVyWzBdfQogICAgICA8L2Rpdj4KCiAgICAgIDxkaXYgY2xhc3M9InBpbnlpbiI+CiAgICAgICAgJHtjaGFyYWN0ZXJbMV19CiAgICAgIDwvZGl2PgoKICAgIGA7CgogICAgZGl2Lm9uY2xpY2sgPSBmdW5jdGlvbigpIHsKCiAgICAgIHNlbGVjdENoYXJhY3RlcihpbmRleCk7CgogICAgfTsKCiAgICBncmlkLmFwcGVuZENoaWxkKGRpdik7CgogIH0pOwoKfQoKCmZ1bmN0aW9uIHNlbGVjdENoYXJhY3RlcihpbmRleCkgewoKICBzZWxlY3RlZENoYXJhY3RlciA9IGluZGV4OwoKICBkb2N1bWVudAogICAgLnF1ZXJ5U2VsZWN0b3JBbGwoIi5jaGFyYWN0ZXIiKQogICAgLmZvckVhY2goKGVsZW1lbnQsaSkgPT4gewoKICAgICAgZWxlbWVudC5jbGFzc0xpc3QudG9nZ2xlKAogICAgICAgICJzZWxlY3RlZCIsCiAgICAgICAgaSA9PT0gaW5kZXgKICAgICAgKTsKCiAgICB9KTsKCiAgZG9jdW1lbnQKICAgIC5nZXRFbGVtZW50QnlJZCgiY3VycmVudENoYXJhY3RlciIpCiAgICAudGV4dENvbnRlbnQgPQogICAgY2hhcmFjdGVyc1tpbmRleF1bMF07CgogIGRvY3VtZW50CiAgICAuZ2V0RWxlbWVudEJ5SWQoImN1cnJlbnRQaW55aW4iKQogICAgLnRleHRDb250ZW50ID0KICAgIGNoYXJhY3RlcnNbaW5kZXhdWzFdOwoKICByZXNldFN0cm9rZSgpOwoKfQoKCi8qID09PT09PT09PT09PT09PT09PT09PT09PT0KICAgU1RST0tFIFBSQUNUSUNFCj09PT09PT09PT09PT09PT09PT09PT09PT0gKi8KCmNvbnN0IHN0cm9rZUNhbnZhcyA9CiAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoInN0cm9rZUNhbnZhcyIpOwoKY29uc3Qgc3Ryb2tlQ29udGV4dCA9CiAgc3Ryb2tlQ2FudmFzLmdldENvbnRleHQoIjJkIik7CgoKZnVuY3Rpb24gcmVzZXRTdHJva2UoKSB7CgogIHN0cm9rZUNvbnRleHQuY2xlYXJSZWN0KAogICAgMCwKICAgIDAsCiAgICBzdHJva2VDYW52YXMud2lkdGgsCiAgICBzdHJva2VDYW52YXMuaGVpZ2h0CiAgKTsKCiAgc3Ryb2tlQ29udGV4dC5maWxsU3R5bGUgPQogICAgIiNmZmYiOwoKICBzdHJva2VDb250ZXh0LmZpbGxSZWN0KAogICAgMCwKICAgIDAsCiAgICBzdHJva2VDYW52YXMud2lkdGgsCiAgICBzdHJva2VDYW52YXMuaGVpZ2h0CiAgKTsKCiAgZG9jdW1lbnQKICAgIC5nZXRFbGVtZW50QnlJZCgic3Ryb2tlU3RhdHVzIikKICAgIC50ZXh0Q29udGVudCA9CiAgICAiUmVhZHkuIjsKCn0KCgpmdW5jdGlvbiBwbGF5U3Ryb2tlKCkgewoKICByZXNldFN0cm9rZSgpOwoKICBjb25zdCBjaGFyYWN0ZXIgPQogICAgY2hhcmFjdGVyc1tzZWxlY3RlZENoYXJhY3Rlcl1bMF07CgogIC8qCiAgICBUaGlzIGlzIGEgdmlzdWFsIGhhbmR3cml0aW5nCiAgICBndWlkZS4gVGhlIGNoYXJhY3RlciBpdHNlbGYgaXMKICAgIGRyYXduIGdyYWR1YWxseSBzbyB0aGUgYW5pbWF0aW9uCiAgICBkb2VzIG5vdCBwcm9kdWNlIHJhbmRvbSBzaGFwZXMuCiAgKi8KCiAgY29uc3QgZm9udFNpemUgPSA0NzA7CgogIHN0cm9rZUNvbnRleHQuZm9udCA9CiAgICBgYm9sZCAke2ZvbnRTaXplfXB4ICJQaW5nRmFuZyBTQyIsCiAgICAgIk1pY3Jvc29mdCBZYUhlaSIsCiAgICAgc2Fucy1zZXJpZmA7CgogIHN0cm9rZUNvbnRleHQudGV4dEFsaWduID0KICAgICJjZW50ZXIiOwoKICBzdHJva2VDb250ZXh0LnRleHRCYXNlbGluZSA9CiAgICAibWlkZGxlIjsKCiAgc3Ryb2tlQ29udGV4dC5maWxsU3R5bGUgPQogICAgIiNkNzE5MjAiOwoKICBsZXQgcHJvZ3Jlc3MgPSAwOwoKICBkb2N1bWVudAogICAgLmdldEVsZW1lbnRCeUlkKCJzdHJva2VTdGF0dXMiKQogICAgLnRleHRDb250ZW50ID0KICAgICLinI3vuI8gRHJhd2luZy4uLiI7CgogIGZ1bmN0aW9uIGFuaW1hdGUoKSB7CgogICAgc3Ryb2tlQ29udGV4dC5jbGVhclJlY3QoCiAgICAgIDAsCiAgICAgIDAsCiAgICAgIHN0cm9rZUNhbnZhcy53aWR0aCwKICAgICAgc3Ryb2tlQ2FudmFzLmhlaWdodAogICAgKTsKCiAgICBzdHJva2VDb250ZXh0LmZpbGxTdHlsZSA9CiAgICAgICIjZmZmIjsKCiAgICBzdHJva2VDb250ZXh0LmZpbGxSZWN0KAogICAgICAwLAogICAgICAwLAogICAgICBzdHJva2VDYW52YXMud2lkdGgsCiAgICAgIHN0cm9rZUNhbnZhcy5oZWlnaHQKICAgICk7CgogICAgLyoKICAgICAgUmV2ZWFsIHRoZSBjaGFyYWN0ZXIgZnJvbQogICAgICBsZWZ0IHRvIHJpZ2h0IGFzIGEgc2ltcGxlCiAgICAgIHdyaXRpbmcgYW5pbWF0aW9uLgogICAgKi8KCiAgICBzdHJva2VDb250ZXh0LnNhdmUoKTsKCiAgICBzdHJva2VDb250ZXh0LmJlZ2luUGF0aCgpOwoKICAgIHN0cm9rZUNvbnRleHQucmVjdCgKICAgICAgMCwKICAgICAgMCwKICAgICAgc3Ryb2tlQ2FudmFzLndpZHRoICogcHJvZ3Jlc3MsCiAgICAgIHN0cm9rZUNhbnZhcy5oZWlnaHQKICAgICk7CgogICAgc3Ryb2tlQ29udGV4dC5jbGlwKCk7CgogICAgc3Ryb2tlQ29udGV4dC5maWxsU3R5bGUgPQogICAgICAiI2Q3MTkyMCI7CgogICAgc3Ryb2tlQ29udGV4dC5maWxsVGV4dCgKICAgICAgY2hhcmFjdGVyLAogICAgICBzdHJva2VDYW52YXMud2lkdGggLyAyLAogICAgICBzdHJva2VDYW52YXMuaGVpZ2h0IC8gMgogICAgKTsKCiAgICBzdHJva2VDb250ZXh0LnJlc3RvcmUoKTsKCiAgICBwcm9ncmVzcyArPSAuMDI1OwoKICAgIGlmIChwcm9ncmVzcyA8IDEpIHsKCiAgICAgIHJlcXVlc3RBbmltYXRpb25GcmFtZShhbmltYXRlKTsKCiAgICB9IGVsc2UgewoKICAgICAgZG9jdW1lbnQKICAgICAgICAuZ2V0RWxlbWVudEJ5SWQoInN0cm9rZVN0YXR1cyIpCiAgICAgICAgLnRleHRDb250ZW50ID0KICAgICAgICAi4pyFIEZpbmlzaGVkISI7CgogICAgfQoKICB9CgogIGFuaW1hdGUoKTsKCn0KCgpmdW5jdGlvbiBtYXJrTGVhcm5lZCgpIHsKCiAgY29uc3QgY2hhcmFjdGVyID0KICAgIGNoYXJhY3RlcnNbc2VsZWN0ZWRDaGFyYWN0ZXJdWzBdOwoKICBpZiAoIWxlYXJuZWQuaW5jbHVkZXMoY2hhcmFjdGVyKSkgewoKICAgIGxlYXJuZWQucHVzaChjaGFyYWN0ZXIpOwoKICAgIGxvY2FsU3RvcmFnZS5zZXRJdGVtKAogICAgICAibGVhcm5lZENoYXJhY3RlcnMiLAogICAgICBKU09OLnN0cmluZ2lmeShsZWFybmVkKQogICAgKTsKCiAgfQoKICB1cGRhdGVQcm9ncmVzcygpOwoKICBkb2N1bWVudAogICAgLmdldEVsZW1lbnRCeUlkKCJzdHJva2VTdGF0dXMiKQogICAgLnRleHRDb250ZW50ID0KICAgICLinIUgU2F2ZWQgYXMgbGVhcm5lZCEiOwoKfQoKCmZ1bmN0aW9uIHVwZGF0ZVByb2dyZXNzKCkgewoKICBjb25zdCBjb3VudCA9CiAgICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgibGVhcm5lZENvdW50Iik7CgogIGNvbnN0IGJhciA9CiAgICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgicHJvZ3Jlc3NCYXIiKTsKCiAgY291bnQudGV4dENvbnRlbnQgPQogICAgbGVhcm5lZC5sZW5ndGg7CgogIGJhci5zdHlsZS53aWR0aCA9CiAgICAobGVhcm5lZC5sZW5ndGggLyBjaGFyYWN0ZXJzLmxlbmd0aCAqIDEwMCkKICAgICsgIiUiOwoKfQoKCmZ1bmN0aW9uIHJlc2V0UHJvZ3Jlc3MoKSB7CgogIGxlYXJuZWQgPSBbXTsKCiAgbG9jYWxTdG9yYWdlLnJlbW92ZUl0ZW0oCiAgICAibGVhcm5lZENoYXJhY3RlcnMiCiAgKTsKCiAgdXBkYXRlUHJvZ3Jlc3MoKTsKCn0KCgovKiA9PT09PT09PT09PT09PT09PT09PT09PT09CiAgIFdPUkRTCj09PT09PT09PT09PT09PT09PT09PT09PT0gKi8KCmZ1bmN0aW9uIGJ1aWxkV29yZHMoKSB7CgogIGNvbnN0IGdyaWQgPQogICAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoIndvcmRHcmlkIik7CgogIGdyaWQuaW5uZXJIVE1MID0gIiI7CgogIHdvcmRzLmZvckVhY2god29yZCA9PiB7CgogICAgY29uc3QgZGl2ID0KICAgICAgZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgiZGl2Iik7CgogICAgZGl2LmNsYXNzTmFtZSA9ICJ3b3JkIjsKCiAgICBkaXYuaW5uZXJIVE1MID0gYAoKICAgICAgPGRpdiBjbGFzcz0iaGFuemkiPgogICAgICAgICR7d29yZFswXX0KICAgICAgPC9kaXY+CgogICAgICA8ZGl2PgogICAgICAgICR7d29yZFsxXX0KICAgICAgPC9kaXY+CgogICAgICA8ZGl2IGNsYXNzPSJtZWFuaW5nIj4KCiAgICAgICAgPGhyPgoKICAgICAgICAke3dvcmRbMl19CgogICAgICAgIDxicj48YnI+CgogICAgICAgIDxidXR0b24gY2xhc3M9InNlY29uZGFyeSI+CiAgICAgICAgICDwn5SKIEhlYXIKICAgICAgICA8L2J1dHRvbj4KCiAgICAgIDwvZGl2PgoKICAgIGA7CgogICAgZGl2Lm9uY2xpY2sgPSBmdW5jdGlvbigpIHsKCiAgICAgIGRpdi5jbGFzc0xpc3QudG9nZ2xlKCJvcGVuIik7CgogICAgICBjb25zdCBidXR0b24gPQogICAgICAgIGRpdi5xdWVyeVNlbGVjdG9yKCJidXR0b24iKTsKCiAgICAgIGlmIChidXR0b24pIHsKCiAgICAgICAgYnV0dG9uLm9uY2xpY2sgPQogICAgICAgICAgZnVuY3Rpb24oZXZlbnQpIHsKCiAgICAgICAgICAgIGV2ZW50LnN0b3BQcm9wYWdhdGlvbigpOwoKICAgICAgICAgICAgc3BlYWsod29yZFswXSk7CgogICAgICAgICAgfTsKCiAgICAgIH0KCiAgICB9OwoKICAgIGdyaWQuYXBwZW5kQ2hpbGQoZGl2KTsKCiAgfSk7Cgp9CgoKLyogPT09PT09PT09PT09PT09PT09PT09PT09PQogICBQUkFDVElDRQo9PT09PT09PT09PT09PT09PT09PT09PT09ICovCgpmdW5jdGlvbiBhbnN3ZXIoY29ycmVjdCkgewoKICBkb2N1bWVudAogICAgLmdldEVsZW1lbnRCeUlkKCJhbnN3ZXJSZXN1bHQiKQogICAgLnRleHRDb250ZW50ID0KICAgIGNvcnJlY3QKICAgICAgPyAi8J+OiSBDb3JyZWN0ISIKICAgICAgOiAi4p2MIFRyeSBhZ2Fpbi4iOwoKfQoKCi8qID09PT09PT09PT09PT09PT09PT09PT09PT0KICAgU0VBUkNICj09PT09PT09PT09PT09PT09PT09PT09PT0gKi8KCmZ1bmN0aW9uIHNlYXJjaCgpIHsKCiAgY29uc3QgcXVlcnkgPQogICAgZG9jdW1lbnQKICAgICAgLmdldEVsZW1lbnRCeUlkKCJzZWFyY2hJbnB1dCIpCiAgICAgIC52YWx1ZQogICAgICAudG9Mb3dlckNhc2UoKQogICAgICAudHJpbSgpOwoKICBvcGVuUGFnZSgic2VhcmNoUGFnZSIpOwoKICBjb25zdCByZXN1bHRzID0KICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJzZWFyY2hSZXN1bHRzIik7CgogIGlmICghcXVlcnkpIHsKCiAgICByZXN1bHRzLmlubmVySFRNTCA9CiAgICAgICJUeXBlIHNvbWV0aGluZyBpbiB0aGUgc2VhcmNoIGJhci4iOwoKICAgIHJldHVybjsKCiAgfQoKICBjb25zdCBjaGFyYWN0ZXJSZXN1bHRzID0KICAgIGNoYXJhY3RlcnMuZmlsdGVyKGl0ZW0gPT4KICAgICAgaXRlbS5qb2luKCIgIikKICAgICAgICAudG9Mb3dlckNhc2UoKQogICAgICAgIC5pbmNsdWRlcyhxdWVyeSkKICAgICk7CgogIGNvbnN0IHdvcmRSZXN1bHRzID0KICAgIHdvcmRzLmZpbHRlcihpdGVtID0+CiAgICAgIGl0ZW0uam9pbigiICIpCiAgICAgICAgLnRvTG93ZXJDYXNlKCkKICAgICAgICAuaW5jbHVkZXMocXVlcnkpCiAgICApOwoKICBjb25zdCBhbGxSZXN1bHRzID0KICAgIFsKICAgICAgLi4uY2hhcmFjdGVyUmVzdWx0cywKICAgICAgLi4ud29yZFJlc3VsdHMKICAgIF07CgogIGlmICghYWxsUmVzdWx0cy5sZW5ndGgpIHsKCiAgICByZXN1bHRzLmlubmVySFRNTCA9CiAgICAgICLmsqHmnInmib7liLDnu5Pmnpwg4oCUIE5vIHJlc3VsdHMuIjsKCiAgICByZXR1cm47CgogIH0KCiAgcmVzdWx0cy5pbm5lckhUTUwgPQogICAgYWxsUmVzdWx0cy5tYXAoaXRlbSA9PiBgCgogICAgICA8ZGl2IGNsYXNzPSJjYXJkIj4KCiAgICAgICAgPGRpdiBjbGFzcz0iY3VycmVudENoYXJhY3RlciI+CiAgICAgICAgICAke2l0ZW1bMF19CiAgICAgICAgPC9kaXY+CgogICAgICAgIDxwPgogICAgICAgICAgJHtpdGVtLnNsaWNlKDEpLmpvaW4oIiDCtyAiKX0KICAgICAgICA8L3A+CgogICAgICA8L2Rpdj4KCiAgICBgKS5qb2luKCIiKTsKCn0KCgovKiA9PT09PT09PT09PT09PT09PT09PT09PT09CiAgIEZSRUUgQk9BUkQKPT09PT09PT09PT09PT09PT09PT09PT09PSAqLwoKY29uc3QgYm9hcmQgPQogIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJib2FyZENhbnZhcyIpOwoKY29uc3QgYm9hcmRDb250ZXh0ID0KICBib2FyZC5nZXRDb250ZXh0KCIyZCIpOwoKbGV0IGRyYXdpbmcgPSBmYWxzZTsKCmxldCBib2FyZFRvb2wgPSAicGVuY2lsIjsKCmxldCBsYXN0UG9zaXRpb24gPSBudWxsOwoKbGV0IGJvYXJkSGlzdG9yeSA9IFtdOwoKCmZ1bmN0aW9uIHJlc2l6ZUJvYXJkKCkgewoKICBjb25zdCByZWN0ID0KICAgIGJvYXJkLmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpOwoKICBjb25zdCByYXRpbyA9CiAgICB3aW5kb3cuZGV2aWNlUGl4ZWxSYXRpbyB8fCAxOwoKICBpZiAoCiAgICBib2FyZC53aWR0aCAhPT0KICAgIE1hdGguZmxvb3IocmVjdC53aWR0aCAqIHJhdGlvKQogICkgewoKICAgIGJvYXJkLndpZHRoID0KICAgICAgTWF0aC5mbG9vcihyZWN0LndpZHRoICogcmF0aW8pOwoKICAgIGJvYXJkLmhlaWdodCA9CiAgICAgIE1hdGguZmxvb3IocmVjdC5oZWlnaHQgKiByYXRpbyk7CgogICAgYm9hcmRDb250ZXh0LmZpbGxTdHlsZSA9CiAgICAgICJ3aGl0ZSI7CgogICAgYm9hcmRDb250ZXh0LmZpbGxSZWN0KAogICAgICAwLAogICAgICAwLAogICAgICBib2FyZC53aWR0aCwKICAgICAgYm9hcmQuaGVpZ2h0CiAgICApOwoKICB9Cgp9CgoKZnVuY3Rpb24gYm9hcmRQb3NpdGlvbihldmVudCkgewoKICBjb25zdCByZWN0ID0KICAgIGJvYXJkLmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpOwoKICByZXR1cm4gewoKICAgIHg6CiAgICAgIChldmVudC5jbGllbnRYIC0gcmVjdC5sZWZ0KQogICAgICAqIGJvYXJkLndpZHRoIC8gcmVjdC53aWR0aCwKCiAgICB5OgogICAgICAoZXZlbnQuY2xpZW50WSAtIHJlY3QudG9wKQogICAgICAqIGJvYXJkLmhlaWdodCAvIHJlY3QuaGVpZ2h0CgogIH07Cgp9CgoKYm9hcmQuYWRkRXZlbnRMaXN0ZW5lcigKICAicG9pbnRlcmRvd24iLAogIGV2ZW50ID0+IHsKCiAgICBldmVudC5wcmV2ZW50RGVmYXVsdCgpOwoKICAgIHJlc2l6ZUJvYXJkKCk7CgogICAgYm9hcmRIaXN0b3J5LnB1c2goCiAgICAgIGJvYXJkLnRvRGF0YVVSTCgpCiAgICApOwoKICAgIGRyYXdpbmcgPSB0cnVlOwoKICAgIGxhc3RQb3NpdGlvbiA9CiAgICAgIGJvYXJkUG9zaXRpb24oZXZlbnQpOwoKICB9Cik7CgoKYm9hcmQuYWRkRXZlbnRMaXN0ZW5lcigKICAicG9pbnRlcm1vdmUiLAogIGV2ZW50ID0+IHsKCiAgICBpZiAoIWRyYXdpbmcpIHJldHVybjsKCiAgICBldmVudC5wcmV2ZW50RGVmYXVsdCgpOwoKICAgIGNvbnN0IHBvc2l0aW9uID0KICAgICAgYm9hcmRQb3NpdGlvbihldmVudCk7CgogICAgYm9hcmRDb250ZXh0LmxpbmVXaWR0aCA9CiAgICAgIE51bWJlcigKICAgICAgICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgKICAgICAgICAgICJicnVzaFNpemUiCiAgICAgICAgKS52YWx1ZQogICAgICApOwoKICAgIGJvYXJkQ29udGV4dC5saW5lQ2FwID0KICAgICAgInJvdW5kIjsKCiAgICBib2FyZENvbnRleHQuc3Ryb2tlU3R5bGUgPQogICAgICBib2FyZFRvb2wgPT09ICJlcmFzZXIiCiAgICAgICAgPyAiI2ZmZmZmZiIKICAgICAgICA6ICIjMTExMTExIjsKCiAgICBib2FyZENvbnRleHQuYmVnaW5QYXRoKCk7CgogICAgYm9hcmRDb250ZXh0Lm1vdmVUbygKICAgICAgbGFzdFBvc2l0aW9uLngsCiAgICAgIGxhc3RQb3NpdGlvbi55CiAgICApOwoKICAgIGJvYXJkQ29udGV4dC5saW5lVG8oCiAgICAgIHBvc2l0aW9uLngsCiAgICAgIHBvc2l0aW9uLnkKICAgICk7CgogICAgYm9hcmRDb250ZXh0LnN0cm9rZSgpOwoKICAgIGxhc3RQb3NpdGlvbiA9CiAgICAgIHBvc2l0aW9uOwoKICB9Cik7CgoKYm9hcmQuYWRkRXZlbnRMaXN0ZW5lcigKICAicG9pbnRlcnVwIiwKICAoKSA9PiB7CiAgICBkcmF3aW5nID0gZmFsc2U7CiAgfQopOwoKCmJvYXJkLmFkZEV2ZW50TGlzdGVuZXIoCiAgInBvaW50ZXJjYW5jZWwiLAogICgpID0+IHsKICAgIGRyYXdpbmcgPSBmYWxzZTsKICB9Cik7CgoKZnVuY3Rpb24gc2V0VG9vbCh0b29sKSB7CgogIGJvYXJkVG9vbCA9IHRvb2w7Cgp9CgoKZnVuY3Rpb24gY2xlYXJCb2FyZCgpIHsKCiAgcmVzaXplQm9hcmQoKTsKCiAgYm9hcmRDb250ZXh0LmZpbGxTdHlsZSA9CiAgICAid2hpdGUiOwoKICBib2FyZENvbnRleHQuZmlsbFJlY3QoCiAgICAwLAogICAgMCwKICAgIGJvYXJkLndpZHRoLAogICAgYm9hcmQuaGVpZ2h0CiAgKTsKCiAgYm9hcmRIaXN0b3J5ID0gW107Cgp9CgoKZnVuY3Rpb24gdW5kb0JvYXJkKCkgewoKICBjb25zdCBwcmV2aW91cyA9CiAgICBib2FyZEhpc3RvcnkucG9wKCk7CgogIGlmICghcHJldmlvdXMpIHJldHVybjsKCiAgY29uc3QgaW1hZ2UgPQogICAgbmV3IEltYWdlKCk7CgogIGltYWdlLm9ubG9hZCA9IGZ1bmN0aW9uKCkgewoKICAgIGJvYXJkQ29udGV4dC5kcmF3SW1hZ2UoCiAgICAgIGltYWdlLAogICAgICAwLAogICAgICAwLAogICAgICBib2FyZC53aWR0aCwKICAgICAgYm9hcmQuaGVpZ2h0CiAgICApOwoKICB9OwoKICBpbWFnZS5zcmMgPQogICAgcHJldmlvdXM7Cgp9CgoKZnVuY3Rpb24gc2F2ZUJvYXJkKCkgewoKICBjb25zdCBsaW5rID0KICAgIGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoImEiKTsKCiAgbGluay5kb3dubG9hZCA9CiAgICAiY2hpbmVzZS1mcmVlLWJvYXJkLnBuZyI7CgogIGxpbmsuaHJlZiA9CiAgICBib2FyZC50b0RhdGFVUkwoKTsKCiAgbGluay5jbGljaygpOwoKfQoKCi8qID09PT09PT09PT09PT09PT09PT09PT09PT0KICAgSE9NRVdPUksKPT09PT09PT09PT09PT09PT09PT09PT09PSAqLwoKZnVuY3Rpb24gc2F2ZUhvbWV3b3JrKCkgewoKICBjb25zdCBhbnN3ZXJzID0ge307CgogIGRvY3VtZW50CiAgICAucXVlcnlTZWxlY3RvckFsbCgiW2RhdGEtaG9tZXdvcmtdIikKICAgIC5mb3JFYWNoKGlucHV0ID0+IHsKCiAgICAgIGFuc3dlcnNbaW5wdXQuZGF0YXNldC5ob21ld29ya10gPQogICAgICAgIGlucHV0LnZhbHVlOwoKICAgIH0pOwoKICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbSgKICAgICJob21ld29yayIsCiAgICBKU09OLnN0cmluZ2lmeShhbnN3ZXJzKQogICk7CgogIGRvY3VtZW50CiAgICAuZ2V0RWxlbWVudEJ5SWQoImhvbWV3b3JrU3RhdHVzIikKICAgIC50ZXh0Q29udGVudCA9CiAgICAi4pyFIEhvbWV3b3JrIHNhdmVkIG9uIHRoaXMgZGV2aWNlLiI7Cgp9CgoKZnVuY3Rpb24gbG9hZEhvbWV3b3JrKCkgewoKICBjb25zdCBhbnN3ZXJzID0KICAgIEpTT04ucGFyc2UoCiAgICAgIGxvY2FsU3RvcmFnZS5nZXRJdGVtKCJob21ld29yayIpCiAgICAgIHx8ICJ7fSIKICAgICk7CgogIGRvY3VtZW50CiAgICAucXVlcnlTZWxlY3RvckFsbCgiW2RhdGEtaG9tZXdvcmtdIikKICAgIC5mb3JFYWNoKGlucHV0ID0+IHsKCiAgICAgIGlmICgKICAgICAgICBhbnN3ZXJzW2lucHV0LmRhdGFzZXQuaG9tZXdvcmtdCiAgICAgICAgIT09IHVuZGVmaW5lZAogICAgICApIHsKCiAgICAgICAgaW5wdXQudmFsdWUgPQogICAgICAgICAgYW5zd2Vyc1tpbnB1dC5kYXRhc2V0LmhvbWV3b3JrXTsKCiAgICAgIH0KCiAgICB9KTsKCn0KCgpmdW5jdGlvbiBjbGVhckhvbWV3b3JrKCkgewoKICBkb2N1bWVudAogICAgLnF1ZXJ5U2VsZWN0b3JBbGwoIltkYXRhLWhvbWV3b3JrXSIpCiAgICAuZm9yRWFjaChpbnB1dCA9PiB7CgogICAgICBpbnB1dC52YWx1ZSA9ICIiOwoKICAgIH0pOwoKICBsb2NhbFN0b3JhZ2UucmVtb3ZlSXRlbSgKICAgICJob21ld29yayIKICApOwoKICBkb2N1bWVudAogICAgLmdldEVsZW1lbnRCeUlkKCJob21ld29ya1N0YXR1cyIpCiAgICAudGV4dENvbnRlbnQgPQogICAgIkNsZWFyZWQuIjsKCn0KCgovKiA9PT09PT09PT09PT09PT09PT09PT09PT09CiAgIFNUQVJUVVAKPT09PT09PT09PT09PT09PT09PT09PT09PSAqLwoKYnVpbGRDaGFyYWN0ZXJzKCk7CgpidWlsZFdvcmRzKCk7Cgp1cGRhdGVQcm9ncmVzcygpOwoKbG9hZEhvbWV3b3JrKCk7CgpzZXRUaW1lb3V0KCgpID0+IHsKCiAgcmVzaXplQm9hcmQoKTsKCiAgcmVzZXRTdHJva2UoKTsKCn0sIDEwMCk7Cgp3aW5kb3cuYWRkRXZlbnRMaXN0ZW5lcigKICAicmVzaXplIiwKICByZXNpemVCb2FyZAopOwoKPC9zY3JpcHQ+Cgo8L2JvZHk+CjwvaHRtbD4="></iframe>
+</div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+
+<section id="achievements" class="page hidden">
+
+<div class="hero">
+<span class="badge">ACHIEVEMENTS</span>
+<h2>🏆 Achievements</h2>
+<p>Keep learning to unlock badges.</p>
+</div>
+
+<div id="achievementGrid" class="achievement-grid"></div>
+
+</section>
+
+
+<!-- GLOSSARY -->
+
+<section id="glossary" class="page hidden">
+
+<div class="hero">
+<span class="badge">REFERENCE</span>
+<h2>📚 Glossary</h2>
+<p>Search important historical, geographic, economic and scientific terms.</p>
+</div>
+
+<input
+id="glossarySearch"
+class="search"
+placeholder="Search terms..."
+oninput="renderGlossary()"
+>
+
+<div id="glossaryList"></div>
+
+</section>
+
+
+</main>
+
+</div>
+
+
+<footer>
+WorldWise Academy V4 • Offline single-file learning app
+</footer>
+
+
+<script>
+
+/* ================================
+   DATA
+================================ */
+
+const countries={
+
+"United States":{
+emoji:"🇺🇸",
+continent:"North America",
+capital:"Washington, D.C.",
+fact:"A federal republic in North America with coastlines on the Atlantic and Pacific Oceans.",
+history:"The United States declared independence in 1776 and later became an industrial and global power."
+},
+
+"Canada":{
+emoji:"🇨🇦",
+continent:"North America",
+capital:"Ottawa",
+fact:"The second-largest country by total area.",
+history:"Canada developed from French and British colonial territories into a self-governing country and federation."
+},
+
+"Mexico":{
+emoji:"🇲🇽",
+continent:"North America",
+capital:"Mexico City",
+fact:"Mexico is home to a rich mix of Indigenous and Spanish cultural traditions.",
+history:"Mexico gained independence from Spain in the early nineteenth century."
+},
+
+"Brazil":{
+emoji:"🇧🇷",
+continent:"South America",
+capital:"Brasília",
+fact:"Brazil is the largest country in South America.",
+history:"Brazil was colonized by Portugal and became independent in 1822."
+},
+
+"United Kingdom":{
+emoji:"🇬🇧",
+continent:"Europe",
+capital:"London",
+fact:"An island state consisting of Great Britain and Northern Ireland.",
+history:"The British Empire became one of the world's largest empires before decolonization accelerated after World War II."
+},
+
+"France":{
+emoji:"🇫🇷",
+continent:"Europe",
+capital:"Paris",
+fact:"A major European country with coastlines on the Atlantic and Mediterranean.",
+history:"France played major roles in the French Revolution, European politics and both World Wars."
+},
+
+"Germany":{
+emoji:"🇩🇪",
+continent:"Europe",
+capital:"Berlin",
+fact:"A major central European country.",
+history:"Germany unified in 1871. It later became central to both World Wars and the Cold War division of Europe."
+},
+
+"Italy":{
+emoji:"🇮🇹",
+continent:"Europe",
+capital:"Rome",
+fact:"A Mediterranean country in southern Europe.",
+history:"Italy unified in the nineteenth century and was one of the major Axis powers during World War II."
+},
+
+"Poland":{
+emoji:"🇵🇱",
+continent:"Europe",
+capital:"Warsaw",
+fact:"A country in Central Europe.",
+history:"Poland was invaded by Germany and the Soviet Union in 1939 and later became part of the Soviet sphere."
+},
+
+"Russia":{
+emoji:"🇷🇺",
+continent:"Europe/Asia",
+capital:"Moscow",
+fact:"The world's largest country by area.",
+history:"Russia became the core of the Soviet Union after the Russian Revolution and later became the Russian Federation."
+},
+
+"China":{
+emoji:"🇨🇳",
+continent:"Asia",
+capital:"Beijing",
+fact:"One of the world's largest countries by population and area.",
+history:"China has a long history of dynasties, political transformation, industrialization and economic development."
+},
+
+"Japan":{
+emoji:"🇯🇵",
+continent:"Asia",
+capital:"Tokyo",
+fact:"An island country in East Asia.",
+history:"Japan underwent rapid modernization in the nineteenth century and became a major power before and during World War II."
+},
+
+"India":{
+emoji:"🇮🇳",
+continent:"Asia",
+capital:"New Delhi",
+fact:"A large South Asian country with a highly diverse population.",
+history:"India gained independence from Britain in 1947."
+},
+
+"Egypt":{
+emoji:"🇪🇬",
+continent:"Africa",
+capital:"Cairo",
+fact:"A North African country centered around the Nile River.",
+history:"Ancient Egypt developed one of the world's earliest complex civilizations."
+},
+
+"South Africa":{
+emoji:"🇿🇦",
+continent:"Africa",
+capital:"Pretoria",
+fact:"A country at the southern tip of Africa.",
+history:"South Africa experienced colonialism, apartheid and a transition to democratic government."
+},
+
+"Australia":{
+emoji:"🇦🇺",
+continent:"Australia/Oceania",
+capital:"Canberra",
+fact:"A country and continent-sized landmass in the Southern Hemisphere.",
+history:"Australia's modern history includes Indigenous cultures, British colonization and federation in 1901."
+},
+
+"Argentina":{
+emoji:"🇦🇷",
+continent:"South America",
+capital:"Buenos Aires",
+fact:"A large South American country.",
+history:"Argentina declared independence from Spain in 1816."
+},
+
+"Turkey":{
+emoji:"🇹🇷",
+continent:"Europe/Asia",
+capital:"Ankara",
+fact:"A country located at the crossroads of Europe and Asia.",
+history:"Modern Turkey emerged from the Ottoman Empire after World War I."
+},
+
+"Ukraine":{
+emoji:"🇺🇦",
+continent:"Europe",
+capital:"Kyiv",
+fact:"A large country in Eastern Europe.",
+history:"Ukraine became independent in 1991 after the dissolution of the Soviet Union."
+},
+
+"South Korea":{
+emoji:"🇰🇷",
+continent:"Asia",
+capital:"Seoul",
+fact:"A country occupying the southern part of the Korean Peninsula.",
+history:"South Korea developed into a major industrial and technological economy after the Korean War."
+},
+
+"Nigeria":{
+emoji:"🇳🇬",
+continent:"Africa",
+capital:"Abuja",
+fact:"One of Africa's most populous countries.",
+history:"Nigeria gained independence from Britain in 1960."
+}
+
+};
+
+
+/* ================================
+   PROGRESS
+================================ */
+
+let data=JSON.parse(
+localStorage.getItem("worldwise_v5")
+)||{
+
+xp:0,
+lessons:[],
+quizAnswered:0,
+bestQuiz:0,
+streak:0,
+lastDay:"",
+achievements:[]
+
+};
+
+
+function save(){
+
+localStorage.setItem(
+"worldwise_v5",
+JSON.stringify(data)
+);
+
+updateUI();
+
+}
+
+
+function addXP(amount){
+
+data.xp+=amount;
+
+updateStreak();
+
+save();
+
+}
+
+
+function updateStreak(){
+
+const today=
+new Date().toISOString().slice(0,10);
+
+if(data.lastDay===today)return;
+
+if(data.lastDay){
+
+const old=new Date(data.lastDay);
+const now=new Date(today);
+
+const days=
+Math.round(
+(now-old)/(1000*60*60*24)
+);
+
+if(days===1){
+
+data.streak++;
+
+}else if(days>1){
+
+data.streak=1;
+
+}
+
+}else{
+
+data.streak=1;
+
+}
+
+data.lastDay=today;
+
+}
+
+
+function level(){
+
+return Math.floor(data.xp/100)+1;
+
+}
+
+
+function updateUI(){
+
+const lvl=level();
+
+const current=
+data.xp%100;
+
+document.getElementById("xpStat").textContent=
+data.xp;
+
+document.getElementById("lessonStat").textContent=
+data.lessons.length;
+
+document.getElementById("quizStat").textContent=
+data.quizAnswered;
+
+document.getElementById("streakStat").textContent=
+data.streak;
+
+document.getElementById("achievementStat").textContent=
+data.achievements.length;
+
+document.getElementById("levelCircle").textContent=
+lvl;
+
+document.getElementById("levelName").textContent=
+getLevelName(lvl);
+
+document.getElementById("levelFill").style.width=
+current+"%";
+
+document.getElementById("levelText").textContent=
+`${current} / 100 XP to next level`;
+
+document.getElementById("miniFill").style.width=
+current+"%";
+
+document.getElementById("miniXP").textContent=
+`${data.xp} XP • Level ${lvl}`;
+
+checkAchievements();
+
+}
+
+
+function getLevelName(lvl){
+
+if(lvl>=20)return"WorldWise Master";
+if(lvl>=15)return"Global Scholar";
+if(lvl>=10)return"History Explorer";
+if(lvl>=5)return"World Student";
+
+return"WorldWise Beginner";
+
+}
+
+
+/* ================================
+   NAVIGATION
+================================ */
+
+function showPage(id,btn){
+
+document.querySelectorAll(".page")
+.forEach(p=>p.classList.add("hidden"));
+
+document.getElementById(id)
+.classList.remove("hidden");
+
+document.querySelectorAll(".nav-btn")
+.forEach(b=>b.classList.remove("active"));
+
+if(btn)btn.classList.add("active");
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+if(id==="quiz"){
+startQuiz();
+}
+
+if(id==="flashcards"){
+renderFlash();
+}
+
+if(id==="countries"){
+renderCountries();
+}
+
+if(id==="achievements"){
+renderAchievements();
+}
+
+if(id==="glossary"){
+renderGlossary();
+}
+
+const coursePages=[
+"history",
+"wars",
+"ww1",
+"ww2",
+"maps",
+"coldwar",
+"koreanwar",
+"vietnamwar",
+"geography",
+"countries",
+"economics",
+"science",
+"chinese",
+"timeline"
+];
+
+if(coursePages.includes(id)){
+
+if(!data.lessons.includes(id)){
+
+data.lessons.push(id);
+
+addXP(10);
+
+}else{
+
+save();
+
+}
+
+}
+
+}
+
+
+function go(id){
+
+const btn=
+[...document.querySelectorAll(".nav-btn")]
+.find(b=>{
+
+const x=b.getAttribute("onclick");
+
+return x && x.includes("'"+id+"'");
+
+});
+
+showPage(id,btn);
+
+}
+
+
+/* ================================
+   DARK MODE
+================================ */
+
+function toggleDark(){
+
+document.body.classList.toggle("dark");
+
+localStorage.setItem(
+"worldwise_v5_dark",
+document.body.classList.contains("dark")
+);
+
+}
+
+
+if(
+localStorage.getItem("worldwise_v5_dark")==="true"
+){
+
+document.body.classList.add("dark");
+
+}
+
+
+/* ================================
+   RESET
+================================ */
+
+function resetAll(){
+
+if(
+confirm(
+"Reset all WorldWise V4 progress?"
+)
+){
+
+data={
+xp:0,
+lessons:[],
+quizAnswered:0,
+bestQuiz:0,
+streak:0,
+lastDay:"",
+achievements:[]
+};
+
+save();
+
+alert("Progress reset.");
+
+}
+
+}
+
+
+/* ================================
+   MAP
+================================ */
+
+const mapData={
+
+1939:[
+"Europe — 1939",
+"Germany invaded Poland. Britain and France declared war.",
+"axis","allied","neutral","neutral"
+],
+
+1940:[
+"Europe — 1940",
+"Germany occupied much of Western Europe. Britain remained outside German occupation.",
+"axis","occupied","occupied","neutral"
+],
+
+1941:[
+"Europe — 1941",
+"Germany invaded the Soviet Union. The war expanded dramatically.",
+"axis","occupied","occupied","occupied"
+],
+
+1942:[
+"Europe — 1942",
+"Axis territorial control reached a broad extent, while the Soviet Union resisted in the east.",
+"axis","occupied","occupied","occupied"
+],
+
+1943:[
+"Europe — 1943",
+"Axis forces faced increasing pressure from Allied advances in the Mediterranean and Soviet advances.",
+"axis","occupied","occupied","occupied"
+],
+
+1944:[
+"Europe — 1944",
+"Allied forces landed in Normandy while Soviet forces advanced from the east.",
+"axis","allied","occupied","occupied"
+],
+
+1945:[
+"Europe — 1945",
+"Nazi Germany surrendered in May 1945.",
+"axis","allied","soviet","soviet"
+]
+
+};
+
+
+function mapYear(year,button){
+
+document.querySelectorAll(".year")
+.forEach(b=>b.classList.remove("active"));
+
+button.classList.add("active");
+
+const d=mapData[year];
+
+document.getElementById("mapTitle")
+.textContent=d[0];
+
+document.getElementById("mapNote")
+.textContent=d[1];
+
+document.getElementById("germany").className=
+"country "+d[2];
+
+document.getElementById("france").className=
+"country "+d[3];
+
+document.getElementById("poland").className=
+"country "+d[4];
+
+document.getElementById("balkans").className=
+"country "+d[5];
+
+}
+
+
+/* ================================
+   COUNTRIES
+================================ */
+
+function renderCountries(){
+
+const grid=
+document.getElementById("countryGrid");
+
+grid.innerHTML=
+Object.keys(countries).map(name=>{
+
+const c=countries[name];
+
+return`
+
+<button
+class="country-btn"
+onclick="showCountry('${name}')"
+>
+${c.emoji} <b>${name}</b><br>
+<small>${c.continent}</small>
+</button>
+
+`;
+
+}).join("");
+
+}
+
+
+function showCountry(name){
+
+const c=countries[name];
+
+const box=
+document.getElementById("countryInfo");
+
+box.classList.remove("hidden");
+
+box.innerHTML=`
+
+<h2>
+${c.emoji} ${name}
+</h2>
+
+<p>
+<b>Continent:</b> ${c.continent}
+</p>
+
+<p>
+<b>Capital:</b> ${c.capital}
+</p>
+
+<div class="fact">
+${c.fact}
+</div>
+
+<p>
+${c.history}
+</p>
+
+`;
+
+box.scrollIntoView({
+behavior:"smooth",
+block:"start"
+});
+
+addXP(2);
+
+}
+
+
+/* ================================
+   QUIZ
+================================ */
+
+const questions=[
+
+["History",
+"What development allowed humans to establish many permanent settlements?",
+["Agriculture","Steam engines","Satellites","Printing presses"],
+0],
+
+["History",
+"Which ancient civilization developed along the Nile?",
+["Egypt","Rome","Maya","Vikings"],
+0],
+
+["History",
+"What was the Industrial Revolution?",
+["A transformation involving mechanized production and new energy systems","A single battle","A religious festival","A type of map"],
+0],
+
+["History",
+"What is nationalism?",
+["A political force emphasizing loyalty to a nation","A type of currency","A scientific instrument","A climate zone"],
+0],
+
+["WWI",
+"What event immediately triggered the 1914 crisis?",
+["The assassination of Archduke Franz Ferdinand","The attack on Pearl Harbor","D-Day","The fall of Berlin"],
+0],
+
+["WWI",
+"Which warfare style became strongly associated with the Western Front?",
+["Trench warfare","Space warfare","Cyber warfare","Air-only warfare"],
+0],
+
+["WWI",
+"When did the WWI armistice take effect?",
+["November 11, 1918","September 1, 1939","June 6, 1944","December 7, 1941"],
+0],
+
+["WWI",
+"Which was a Central Power?",
+["Germany","Canada","Japan","Brazil"],
+0],
+
+["WWII",
+"Which country did Germany invade on September 1, 1939?",
+["Poland","Canada","Japan","Mexico"],
+0],
+
+["WWII",
+"Who became dictator of Nazi Germany?",
+["Adolf Hitler","Winston Churchill","Franklin Roosevelt","Charles de Gaulle"],
+0],
+
+["WWII",
+"Which group included Germany, Italy and Japan?",
+["Axis Powers","Allied Powers","United Nations","League of Nations"],
+0],
+
+["WWII",
+"Which was a major Allied power?",
+["Soviet Union","Germany","Italy","Japan"],
+0],
+
+["WWII",
+"What was the Holocaust?",
+["The systematic persecution and murder of approximately six million Jews and other victims under Nazi rule","A peace treaty","A trade agreement","A scientific project"],
+0],
+
+["WWII",
+"What happened in Europe in May 1945?",
+["Nazi Germany surrendered","World War I began","The United Nations ended","Japan invaded Poland"],
+0],
+
+["WWII",
+"What happened on June 6, 1944?",
+["Allied forces landed in Normandy","Germany invaded Poland","Pearl Harbor was attacked","The Soviet Union dissolved"],
+0],
+
+["Geography",
+"What does latitude measure?",
+["North-south position","East-west position","Population","Ocean depth"],
+0],
+
+["Geography",
+"What does longitude measure?",
+["East-west position","North-south position","Temperature","Elevation"],
+0],
+
+["Geography",
+"Which is the largest ocean?",
+["Pacific","Atlantic","Indian","Arctic"],
+0],
+
+["Geography",
+"Which continent contains the Sahara Desert?",
+["Africa","Asia","Europe","Australia"],
+0],
+
+["Economics",
+"What is scarcity?",
+["Limited resources compared with wants","Free goods","A type of tax","A stock market"],
+0],
+
+["Economics",
+"What is opportunity cost?",
+["The next-best alternative given up","A company's profit","A currency","A tax"],
+0],
+
+["Economics",
+"What does GDP measure?",
+["The market value of final goods and services produced within an economy","Population only","Military spending only","Exports only"],
+0],
+
+["Economics",
+"What is inflation?",
+["A sustained increase in the general price level","A decrease in population","A type of market","A currency exchange"],
+0],
+
+["Science",
+"What molecule stores genetic information?",
+["DNA","Water","Iron","Oxygen"],
+0],
+
+["Science",
+"What does biology study?",
+["Living organisms","Only rocks","Only stars","Only markets"],
+0],
+
+["Science",
+"What does physics study?",
+["Matter, energy, forces and motion","Only plants","Only governments","Only languages"],
+0],
+
+["Science",
+"What is astronomy?",
+["The study of objects and phenomena beyond Earth","The study of markets","The study of ancient languages","The study of oceans only"],
+0],
+
+["Science",
+"What is chemistry?",
+["The study of matter and chemical reactions","The study of elections","The study of maps","The study of wars"],
+0]
+
+];
+
+let qIndex=0;
+let qCorrect=0;
+let qAnswered=false;
+
+
+function startQuiz(){
+
+qIndex=0;
+qCorrect=0;
+qAnswered=false;
+
+renderQuestion();
+
+}
+
+
+function renderQuestion(){
+
+const box=
+document.getElementById("quizBox");
+
+if(qIndex>=questions.length){
+
+const percent=
+Math.round(
+qCorrect/questions.length*100
+);
+
+if(percent>data.bestQuiz)
+data.bestQuiz=percent;
+
+data.xp+=qCorrect*5;
+
+save();
+
+document.getElementById("quizBar")
+.style.width="100%";
+
+box.innerHTML=`
+
+<h2>🎉 Quiz Complete!</h2>
+
+<p>
+You scored <b>${qCorrect}</b>
+out of <b>${questions.length}</b>.
+</p>
+
+<p>
+Final score:
+<b>${percent}%</b>
+</p>
+
+<div class="fact">
+
+${
+percent>=90
+?"🌟 Excellent work!"
+:percent>=75
+?"👏 Great job!"
+:percent>=60
+?"👍 Good work — review the missed topics."
+:"📚 Keep studying and try again!"
+}
+
+</div>
+
+`;
+
+return;
+
+}
+
+const q=questions[qIndex];
+
+document.getElementById("quizScore")
+.textContent=
+`Score: ${qCorrect} / ${qIndex}`;
+
+document.getElementById("quizBar")
+.style.width=
+(qIndex/questions.length*100)+"%";
+
+box.innerHTML=`
+
+<span class="badge">
+${q[0]} • ${qIndex+1}/${questions.length}
+</span>
+
+<p class="question">
+${q[1]}
+</p>
+
+${q[2].map(
+(o,i)=>`
+
+<button
+class="option"
+onclick="answer(${i},${q[3]})"
+>
+${o}
+</button>
+
+`
+).join("")}
+
+`;
+
+}
+
+
+function answer(selected,correct){
+
+if(qAnswered)return;
+
+qAnswered=true;
+
+data.quizAnswered++;
+
+const buttons=
+document.querySelectorAll(
+"#quizBox .option"
+);
+
+if(selected===correct){
+
+qCorrect++;
+
+buttons[selected]
+.classList.add("correct");
+
+addXP(3);
+
+}else{
+
+buttons[selected]
+.classList.add("wrong");
+
+buttons[correct]
+.classList.add("correct");
+
+save();
+
+}
+
+setTimeout(()=>{
+
+qIndex++;
+
+qAnswered=false;
+
+renderQuestion();
+
+},850);
+
+}
+
+
+/* ================================
+   FLASHCARDS
+================================ */
+
+const flashcards=[
+
+["Scarcity","Resources are limited relative to human wants."],
+["Opportunity Cost","The next-best alternative given up."],
+["GDP","The market value of final goods and services produced within an economy."],
+["Inflation","A sustained increase in the general price level."],
+["Latitude","Angular distance north or south of the Equator."],
+["Longitude","Angular distance east or west of the Prime Meridian."],
+["Nationalism","A political force emphasizing loyalty to a nation."],
+["Imperialism","The extension of power or influence over other territories or peoples."],
+["Armistice","An agreement to stop fighting."],
+["Trench Warfare","Warfare involving fortified trenches and defensive positions."],
+["Holocaust","The systematic persecution and murder of approximately six million Jews under Nazi rule, along with millions of other victims."],
+["DNA","A molecule that stores genetic information."],
+["Physics","The study of matter, energy, forces and motion."],
+["Chemistry","The study of matter and chemical reactions."],
+["Astronomy","The study of objects and phenomena beyond Earth."]
+];
+
+let flashIndex=0;
+let flashShowing=false;
+
+
+function renderFlash(){
+
+const card=
+flashcards[flashIndex];
+
+document.getElementById("flashTerm")
+.textContent=
+card[0];
+
+document.getElementById("flashDefinition")
+.textContent=
+card[1];
+
+document.getElementById("flashDefinition")
+.classList.toggle(
+"hidden",
+!flashShowing
+);
+
+}
+
+
+function flipCard(){
+
+flashShowing=!flashShowing;
+
+renderFlash();
+
+}
+
+
+function nextFlash(){
+
+flashIndex=
+(flashIndex+1)%flashcards.length;
+
+flashShowing=false;
+
+renderFlash();
+
+addXP(1);
+
+}
+
+
+/* ================================
+   ACHIEVEMENTS
+================================ */
+
+const achievements=[
+
+["first","🌱","First Steps","Complete your first lesson."],
+["quiz10","🧠","Quiz Starter","Answer 10 quiz questions."],
+["quiz25","🎯","Quiz Explorer","Answer 25 quiz questions."],
+["xp100","⭐","100 XP","Earn 100 XP."],
+["xp500","🌟","500 XP","Earn 500 XP."],
+["history","🏛️","Historian","Study Human History."],
+["wwi","🌍","WWI Student","Study World War I."],
+["wwii","🗺️","WWII Student","Study World War II."],
+["geo","🌎","Geographer","Study Geography."],
+["econ","💰","Economist","Study Economics."],
+["science","🔬","Scientist","Study Science."],
+["streak3","🔥","Three-Day Streak","Learn for three days in a row."]
+];
+
+
+function checkAchievements(){
+
+const unlocked=[];
+
+if(data.lessons.length>=1)
+unlocked.push("first");
+
+if(data.quizAnswered>=10)
+unlocked.push("quiz10");
+
+if(data.quizAnswered>=25)
+unlocked.push("quiz25");
+
+if(data.xp>=100)
+unlocked.push("xp100");
+
+if(data.xp>=500)
+unlocked.push("xp500");
+
+if(data.lessons.includes("history"))
+unlocked.push("history");
+
+if(data.lessons.includes("ww1"))
+unlocked.push("wwi");
+
+if(data.lessons.includes("ww2"))
+unlocked.push("wwii");
+
+if(data.lessons.includes("geography"))
+unlocked.push("geo");
+
+if(data.lessons.includes("economics"))
+unlocked.push("econ");
+
+if(data.lessons.includes("science"))
+unlocked.push("science");
+
+if(data.streak>=3)
+unlocked.push("streak3");
+
+let changed=false;
+
+unlocked.forEach(id=>{
+
+if(!data.achievements.includes(id)){
+
+data.achievements.push(id);
+
+changed=true;
+
+}
+
+});
+
+if(changed){
+
+localStorage.setItem(
+"worldwise_v5",
+JSON.stringify(data)
+);
+
+}
+
+}
+
+
+function renderAchievements(){
+
+checkAchievements();
+
+const grid=
+document.getElementById("achievementGrid");
+
+grid.innerHTML=
+achievements.map(a=>{
+
+const unlocked=
+data.achievements.includes(a[0]);
+
+return`
+
+<div class="achievement ${unlocked?"":"locked"}">
+
+<div class="achievement-icon">
+${a[1]}
+</div>
+
+<h3>${a[2]}</h3>
+
+<p>${a[3]}</p>
+
+${unlocked
+?"<b>✓ UNLOCKED</b>"
+:"🔒 Locked"}
+
+</div>
+
+`;
+
+}).join("");
+
+}
+
+
+/* ================================
+   GLOSSARY
+================================ */
+
+const glossary=[
+
+["Allied Powers","Countries that fought against the Axis powers during World War II.","WWII"],
+["Armistice","An agreement to stop fighting.","WWI"],
+["Axis Powers","The principal alliance of Germany, Italy and Japan during World War II.","WWII"],
+["Central Powers","The main alliance opposing the Allies in World War I.","WWI"],
+["Holocaust","The systematic persecution and murder of approximately six million Jews under Nazi rule, along with millions of other victims.","WWII"],
+["Nazi Germany","Germany under the dictatorship of Adolf Hitler and the Nazi Party from 1933 to 1945.","WWII"],
+["Trench Warfare","Warfare involving fortified trenches and defensive positions.","WWI"],
+["Nationalism","A political force emphasizing loyalty to a nation.","History"],
+["Imperialism","The extension of power or influence over other territories or peoples.","History"],
+["Industrial Revolution","A major transformation involving mechanized production, factories and new energy systems.","History"],
+["Latitude","Angular distance north or south of the Equator.","Geography"],
+["Longitude","Angular distance east or west of the Prime Meridian.","Geography"],
+["Climate","Long-term patterns of weather in a region.","Geography"],
+["GDP","The market value of final goods and services produced within an economy during a period.","Economics"],
+["Inflation","A sustained increase in the general price level.","Economics"],
+["Opportunity Cost","The next-best alternative given up when making a choice.","Economics"],
+["Supply","The amount sellers are willing and able to offer.","Economics"],
+["Demand","The amount buyers are willing and able to purchase.","Economics"],
+["DNA","A molecule that stores genetic information.","Science"],
+["Biology","The study of living organisms.","Science"],
+["Chemistry","The study of matter and chemical reactions.","Science"],
+["Physics","The study of matter, energy, forces and motion.","Science"],
+["Astronomy","The study of objects and phenomena beyond Earth.","Science"],
+["Ecosystem","A community of organisms interacting with their environment.","Science"]
+];
+
+
+function renderGlossary(){
+
+const query=
+(
+document.getElementById("glossarySearch")
+.value||""
+).toLowerCase();
+
+const results=
+glossary.filter(t=>
+t[0].toLowerCase().includes(query)||
+t[1].toLowerCase().includes(query)||
+t[2].toLowerCase().includes(query)
+);
+
+document.getElementById("glossaryList")
+.innerHTML=
+results.map(t=>`
+
+<div class="term">
+
+<span class="badge">
+${t[2]}
+</span>
+
+<h3>
+${t[0]}
+</h3>
+
+<p>
+${t[1]}
+</p>
+
+</div>
+
+`).join("")
+||
+"<div class='lesson'><p>No terms found.</p></div>";
+
+}
+
+
+/* ================================
+   GLOBAL SEARCH
+================================ */
+
+const searchPages=[
+
+["🏠","Dashboard","dashboard"],
+["🏛️","Human History","history"],
+["⚔️","Wars & Conflicts","wars"],
+["🌍","World War I","ww1"],
+["🗺️","World War II","ww2"],
+["🗺️","WWII Maps","maps"],
+["☢️","Cold War","coldwar"],
+["🇰🇷","Korean War","koreanwar"],
+["🇻🇳","Vietnam War","vietnamwar"],
+["🌎","Global Geography","geography"],
+["🌐","Country Explorer","countries"],
+["💰","Modern Economics","economics"],
+["🔬","Science","science"],
+["🧠","Quiz Center","quiz"],
+["🃏","Flashcards","flashcards"],
+["📅","Master Timeline","timeline"],
+["🏆","Achievements","achievements"],
+["📚","Glossary","glossary"]
+
+];
+
+
+function globalSearch(){
+
+const input=
+document.getElementById("globalSearch");
+
+const box=
+document.getElementById("searchResults");
+
+const q=
+input.value.trim().toLowerCase();
+
+if(!q){
+
+box.style.display="none";
+
+return;
+
+}
+
+const results=
+searchPages.filter(x=>
+x[1].toLowerCase().includes(q)
+);
+
+if(!results.length){
+
+box.innerHTML=
+`<div class="search-result">No results found.</div>`;
+
+box.style.display="block";
+
+return;
+
+}
+
+box.innerHTML=
+results.map(x=>`
+
+<button
+class="search-result"
+onclick="searchGo('${x[2]}')"
+>
+${x[0]} ${x[1]}
+</button>
+
+`).join("");
+
+box.style.display="block";
+
+}
+
+
+function searchGo(id){
+
+document.getElementById("globalSearch")
+.value="";
+
+document.getElementById("searchResults")
+.style.display="none";
+
+go(id);
+
+}
+
+
+/* ================================
+   STARTUP
+================================ */
+
+updateUI();
+
+renderCountries();
+
+renderAchievements();
+
+renderGlossary();
+
+renderFlash();
+
+</script>
+
+
+<section id="writing" class="page hidden"><div class="hero"><span class="badge">✍️ WRITING</span><h2>Writing & Language Arts</h2><p>Build clear, organized writing skills for school, research, creative work, and everyday communication.</p></div>
+<div class="v5lesson"><h3>Lesson 1 — Sentences and Paragraphs</h3><p>A strong sentence communicates a complete idea. A strong paragraph usually develops one main idea through a topic sentence, supporting details, explanations, and a closing or transition. Good writing is clear before it is complicated.</p><div class="v5example"><b>Practice:</b> Read each paragraph and ask: What is its main idea? Does every sentence help develop it?</div><button class="primary" onclick="v5done('writing-1')">✓ Complete Lesson</button></div>
+<div class="v5lesson"><h3>Lesson 2 — Grammar and Punctuation</h3><p>Grammar describes how words and sentences are structured. Learn subject-verb agreement, verb tense, pronouns, conjunctions, sentence boundaries, capitalization, commas, apostrophes, and quotation marks. Editing should make meaning easier to understand.</p><button class="primary" onclick="v5done('writing-2')">✓ Complete Lesson</button></div>
+<div class="v5lesson"><h3>Lesson 3 — Essays and Evidence</h3><p>An essay normally has a clear purpose, an introduction, organized body paragraphs, evidence or examples, and a conclusion. Evidence is most useful when the writer explains how it supports the point being made.</p><button class="primary" onclick="v5done('writing-3')">✓ Complete Lesson</button></div>
+<div class="v5lesson"><h3>Lesson 4 — Revision and Research</h3><p>Revision is more than fixing spelling. First examine ideas, organization, audience, evidence, and clarity. Then proofread grammar and punctuation. When researching, keep track of sources so information can be credited accurately.</p><button class="primary" onclick="v5done('writing-4')">✓ Complete Lesson</button></div>
+<div class="v5quiz"><h3>📝 Writing Quiz</h3><p>What is a topic sentence mainly used for?</p><button class="v5opt" onclick="v5ans(this,true,'Correct! It introduces the paragraph’s main idea.')">Introduce the main idea</button><button class="v5opt" onclick="v5ans(this,false,'Not quite.')">List every fact</button><button class="v5opt" onclick="v5ans(this,false,'Not quite.')">Replace the conclusion</button></div></section>
+<section id="math" class="page hidden"><div class="hero"><span class="badge">➗ MATHEMATICS</span><h2>Mathematics</h2><p>Learn mathematical reasoning from numbers and operations through algebra, geometry, statistics, probability, and practical problem solving.</p></div>
+<div class="v5lesson"><h3>Lesson 1 — Fractions, Decimals and Percentages</h3><p>Fractions represent parts or ratios, decimals represent values in place-value notation, and percentages express a quantity per hundred. Converting between these forms helps with measurements, discounts, taxes, rates, and data.</p><div class="v5example"><b>Example:</b> 0.75 = 75/100 = 3/4 = 75%.</div><button class="primary" onclick="v5done('math-1')">✓ Complete Lesson</button></div>
+<div class="v5lesson"><h3>Lesson 2 — Ratios and Proportions</h3><p>Ratios compare quantities and proportions describe equivalent relationships. These ideas appear in maps, recipes, scale drawings, speed, unit rates, and many real-world comparisons.</p><button class="primary" onclick="v5done('math-2')">✓ Complete Lesson</button></div>
+<div class="v5lesson"><h3>Lesson 3 — Algebra</h3><p>Algebra uses variables to represent unknown or changing quantities. An equation states that two expressions have equal value. Solve equations by making equivalent changes to both sides while keeping track of what the variable represents.</p><div class="v5example"><b>Example:</b> x + 7 = 12, so subtract 7 from both sides: x = 5.</div><button class="primary" onclick="v5done('math-3')">✓ Complete Lesson</button></div>
+<div class="v5lesson"><h3>Lesson 4 — Geometry</h3><p>Geometry studies shapes, distance, angles, area, surface area, and volume. Diagrams help identify known measurements and the formula that matches the problem.</p><button class="primary" onclick="v5done('math-4')">✓ Complete Lesson</button></div>
+<div class="v5lesson"><h3>Lesson 5 — Statistics and Probability</h3><p>Statistics summarizes data with measures and graphs. Probability describes likelihood under a defined model or set of possible outcomes. Always consider sample size, representation, and whether a graph could create a misleading impression.</p><button class="primary" onclick="v5done('math-5')">✓ Complete Lesson</button></div>
+<div class="v5quiz"><h3>🧮 Math Quiz</h3><p>What is 20% of 50?</p><button class="v5opt" onclick="v5ans(this,true,'Correct! 0.20 × 50 = 10.')">10</button><button class="v5opt" onclick="v5ans(this,false,'Try converting 20% to 0.20.')">20</button><button class="v5opt" onclick="v5ans(this,false,'Check the percentage calculation.')">25</button></div></section>
+<section id="social" class="page hidden"><div class="hero"><span class="badge">🏛️ SOCIAL STUDIES</span><h2>Social Studies</h2><p>Explore civics, government, communities, culture, geography, citizenship, and historical thinking.</p></div>
+<div class="v5lesson"><h3>Lesson 1 — Civics and Citizenship</h3><p>Civics studies public institutions and the ways people participate in community and government. Citizenship can involve rights, responsibilities, informed participation, public discussion, and understanding how decisions are made.</p><button class="primary" onclick="v5done('social-1')">✓ Complete Lesson</button></div>
+<div class="v5lesson"><h3>Lesson 2 — Government and Institutions</h3><p>Governments create systems for making rules, providing services, resolving disputes, and managing public resources. Political systems differ, so study constitutions or basic laws, institutions, elections or leadership selection, courts, and limits on authority.</p><button class="primary" onclick="v5done('social-2')">✓ Complete Lesson</button></div>
+<div class="v5lesson"><h3>Lesson 3 — Culture and Society</h3><p>Societies include many communities, languages, traditions, institutions, and social practices. Culture changes through migration, technology, economic shifts, and contact between communities. Avoid assuming everyone in a culture has identical experiences or opinions.</p><button class="primary" onclick="v5done('social-3')">✓ Complete Lesson</button></div>
+<div class="v5lesson"><h3>Lesson 4 — Human Geography</h3><p>Physical geography affects settlement, while people also transform environments through farming, cities, transportation, industry, and infrastructure. Population density, resources, climate, trade routes, and political boundaries shape human geography.</p><button class="primary" onclick="v5done('social-4')">✓ Complete Lesson</button></div>
+<div class="v5lesson"><h3>Lesson 5 — Historical Thinking</h3><p>Historical thinking asks how evidence supports conclusions about the past. Primary sources come from the period being studied; secondary sources interpret evidence. Context, perspective, chronology, cause and effect, continuity, and change are all important.</p><button class="primary" onclick="v5done('social-5')">✓ Complete Lesson</button></div>
+<div class="v5quiz"><h3>🏛️ Social Studies Quiz</h3><p>What does civics primarily study?</p><button class="v5opt" onclick="v5ans(this,true,'Correct! Civics focuses on citizenship and public institutions.')">Citizenship and public institutions</button><button class="v5opt" onclick="v5ans(this,false,'That is mainly physical science.')">Atoms</button><button class="v5opt" onclick="v5ans(this,false,'That is mathematics.')">Equations</button></div></section>
+<section id="technology" class="page hidden"><div class="hero"><span class="badge">💻 TECHNOLOGY</span><h2>Technology & Computer Science</h2><p>Understand computers, coding, networks, data, cybersecurity, AI, and responsible digital citizenship.</p></div>
+<div class="v5lesson"><h3>Lesson 1 — How Computers Work</h3><p>Computers receive input, process information, store data, and produce output. Hardware includes physical components such as processors, memory, storage, displays, and network equipment. Software consists of instructions and data.</p><button class="primary" onclick="v5done('technology-1')">✓ Complete Lesson</button></div>
+<div class="v5lesson"><h3>Lesson 2 — Coding and Algorithms</h3><p>Programming turns problem-solving ideas into instructions. An algorithm is a defined procedure for completing a task. Variables store values, conditionals choose paths, and loops repeat operations.</p><div class="v5example"><b>Pattern:</b> Input → process → condition → action → output.</div><button class="primary" onclick="v5done('technology-2')">✓ Complete Lesson</button></div>
+<div class="v5lesson"><h3>Lesson 3 — Internet and Networks</h3><p>The internet is a network of networks using standardized protocols. Websites commonly involve browsers, servers, domain names, and transferred data. HTML structures a page, CSS controls presentation, and JavaScript can provide interactive behavior.</p><button class="primary" onclick="v5done('technology-3')">✓ Complete Lesson</button></div>
+<div class="v5lesson"><h3>Lesson 4 — Data</h3><p>Text, images, audio, and video can all be represented as digital data. Databases organize information so software can store, retrieve, and update it. Inaccurate or incomplete data can produce poor conclusions.</p><button class="primary" onclick="v5done('technology-4')">✓ Complete Lesson</button></div>
+<div class="v5lesson"><h3>Lesson 5 — Cybersecurity and Privacy</h3><p>Cybersecurity protects devices, accounts, networks, and information from unauthorized access, disruption, or misuse. Useful habits include strong unique passwords, security updates, careful handling of suspicious messages, and protecting sensitive information.</p><button class="primary" onclick="v5done('technology-5')">✓ Complete Lesson</button></div>
+<div class="v5lesson"><h3>Lesson 6 — AI and Digital Citizenship</h3><p>AI systems can recognize patterns, generate content, make predictions, and assist with decisions. Outputs can still be wrong or incomplete, so important information should be checked. Digital citizenship includes respecting others, protecting privacy, checking information, and thinking about consequences.</p><button class="primary" onclick="v5done('technology-6')">✓ Complete Lesson</button></div>
+<div class="v5quiz"><h3>💻 Technology Quiz</h3><p>What is an algorithm?</p><button class="v5opt" onclick="v5ans(this,true,'Correct! An algorithm is a procedure for solving a problem or completing a task.')">A procedure for solving a problem</button><button class="v5opt" onclick="v5ans(this,false,'A keyboard is hardware.')">Computer hardware</button><button class="v5opt" onclick="v5ans(this,false,'A URL is an address, not an algorithm.')">A website address</button></div></section>
+<script id="v5-subjects-js">function v5done(id){if(typeof data==='undefined')return;if(!data.lessons)data.lessons=[];if(!data.lessons.includes(id)){data.lessons.push(id);data.xp=(data.xp||0)+25;localStorage.setItem('worldwise_v5',JSON.stringify(data));if(typeof updateUI==='function')updateUI();if(typeof renderAchievements==='function')renderAchievements();alert('Lesson completed! +25 XP')}else alert('You already completed this lesson.')}function v5ans(btn,ok,msg){const box=btn.parentElement;box.querySelectorAll('.v5opt').forEach(x=>x.disabled=true);btn.classList.add(ok?'correct':'wrong');const p=document.createElement('p');p.className='fact';p.textContent=msg+(ok?' +10 XP':'');box.appendChild(p);if(typeof data!=='undefined'){data.quizAnswered=(data.quizAnswered||0)+1;if(ok)data.xp=(data.xp||0)+10;localStorage.setItem('worldwise_v5',JSON.stringify(data));if(typeof updateUI==='function')updateUI();}}</script></body>
+</html>
