@@ -1,0 +1,1493 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>WinXP Simulator V2</title>
+
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Tahoma,Arial,sans-serif}
+body{background:#3a82c4}
+button,input,textarea{font-family:inherit}
+
+.hidden{display:none!important}
+
+/* ================= BOOT ================= */
+
+#boot{
+ position:fixed;inset:0;background:#000;color:#fff;
+ z-index:50000;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;
+}
+.boot-logo{font-size:50px;font-weight:bold;font-style:italic}
+.boot-logo span{color:#55a9ef}
+.boot-sub{font-size:16px;margin-top:8px}
+.boot-bar{margin-top:50px;width:280px;height:18px;border:2px solid #777;padding:2px}
+.boot-progress{height:100%;width:0;background:#0b68bd;animation:boot 3s linear forwards}
+@keyframes boot{to{width:100%}}
+
+/* ================= LOGIN ================= */
+
+#login{
+ position:fixed;inset:0;z-index:49000;
+ display:none;align-items:center;justify-content:center;
+ background:linear-gradient(#1b67a8,#317fc2 45%,#245f99);
+ color:white;
+}
+.login-box{
+ width:650px;max-width:90%;
+ border-radius:8px;
+ overflow:hidden;
+ box-shadow:0 10px 35px #0008;
+}
+.login-top{
+ padding:25px;
+ background:linear-gradient(#3d93df,#14599e);
+ text-align:center;
+}
+.login-top h1{margin:0;font-size:30px}
+.login-body{
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ gap:25px;
+ padding:35px;
+ background:#eee;
+ color:#222;
+}
+.avatar{
+ width:100px;height:100px;border-radius:8px;
+ background:#fff;border:3px solid #555;
+ display:flex;align-items:center;justify-content:center;
+ font-size:60px;
+}
+.login-name{font-size:22px;font-weight:bold}
+.login-button{
+ margin-top:15px;padding:10px 30px;
+ border:1px solid #18589a;border-radius:5px;
+ color:#fff;font-weight:bold;
+ background:linear-gradient(#6bb6ef,#1764ad);
+ cursor:pointer;
+}
+.login-button:hover{filter:brightness(1.12)}
+
+/* ================= DESKTOP ================= */
+
+#desktop{
+ position:fixed;inset:0 0 40px;
+ background:
+ radial-gradient(circle at 72% 40%,rgba(255,255,255,.45),transparent 25%),
+ linear-gradient(#63b4ee 0%,#92cbee 48%,#64aa52 49%,#3d873e 100%);
+ overflow:hidden;
+ padding:12px;
+}
+.desktop-icon{
+ width:88px;min-height:82px;color:#fff;
+ text-align:center;text-shadow:1px 1px 3px #000;
+ border:1px solid transparent;border-radius:3px;
+ padding:5px;margin-bottom:3px;cursor:pointer;
+}
+.desktop-icon:hover{
+ background:#2878c455;border-color:#fff5
+}
+.desktop-icon .ico{font-size:38px}
+.desktop-icon .txt{font-size:12px;margin-top:3px}
+
+/* ================= TASKBAR ================= */
+
+#taskbar{
+ position:fixed;left:0;right:0;bottom:0;height:40px;
+ display:flex;align-items:center;
+ background:linear-gradient(#4b9de8,#1768b4 45%,#075399);
+ border-top:1px solid #8ac8f5;
+ z-index:30000;
+}
+#start{
+ height:40px;width:110px;border:0;
+ border-radius:0 13px 13px 0;
+ color:#fff;font-weight:bold;font-style:italic;font-size:16px;
+ background:linear-gradient(#61c76a,#278e31,#176a21);
+ cursor:pointer;text-shadow:1px 1px 2px #164e1b;
+}
+#taskbuttons{
+ flex:1;height:100%;display:flex;align-items:center;
+ gap:3px;padding:3px;overflow:hidden;
+}
+.task{
+ height:31px;min-width:130px;max-width:190px;
+ border:1px solid #075095;border-radius:3px;
+ color:#fff;background:linear-gradient(#5da9e9,#286eb1);
+ cursor:pointer;text-align:left;padding:0 9px;
+ overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+}
+.task.active{background:linear-gradient(#174e88,#092f59)}
+#tray{
+ height:32px;min-width:105px;padding:0 9px;
+ display:flex;gap:7px;align-items:center;
+ color:#fff;font-size:12px;
+ background:#075a9d;border-left:1px solid #03477d;
+}
+
+/* ================= START MENU ================= */
+
+#startMenu{
+ position:fixed;left:0;bottom:40px;width:410px;height:500px;
+ background:#fff;border:1px solid #174f8e;
+ border-radius:7px 7px 0 0;
+ box-shadow:4px 4px 15px #0007;
+ z-index:31000;display:none;overflow:hidden;
+}
+.startHead{
+ height:70px;color:#fff;display:flex;align-items:center;
+ padding:9px;background:linear-gradient(#459be9,#1760aa);
+}
+.startAvatar{
+ width:50px;height:50px;border-radius:5px;
+ background:#fff;color:#2873b8;
+ display:flex;align-items:center;justify-content:center;
+ font-size:32px;margin-right:10px;
+}
+.startUser{font-size:17px;font-weight:bold}
+.startMain{display:flex;height:calc(100% - 112px)}
+.startLeft{width:58%;padding:7px;background:#fff}
+.startRight{width:42%;padding:7px;background:#dbeafa}
+.startItem{
+ min-height:44px;display:flex;align-items:center;
+ gap:8px;padding:5px;border-radius:3px;cursor:pointer;
+}
+.startItem:hover{background:#326ac3;color:#fff}
+.startItem .si{font-size:26px;width:32px;text-align:center}
+.startItem b{font-size:13px;display:block}
+.startItem small{font-size:11px}
+.startBottom{
+ height:42px;background:linear-gradient(#4297e3,#155aa4);
+ display:flex;align-items:center;justify-content:flex-end;
+ gap:18px;padding:0 13px;color:#fff;font-size:12px;
+}
+.startBottom span{cursor:pointer}
+.startBottom span:hover{text-decoration:underline}
+
+/* ================= WINDOWS ================= */
+
+.window{
+ position:fixed;width:680px;height:450px;
+ min-width:310px;min-height:230px;
+ background:#ece9d8;
+ border:2px solid #1857a1;
+ border-radius:8px 8px 0 0;
+ box-shadow:6px 7px 18px #0007;
+ display:none;flex-direction:column;
+ overflow:hidden;
+}
+.titlebar{
+ height:30px;display:flex;align-items:center;
+ padding-left:7px;color:#fff;font-size:13px;font-weight:bold;
+ background:linear-gradient(#74b8ee,#2b72bd 45%,#1352a0);
+ cursor:move;
+}
+.titleIcon{margin-right:6px}
+.titleText{flex:1}
+.controls{display:flex;gap:2px;padding-right:3px}
+.ctrl{
+ width:23px;height:21px;border:1px solid #fff;
+ border-radius:3px;color:#fff;font-weight:bold;
+ background:linear-gradient(#72b3eb,#1754a0);
+ cursor:pointer;
+}
+.ctrl.close{background:linear-gradient(#f18479,#b31d17)}
+.ctrl:hover{filter:brightness(1.15)}
+.menu{
+ height:28px;display:flex;align-items:center;
+ gap:19px;padding:0 9px;background:#eee;
+ border-bottom:1px solid #aaa;font-size:12px;
+}
+.menu span{cursor:pointer}
+.menu span:hover{text-decoration:underline}
+.content{flex:1;overflow:auto;background:#fff}
+
+/* ================= EXPLORER ================= */
+
+.toolbar{
+ height:38px;background:#eee;border-bottom:1px solid #aaa;
+ display:flex;align-items:center;gap:5px;padding:4px;
+}
+.tb{
+ padding:5px 9px;border:1px solid #999;background:#fff;
+ cursor:pointer;font-size:12px;
+}
+.path{flex:1;border:1px solid #888;background:#fff;padding:5px}
+.explorer{display:flex;height:calc(100% - 38px)}
+.side{
+ width:175px;padding:13px;
+ background:linear-gradient(90deg,#d7e8f8,#f1f8fe);
+ border-right:1px solid #aaa;
+}
+.side h3{font-size:14px;color:#13539a;margin:0 0 10px}
+.side div{font-size:12px;color:#174f8e;margin:10px 0;cursor:pointer}
+.files{flex:1;padding:15px;background:#fff}
+.folder{
+ display:inline-flex;vertical-align:top;
+ flex-direction:column;align-items:center;justify-content:center;
+ width:110px;height:100px;margin:5px;
+ border:1px solid transparent;cursor:pointer;
+}
+.folder:hover{background:#e1effc;border-color:#8cb6dd}
+.folderIcon{font-size:42px}
+.folderName{font-size:12px;margin-top:5px}
+
+/* ================= NOTEPAD ================= */
+
+#note{
+ width:100%;height:100%;border:0;resize:none;outline:0;
+ padding:8px;font:14px "Courier New",monospace;
+ user-select:text;
+}
+
+/* ================= CALCULATOR ================= */
+
+.calc{width:315px;margin:25px auto;background:#ddd;padding:10px;border:2px solid #777}
+.calcDisplay{
+ width:100%;height:48px;text-align:right;
+ font-size:23px;padding:7px;margin-bottom:9px;
+ background:#fff;border:2px inset #aaa;
+}
+.calcGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.calcBtn{
+ height:42px;border:1px solid #777;
+ background:linear-gradient(#fff,#ddd);cursor:pointer;font-size:17px;
+}
+.calcBtn:active{background:#bbb}
+
+/* ================= PAINT ================= */
+
+.paint{height:100%;display:flex;flex-direction:column}
+.paintTools{
+ height:43px;background:#eee;border-bottom:1px solid #aaa;
+ display:flex;align-items:center;gap:6px;padding:5px;
+}
+.paintTools button{height:30px;width:36px;background:#fff;border:1px solid #888;cursor:pointer}
+#canvas{flex:1;background:#fff;cursor:crosshair}
+
+/* ================= BROWSER ================= */
+
+.browserTools{
+ padding:5px;background:#eee;border-bottom:1px solid #aaa;
+}
+.browserRow{display:flex;gap:5px}
+.browserBtn{padding:4px 8px;border:1px solid #888;background:#eee;cursor:pointer}
+.address{flex:1;padding:5px;border:1px solid #777;user-select:text}
+.webpage{height:calc(100% - 72px);padding:35px;background:#fff}
+.webpage h1{color:#1458a5}
+
+/* ================= CONTROL PANEL ================= */
+
+.cp{
+ padding:18px;background:#fff;height:100%;
+ display:grid;grid-template-columns:repeat(3,1fr);gap:13px;
+}
+.cpBox{
+ border:1px solid #ddd;padding:13px;text-align:center;cursor:pointer;
+}
+.cpBox:hover{background:#e4f1fc}
+.cpIcon{font-size:38px}
+
+/* ================= GAMES ================= */
+
+.gameCenter{text-align:center;padding:18px;background:#f4f4f4;height:100%}
+.gameBoard{
+ margin:15px auto;display:grid;
+ grid-template-columns:repeat(9,34px);
+ gap:2px;width:max-content;
+}
+.mine{
+ width:34px;height:34px;
+ border:2px outset #eee;
+ background:#bbb;font-weight:bold;cursor:pointer;
+}
+.mine.open{border:1px solid #888;background:#ddd}
+.cards{
+ display:flex;justify-content:center;gap:10px;margin:25px 0;
+}
+.card{
+ width:75px;height:105px;background:#fff;
+ border:1px solid #333;border-radius:5px;
+ display:flex;align-items:center;justify-content:center;
+ font-size:28px;cursor:pointer;
+}
+.card.back{background:#195ca2;color:#fff}
+
+/* ================= SETTINGS ================= */
+
+.settings{
+ padding:20px;background:#fff;height:100%;
+}
+.themeBtn{
+ padding:10px 15px;margin:5px;border:1px solid #777;
+ cursor:pointer;background:#eee;
+}
+
+/* ================= DIALOG ================= */
+
+#dialog{
+ position:fixed;z-index:45000;left:50%;top:50%;
+ transform:translate(-50%,-50%);
+ width:360px;background:#eee;border:2px solid #1755a0;
+ border-radius:7px;box-shadow:5px 7px 20px #0008;
+ display:none;
+}
+.dialogTitle{
+ height:29px;padding:6px;color:#fff;font-size:13px;font-weight:bold;
+ background:linear-gradient(#73b6ed,#1d61ad);
+}
+.dialogBody{padding:20px;background:#fff}
+.dialogButtons{text-align:right;padding:10px;background:#eee}
+.dialogButtons button{padding:5px 18px}
+
+/* ================= SHUTDOWN ================= */
+
+#shutdown{
+ position:fixed;inset:0;background:#000;color:#fff;
+ z-index:60000;display:none;
+ align-items:center;justify-content:center;
+ flex-direction:column;text-align:center;
+}
+.shutdownLogo{font-size:50px;font-weight:bold;font-style:italic}
+.shutdownLogo span{color:#58a8ee}
+.shutdownText{font-size:20px;margin-top:20px}
+
+/* RESPONSIVE */
+
+@media(max-width:700px){
+ .window{width:calc(100vw - 12px);height:calc(100vh - 52px);left:6px!important;top:6px!important}
+ #startMenu{width:100%;height:calc(100vh - 40px)}
+ #taskbuttons{display:none}
+ .cp{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+
+<body>
+
+<!-- BOOT -->
+<div id="boot">
+ <div class="boot-logo">Windows <span>XP</span></div>
+ <div class="boot-sub">WinXP Simulator V2</div>
+ <div class="boot-bar"><div class="boot-progress"></div></div>
+</div>
+
+<!-- LOGIN -->
+<div id="login">
+ <div class="login-box">
+  <div class="login-top">
+   <h1>Windows XP Simulator</h1>
+  </div>
+  <div class="login-body">
+   <div class="avatar">👤</div>
+   <div>
+    <div class="login-name">User</div>
+    <div style="color:#555;margin-top:5px">Click your name to begin</div>
+    <button class="login-button" onclick="enterDesktop()">Log On →</button>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- DESKTOP -->
+<div id="desktop">
+
+ <div class="desktop-icon" ondblclick="openWindow('computer')">
+  <div class="ico">🖥️</div><div class="txt">My Computer</div>
+ </div>
+
+ <div class="desktop-icon" ondblclick="openWindow('documents')">
+  <div class="ico">📁</div><div class="txt">My Documents</div>
+ </div>
+
+ <div class="desktop-icon" ondblclick="openWindow('browser')">
+  <div class="ico">🌐</div><div class="txt">Internet Explorer</div>
+ </div>
+
+ <div class="desktop-icon" ondblclick="openWindow('notepad')">
+  <div class="ico">📝</div><div class="txt">Notepad</div>
+ </div>
+
+ <div class="desktop-icon" ondblclick="openWindow('paint')">
+  <div class="ico">🎨</div><div class="txt">Paint</div>
+ </div>
+
+ <div class="desktop-icon" ondblclick="openWindow('recycle')">
+  <div class="ico">🗑️</div><div class="txt">Recycle Bin</div>
+ </div>
+
+</div>
+
+<!-- ================= WINDOWS ================= -->
+
+<!-- COMPUTER -->
+<div class="window" id="computer" data-title="My Computer">
+ <div class="titlebar">
+  <span class="titleIcon">🖥️</span><span class="titleText">My Computer</span>
+  <div class="controls">
+   <button class="ctrl" onclick="minimize('computer')">—</button>
+   <button class="ctrl" onclick="maximize('computer')">□</button>
+   <button class="ctrl close" onclick="closeWindow('computer')">×</button>
+  </div>
+ </div>
+ <div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Tools</span><span>Help</span></div>
+ <div class="toolbar">
+  <button class="tb">← Back</button><button class="tb">→</button>
+  <button class="tb">🔍 Search</button><div class="path">My Computer</div>
+ </div>
+ <div class="explorer">
+  <div class="side">
+   <h3>System Tasks</h3>
+   <div onclick="showDialog('System Information','Windows XP Simulator V2')">🖥️ View system information</div>
+   <div onclick="showDialog('Programs','No real programs can be installed in the simulator.')">➕ Add or remove programs</div>
+   <div onclick="openWindow('control')">⚙️ Change a setting</div>
+   <h3>Other Places</h3>
+   <div onclick="openWindow('documents')">📁 My Documents</div>
+   <div onclick="openWindow('browser')">🌐 Internet</div>
+  </div>
+  <div class="files">
+   <h3>Hard Disk Drives</h3>
+   <div class="folder" onclick="showDialog('Local Disk (C:)','This is a simulated hard drive.')">
+    <div class="folderIcon">💾</div><div class="folderName">Local Disk (C:)</div>
+   </div>
+   <h3>Devices with Removable Storage</h3>
+   <div class="folder"><div class="folderIcon">💿</div><div class="folderName">CD Drive (D:)</div></div>
+   <div class="folder"><div class="folderIcon">🔌</div><div class="folderName">USB Drive (E:)</div></div>
+  </div>
+ </div>
+</div>
+
+<!-- DOCUMENTS -->
+<div class="window" id="documents" data-title="My Documents">
+ <div class="titlebar">
+  <span class="titleIcon">📁</span><span class="titleText">My Documents</span>
+  <div class="controls">
+   <button class="ctrl" onclick="minimize('documents')">—</button>
+   <button class="ctrl" onclick="maximize('documents')">□</button>
+   <button class="ctrl close" onclick="closeWindow('documents')">×</button>
+  </div>
+ </div>
+ <div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Tools</span><span>Help</span></div>
+ <div class="toolbar">
+  <button class="tb" onclick="newDocument()">📄 New</button>
+  <div class="path">C:\Documents and Settings\User\My Documents</div>
+ </div>
+ <div class="content" id="documentFiles" style="padding:15px">
+  <div class="folder" ondblclick="openWindow('notepad')">
+   <div class="folderIcon">📝</div><div class="folderName">My Notes.txt</div>
+  </div>
+  <div class="folder">
+   <div class="folderIcon">📷</div><div class="folderName">My Pictures</div>
+  </div>
+ </div>
+</div>
+
+<!-- NOTEPAD -->
+<div class="window" id="notepad" data-title="Notepad">
+ <div class="titlebar">
+  <span class="titleIcon">📝</span><span class="titleText">Notepad</span>
+  <div class="controls">
+   <button class="ctrl" onclick="minimize('notepad')">—</button>
+   <button class="ctrl" onclick="maximize('notepad')">□</button>
+   <button class="ctrl close" onclick="closeWindow('notepad')">×</button>
+  </div>
+ </div>
+ <div class="menu">
+  <span onclick="notepadNew()">File</span>
+  <span onclick="saveNote()">Save</span>
+  <span>Edit</span><span>Format</span><span>View</span><span>Help</span>
+ </div>
+ <div class="content"><textarea id="note" spellcheck="false" placeholder="Type something..."></textarea></div>
+</div>
+
+<!-- CALCULATOR -->
+<div class="window" id="calculator" data-title="Calculator">
+ <div class="titlebar">
+  <span class="titleIcon">🧮</span><span class="titleText">Calculator</span>
+  <div class="controls">
+   <button class="ctrl" onclick="minimize('calculator')">—</button>
+   <button class="ctrl" onclick="maximize('calculator')">□</button>
+   <button class="ctrl close" onclick="closeWindow('calculator')">×</button>
+  </div>
+ </div>
+ <div class="menu"><span>View</span><span>Edit</span><span>Help</span></div>
+ <div class="content">
+  <div class="calc">
+   <input id="calcDisplay" class="calcDisplay" value="0" readonly>
+   <div class="calcGrid">
+    <button class="calcBtn" onclick="calcClear()">C</button>
+    <button class="calcBtn" onclick="calcInput('/')">÷</button>
+    <button class="calcBtn" onclick="calcInput('*')">×</button>
+    <button class="calcBtn" onclick="calcBack()">←</button>
+    <button class="calcBtn" onclick="calcInput('7')">7</button>
+    <button class="calcBtn" onclick="calcInput('8')">8</button>
+    <button class="calcBtn" onclick="calcInput('9')">9</button>
+    <button class="calcBtn" onclick="calcInput('-')">−</button>
+    <button class="calcBtn" onclick="calcInput('4')">4</button>
+    <button class="calcBtn" onclick="calcInput('5')">5</button>
+    <button class="calcBtn" onclick="calcInput('6')">6</button>
+    <button class="calcBtn" onclick="calcInput('+')">+</button>
+    <button class="calcBtn" onclick="calcInput('1')">1</button>
+    <button class="calcBtn" onclick="calcInput('2')">2</button>
+    <button class="calcBtn" onclick="calcInput('3')">3</button>
+    <button class="calcBtn" onclick="calcEquals()">=</button>
+    <button class="calcBtn" onclick="calcInput('0')" style="grid-column:span 2">0</button>
+    <button class="calcBtn" onclick="calcInput('.')">.</button>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- PAINT -->
+<div class="window" id="paint" data-title="Paint">
+ <div class="titlebar">
+  <span class="titleIcon">🎨</span><span class="titleText">Paint</span>
+  <div class="controls">
+   <button class="ctrl" onclick="minimize('paint')">—</button>
+   <button class="ctrl" onclick="maximize('paint')">□</button>
+   <button class="ctrl close" onclick="closeWindow('paint')">×</button>
+  </div>
+ </div>
+ <div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Image</span><span>Colors</span><span>Help</span></div>
+ <div class="paint">
+  <div class="paintTools">
+   <button onclick="tool='brush'">✏️</button>
+   <button onclick="tool='eraser'">🧽</button>
+   <button onclick="clearCanvas()">🗑️</button>
+   <input type="color" id="paintColor" value="#000000">
+   <select id="paintSize">
+    <option value="2">2px</option><option value="5" selected>5px</option>
+    <option value="10">10px</option><option value="20">20px</option>
+   </select>
+  </div>
+  <canvas id="canvas"></canvas>
+ </div>
+</div>
+
+<!-- BROWSER -->
+<div class="window" id="browser" data-title="Internet Explorer">
+ <div class="titlebar">
+  <span class="titleIcon">🌐</span><span class="titleText">Internet Explorer</span>
+  <div class="controls">
+   <button class="ctrl" onclick="minimize('browser')">—</button>
+   <button class="ctrl" onclick="maximize('browser')">□</button>
+   <button class="ctrl close" onclick="closeWindow('browser')">×</button>
+  </div>
+ </div>
+ <div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Tools</span><span>Help</span></div>
+ <div class="browserTools">
+  <div class="browserRow">
+   <button class="browserBtn">←</button>
+   <button class="browserBtn">→</button>
+   <button class="browserBtn">↻</button>
+   <input id="address" class="address" value="about:home">
+   <button class="browserBtn" onclick="browserGo()">Go</button>
+  </div>
+ </div>
+ <div class="webpage" id="webpage">
+  <h1>Internet Explorer</h1>
+  <p>Welcome to WinXP Simulator V2.</p>
+  <hr>
+  <h2>Windows XP Simulator</h2>
+  <p>This is a simulated Internet Explorer environment.</p>
+  <p style="color:#0645ad;text-decoration:underline;cursor:pointer" onclick="showDialog('Internet Explorer','This browser is simulated. V2 does not directly browse the Internet from this window.')">
+   Learn more
+  </p>
+ </div>
+</div>
+
+<!-- CONTROL PANEL -->
+<div class="window" id="control" data-title="Control Panel">
+ <div class="titlebar">
+  <span class="titleIcon">⚙️</span><span class="titleText">Control Panel</span>
+  <div class="controls">
+   <button class="ctrl" onclick="minimize('control')">—</button>
+   <button class="ctrl" onclick="maximize('control')">□</button>
+   <button class="ctrl close" onclick="closeWindow('control')">×</button>
+  </div>
+ </div>
+ <div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Help</span></div>
+ <div class="content">
+  <div class="cp">
+   <div class="cpBox" onclick="showDialog('Display','Choose a desktop theme below.')">
+    <div class="cpIcon">🖥️</div><b>Display</b><p>Change appearance</p>
+   </div>
+   <div class="cpBox" onclick="showDialog('Network','Network settings are simulated.')">
+    <div class="cpIcon">🌐</div><b>Network</b><p>Network connections</p>
+   </div>
+   <div class="cpBox" onclick="showDialog('Sounds','System sounds are simulated.')">
+    <div class="cpIcon">🔊</div><b>Sounds</b><p>Change sounds</p>
+   </div>
+   <div class="cpBox" onclick="showDialog('Mouse','Mouse settings are simulated.')">
+    <div class="cpIcon">🖱️</div><b>Mouse</b><p>Mouse settings</p>
+   </div>
+   <div class="cpBox" onclick="showDialog('Keyboard','Keyboard settings are simulated.')">
+    <div class="cpIcon">⌨️</div><b>Keyboard</b><p>Keyboard settings</p>
+   </div>
+   <div class="cpBox" onclick="openWindow('settings')">
+    <div class="cpIcon">🎨</div><b>Appearance</b><p>Desktop themes</p>
+   </div>
+  </div>
+ </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="window" id="settings" data-title="Display Properties">
+ <div class="titlebar">
+  <span class="titleIcon">🎨</span><span class="titleText">Display Properties</span>
+  <div class="controls">
+   <button class="ctrl close" onclick="closeWindow('settings')">×</button>
+  </div>
+ </div>
+ <div class="menu"><span>Themes</span><span>Desktop</span><span>Appearance</span><span>Settings</span></div>
+ <div class="content">
+  <div class="settings">
+   <h2>Desktop Themes</h2>
+   <p>Select a simulated desktop theme:</p>
+   <button class="themeBtn" onclick="theme('xp')">Windows XP</button>
+   <button class="themeBtn" onclick="theme('blue')">Classic Blue</button>
+   <button class="themeBtn" onclick="theme('green')">Green Hills</button>
+   <button class="themeBtn" onclick="theme('night')">Night</button>
+  </div>
+ </div>
+</div>
+
+<!-- RECYCLE -->
+<div class="window" id="recycle" data-title="Recycle Bin">
+ <div class="titlebar">
+  <span class="titleIcon">🗑️</span><span class="titleText">Recycle Bin</span>
+  <div class="controls">
+   <button class="ctrl" onclick="minimize('recycle')">—</button>
+   <button class="ctrl" onclick="maximize('recycle')">□</button>
+   <button class="ctrl close" onclick="closeWindow('recycle')">×</button>
+  </div>
+ </div>
+ <div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Help</span></div>
+ <div class="content" style="text-align:center;padding:40px">
+  <div style="font-size:80px">🗑️</div>
+  <h2>Recycle Bin is Empty</h2>
+  <p>There are currently no files in the Recycle Bin.</p>
+ </div>
+</div>
+
+<!-- MINESWEEPER -->
+<div class="window" id="minesweeper" data-title="Minesweeper">
+ <div class="titlebar">
+  <span class="titleIcon">💣</span><span class="titleText">Minesweeper</span>
+  <div class="controls">
+   <button class="ctrl" onclick="minimize('minesweeper')">—</button>
+   <button class="ctrl" onclick="maximize('minesweeper')">□</button>
+   <button class="ctrl close" onclick="closeWindow('minesweeper')">×</button>
+  </div>
+ </div>
+ <div class="menu"><span>Game</span><span>Help</span></div>
+ <div class="gameCenter">
+  <h2>💣 Minesweeper</h2>
+  <p>Click squares. Avoid the hidden mines!</p>
+  <div id="mineBoard" class="gameBoard"></div>
+  <button onclick="newMines()">New Game</button>
+  <p id="mineStatus"></p>
+ </div>
+</div>
+
+<!-- SOLITAIRE -->
+<div class="window" id="solitaire" data-title="Solitaire">
+ <div class="titlebar">
+  <span class="titleIcon">🃏</span><span class="titleText">Solitaire</span>
+  <div class="controls">
+   <button class="ctrl" onclick="minimize('solitaire')">—</button>
+   <button class="ctrl" onclick="maximize('solitaire')">□</button>
+   <button class="ctrl close" onclick="closeWindow('solitaire')">×</button>
+  </div>
+ </div>
+ <div class="menu"><span>Game</span><span>Help</span></div>
+ <div class="gameCenter">
+  <h2>🃏 Solitaire</h2>
+  <p>Simple card-game demo</p>
+  <div class="cards" id="cards"></div>
+  <button onclick="dealCards()">Deal Cards</button>
+  <p id="cardStatus">Click Deal Cards to begin.</p>
+ </div>
+</div>
+
+<!-- ABOUT -->
+<div class="window" id="about" data-title="About Windows XP Simulator">
+ <div class="titlebar">
+  <span class="titleIcon">ℹ️</span><span class="titleText">About Windows XP Simulator</span>
+  <div class="controls">
+   <button class="ctrl close" onclick="closeWindow('about')">×</button>
+  </div>
+ </div>
+ <div class="content" style="padding:30px">
+  <h1 style="color:#1559a4">Windows XP Simulator V2</h1>
+  <h2>Version 2.0</h2>
+  <p>A browser-based Windows XP-style simulator.</p>
+  <hr>
+  <h3>V2 Features</h3>
+  <ul>
+   <li>Boot screen</li>
+   <li>Login screen</li>
+   <li>XP-style desktop</li>
+   <li>Start Menu</li>
+   <li>Taskbar</li>
+   <li>Draggable windows</li>
+   <li>My Computer</li>
+   <li>My Documents</li>
+   <li>Notepad saving</li>
+   <li>Paint</li>
+   <li>Calculator</li>
+   <li>Internet Explorer simulation</li>
+   <li>Control Panel</li>
+   <li>Games</li>
+   <li>Desktop themes</li>
+  </ul>
+ </div>
+</div>
+
+<!-- START MENU -->
+<div id="startMenu">
+
+ <div class="startHead">
+  <div class="startAvatar">👤</div>
+  <div class="startUser">User</div>
+ </div>
+
+ <div class="startMain">
+
+  <div class="startLeft">
+
+   <div class="startItem" onclick="openWindow('browser')">
+    <div class="si">🌐</div><div><b>Internet Explorer</b><small>Internet</small></div>
+   </div>
+
+   <div class="startItem" onclick="openWindow('notepad')">
+    <div class="si">📝</div><div><b>Notepad</b><small>Text editor</small></div>
+   </div>
+
+   <div class="startItem" onclick="openWindow('paint')">
+    <div class="si">🎨</div><div><b>Paint</b><small>Drawing program</small></div>
+   </div>
+
+   <div class="startItem" onclick="openWindow('calculator')">
+    <div class="si">🧮</div><div><b>Calculator</b><small>Calculate numbers</small></div>
+   </div>
+
+   <div class="startItem" onclick="openWindow('computer')">
+    <div class="si">🖥️</div><div><b>My Computer</b><small>Files and drives</small></div>
+   </div>
+
+   <div class="startItem" onclick="openWindow('documents')">
+    <div class="si">📁</div><div><b>My Documents</b><small>Personal files</small></div>
+   </div>
+
+  </div>
+
+  <div class="startRight">
+
+   <div class="startItem" onclick="openWindow('control')">
+    <div class="si">⚙️</div><div><b>Control Panel</b></div>
+   </div>
+
+   <div class="startItem" onclick="openWindow('minesweeper')">
+    <div class="si">💣</div><div><b>Minesweeper</b></div>
+   </div>
+
+   <div class="startItem" onclick="openWindow('solitaire')">
+    <div class="si">🃏</div><div><b>Solitaire</b></div>
+   </div>
+
+   <div class="startItem" onclick="openWindow('recycle')">
+    <div class="si">🗑️</div><div><b>Recycle Bin</b></div>
+   </div>
+
+   <div class="startItem" onclick="openWindow('about')">
+    <div class="si">ℹ️</div><div><b>About</b></div>
+   </div>
+
+  </div>
+
+ </div>
+
+ <div class="startBottom">
+  <span onclick="showDialog('Log Off','Log Off is simulated in V2.')">🚪 Log Off</span>
+  <span onclick="shutdown()">⏻ Turn Off Computer</span>
+ </div>
+
+</div>
+
+<!-- TASKBAR -->
+<div id="taskbar">
+ <button id="start" onclick="toggleStart()">⊞ start</button>
+ <div id="taskbuttons"></div>
+ <div id="tray">
+  <span>🔊</span><span>🔒</span><span id="clock">3:00 PM</span>
+ </div>
+</div>
+
+<!-- DIALOG -->
+<div id="dialog">
+ <div class="dialogTitle" id="dialogTitle">Windows XP</div>
+ <div class="dialogBody" id="dialogBody"></div>
+ <div class="dialogButtons">
+  <button onclick="closeDialog()">OK</button>
+ </div>
+</div>
+
+<!-- SHUTDOWN -->
+<div id="shutdown">
+ <div class="shutdownLogo">Windows <span>XP</span></div>
+ <div class="shutdownText">Windows XP Simulator is shutting down...</div>
+</div>
+
+<script>
+
+/* ================= GLOBALS ================= */
+
+let z=100;
+let states={};
+let dragging=null;
+let dx=0,dy=0;
+
+const positions={
+ computer:[150,80],
+ documents:[180,100],
+ browser:[120,70],
+ notepad:[200,110],
+ paint:[160,80],
+ calculator:[270,120],
+ control:[170,80],
+ settings:[190,100],
+ recycle:[220,100],
+ minesweeper:[220,80],
+ solitaire:[190,80],
+ about:[200,100]
+};
+
+/* ================= BOOT ================= */
+
+setTimeout(()=>{
+ document.getElementById("boot").style.display="none";
+ document.getElementById("login").style.display="flex";
+},3200);
+
+function enterDesktop(){
+ document.getElementById("login").style.display="none";
+}
+
+/* ================= WINDOWS ================= */
+
+function openWindow(id){
+
+ const w=document.getElementById(id);
+ if(!w)return;
+
+ closeStart();
+
+ if(!states[id]){
+  const p=positions[id]||[100,70];
+  w.style.left=p[0]+"px";
+  w.style.top=p[1]+"px";
+  states[id]={max:false,min:false,old:{}};
+  createTask(id);
+ }
+
+ states[id].min=false;
+ w.style.display="flex";
+ bring(id);
+ updateTasks();
+
+ if(id==="paint")setTimeout(sizeCanvas,50);
+ if(id==="minesweeper")newMines();
+ if(id==="solitaire")dealCards();
+}
+
+function closeWindow(id){
+ const w=document.getElementById(id);
+ if(w)w.style.display="none";
+ updateTasks();
+}
+
+function minimize(id){
+ const w=document.getElementById(id);
+ if(!w)return;
+ w.style.display="none";
+ if(states[id])states[id].min=true;
+ updateTasks();
+}
+
+function maximize(id){
+
+ const w=document.getElementById(id);
+ const s=states[id];
+ if(!w||!s)return;
+
+ if(!s.max){
+
+  s.old={
+   left:w.style.left,
+   top:w.style.top,
+   width:w.style.width,
+   height:w.style.height
+  };
+
+  w.style.left="0";
+  w.style.top="0";
+  w.style.width="100%";
+  w.style.height="calc(100% - 40px)";
+  s.max=true;
+
+ }else{
+
+  w.style.left=s.old.left;
+  w.style.top=s.old.top;
+  w.style.width=s.old.width;
+  w.style.height=s.old.height;
+  s.max=false;
+ }
+
+ bring(id);
+}
+
+function bring(id){
+
+ const w=document.getElementById(id);
+ z++;
+ w.style.zIndex=z;
+
+ document.querySelectorAll(".window").forEach(x=>{
+  x.classList.remove("active");
+ });
+
+ w.classList.add("active");
+
+ updateTasks();
+}
+
+function createTask(id){
+
+ const b=document.createElement("button");
+ b.className="task";
+ b.dataset.id=id;
+
+ b.onclick=()=>{
+  const w=document.getElementById(id);
+
+  if(w.style.display==="none"){
+   openWindow(id);
+  }else if(w.classList.contains("active")){
+   minimize(id);
+  }else{
+   bring(id);
+  }
+ };
+
+ document.getElementById("taskbuttons").appendChild(b);
+}
+
+function updateTasks(){
+
+ document.querySelectorAll(".task").forEach(b=>{
+
+  const id=b.dataset.id;
+  const w=document.getElementById(id);
+
+  const icons={
+   computer:"🖥️",
+   documents:"📁",
+   browser:"🌐",
+   notepad:"📝",
+   paint:"🎨",
+   calculator:"🧮",
+   control:"⚙️",
+   settings:"🎨",
+   recycle:"🗑️",
+   minesweeper:"💣",
+   solitaire:"🃏",
+   about:"ℹ️"
+  };
+
+  b.textContent=(icons[id]||"🪟")+" "+w.dataset.title;
+
+  b.classList.toggle(
+   "active",
+   w.style.display!=="none" &&
+   w.classList.contains("active")
+  );
+
+ });
+}
+
+/* ================= DRAG ================= */
+
+document.querySelectorAll(".titlebar").forEach(bar=>{
+
+ bar.addEventListener("mousedown",e=>{
+
+  const w=bar.closest(".window");
+  if(!w)return;
+
+  bring(w.id);
+
+  if(states[w.id]?.max)return;
+
+  dragging=w;
+
+  const r=w.getBoundingClientRect();
+
+  dx=e.clientX-r.left;
+  dy=e.clientY-r.top;
+ });
+});
+
+document.addEventListener("mousemove",e=>{
+
+ if(!dragging)return;
+
+ dragging.style.left=
+  Math.max(0,e.clientX-dx)+"px";
+
+ dragging.style.top=
+  Math.max(0,e.clientY-dy)+"px";
+});
+
+document.addEventListener("mouseup",()=>{
+ dragging=null;
+});
+
+/* ================= START ================= */
+
+function toggleStart(){
+
+ const m=document.getElementById("startMenu");
+
+ m.style.display=
+  m.style.display==="block"?"none":"block";
+}
+
+function closeStart(){
+ document.getElementById("startMenu").style.display="none";
+}
+
+document.getElementById("desktop").addEventListener("click",closeStart);
+
+/* ================= CLOCK ================= */
+
+function clock(){
+
+ const d=new Date();
+
+ let h=d.getHours();
+ const m=String(d.getMinutes()).padStart(2,"0");
+ const ap=h>=12?"PM":"AM";
+
+ h=h%12||12;
+
+ document.getElementById("clock").textContent=
+  h+":"+m+" "+ap;
+}
+
+setInterval(clock,1000);
+clock();
+
+/* ================= DIALOG ================= */
+
+function showDialog(title,text){
+
+ document.getElementById("dialogTitle").textContent=title;
+ document.getElementById("dialogBody").textContent=text;
+ document.getElementById("dialog").style.display="block";
+}
+
+function closeDialog(){
+ document.getElementById("dialog").style.display="none";
+}
+
+/* ================= NOTEPAD ================= */
+
+const note=document.getElementById("note");
+
+const savedNote=localStorage.getItem("xp_note");
+
+if(savedNote!==null){
+ note.value=savedNote;
+}
+
+function saveNote(){
+
+ localStorage.setItem("xp_note",note.value);
+
+ showDialog(
+  "Notepad",
+  "Your note was saved to the simulator's local browser storage."
+ );
+}
+
+function notepadNew(){
+
+ if(note.value &&
+ !confirm("Clear the current document?"))return;
+
+ note.value="";
+}
+
+/* ================= DOCUMENTS ================= */
+
+function newDocument(){
+ openWindow("notepad");
+ note.value="";
+}
+
+/* ================= CALCULATOR ================= */
+
+let expr="";
+
+function calcInput(v){
+
+ if(expr==="Error")expr="";
+
+ expr+=v;
+
+ document.getElementById("calcDisplay").value=expr;
+}
+
+function calcClear(){
+
+ expr="";
+ document.getElementById("calcDisplay").value="0";
+}
+
+function calcBack(){
+
+ expr=expr.slice(0,-1);
+
+ document.getElementById("calcDisplay").value=expr||"0";
+}
+
+function calcEquals(){
+
+ try{
+
+  if(!/^[0-9+\-*/(). ]+$/.test(expr))throw 0;
+
+  const result=Function(
+   '"use strict";return ('+expr+')'
+  )();
+
+  expr=String(result);
+
+  document.getElementById("calcDisplay").value=expr;
+
+ }catch{
+
+  expr="Error";
+
+  document.getElementById("calcDisplay").value="Error";
+ }
+}
+
+/* ================= PAINT ================= */
+
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+let drawing=false;
+let tool="brush";
+
+function sizeCanvas(){
+
+ const r=canvas.getBoundingClientRect();
+
+ if(r.width<1||r.height<1)return;
+
+ const old=document.createElement("canvas");
+ old.width=canvas.width;
+ old.height=canvas.height;
+
+ if(canvas.width&&canvas.height)
+  old.getContext("2d").drawImage(canvas,0,0);
+
+ canvas.width=r.width;
+ canvas.height=r.height;
+
+ if(old.width&&old.height)
+  ctx.drawImage(old,0,0);
+}
+
+window.addEventListener("resize",sizeCanvas);
+
+function pos(e){
+
+ const r=canvas.getBoundingClientRect();
+
+ return {
+  x:e.clientX-r.left,
+  y:e.clientY-r.top
+ };
+}
+
+canvas.addEventListener("mousedown",e=>{
+
+ drawing=true;
+
+ const p=pos(e);
+
+ ctx.beginPath();
+ ctx.moveTo(p.x,p.y);
+});
+
+canvas.addEventListener("mousemove",e=>{
+
+ if(!drawing)return;
+
+ const p=pos(e);
+
+ ctx.lineWidth=
+  Number(document.getElementById("paintSize").value);
+
+ ctx.lineCap="round";
+
+ ctx.strokeStyle=
+  tool==="eraser"
+   ? "#fff"
+   : document.getElementById("paintColor").value;
+
+ ctx.lineTo(p.x,p.y);
+ ctx.stroke();
+});
+
+canvas.addEventListener("mouseup",()=>drawing=false);
+canvas.addEventListener("mouseleave",()=>drawing=false);
+
+function clearCanvas(){
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+
+/* ================= BROWSER ================= */
+
+function browserGo(){
+
+ const a=document.getElementById("address").value.trim();
+ const p=document.getElementById("webpage");
+
+ if(!a||a==="about:home"){
+
+  p.innerHTML=`
+   <h1>Internet Explorer</h1>
+   <p>Welcome to WinXP Simulator V2.</p>
+   <hr>
+   <h2>Home</h2>
+   <p>This is a simulated browser.</p>
+  `;
+
+  return;
+ }
+
+ p.innerHTML=`
+  <h1>Internet Explorer</h1>
+  <p>You entered:</p>
+  <p><b>${safe(a)}</b></p>
+  <hr>
+  <p>This V2 browser window is simulated.</p>
+ `;
+}
+
+function safe(x){
+
+ const d=document.createElement("div");
+ d.textContent=x;
+ return d.innerHTML;
+}
+
+/* ================= THEMES ================= */
+
+function theme(t){
+
+ const d=document.getElementById("desktop");
+
+ if(t==="xp"){
+  d.style.background=
+   "radial-gradient(circle at 72% 40%,rgba(255,255,255,.45),transparent 25%),linear-gradient(#63b4ee 0%,#92cbee 48%,#64aa52 49%,#3d873e 100%)";
+ }
+
+ if(t==="blue"){
+  d.style.background=
+   "linear-gradient(#2b75ba,#73b7e8 50%,#245e8d)";
+ }
+
+ if(t==="green"){
+  d.style.background=
+   "linear-gradient(#7bb6dc 0%,#b8d9e8 45%,#62a653 46%,#245b25)";
+ }
+
+ if(t==="night"){
+  d.style.background=
+   "linear-gradient(#07162e,#172f58 55%,#101b26)";
+ }
+
+ localStorage.setItem("xp_theme",t);
+
+ showDialog("Display Properties","Theme changed to "+t+".");
+}
+
+const storedTheme=localStorage.getItem("xp_theme");
+if(storedTheme)theme(storedTheme);
+
+/* ================= MINESWEEPER ================= */
+
+let mineCells=[];
+
+function newMines(){
+
+ const board=document.getElementById("mineBoard");
+
+ board.innerHTML="";
+ mineCells=[];
+
+ for(let i=0;i<81;i++){
+
+  const b=document.createElement("button");
+
+  b.className="mine";
+
+  const mine=Math.random()<0.15;
+
+  mineCells.push({
+   mine:mine,
+   open:false
+  });
+
+  b.onclick=()=>{
+
+   const c=mineCells[i];
+
+   if(c.open)return;
+
+   c.open=true;
+   b.classList.add("open");
+
+   if(c.mine){
+
+    b.textContent="💣";
+    document.getElementById("mineStatus").textContent=
+     "Boom! Game over. Click New Game.";
+    revealMines();
+
+   }else{
+
+    b.textContent=Math.floor(Math.random()*5)+1;
+   }
+  };
+
+  board.appendChild(b);
+ }
+
+ document.getElementById("mineStatus").textContent=
+  "Game started!";
+}
+
+function revealMines(){
+
+ document.querySelectorAll(".mine").forEach((b,i)=>{
+
+  if(mineCells[i].mine)b.textContent="💣";
+
+ });
+}
+
+/* ================= SOLITAIRE ================= */
+
+function dealCards(){
+
+ const suits=["♥","♦","♣","♠"];
+ const cards=document.getElementById("cards");
+
+ cards.innerHTML="";
+
+ for(let i=0;i<5;i++){
+
+  const c=document.createElement("div");
+
+  c.className="card";
+
+  const value=
+   Math.floor(Math.random()*13)+1;
+
+  const suit=
+   suits[Math.floor(Math.random()*4)];
+
+  c.textContent=
+   (value===1?"A":
+    value===11?"J":
+    value===12?"Q":
+    value===13?"K":value)+suit;
+
+  c.onclick=()=>{
+
+   c.classList.toggle("back");
+
+   if(c.classList.contains("back")){
+    c.textContent="★";
+   }else{
+    c.textContent=
+     (value===1?"A":
+      value===11?"J":
+      value===12?"Q":
+      value===13?"K":value)+suit;
+   }
+  };
+
+  cards.appendChild(c);
+ }
+
+ document.getElementById("cardStatus").textContent=
+  "Click a card to flip it.";
+}
+
+/* ================= SHUTDOWN ================= */
+
+function shutdown(){
+
+ closeStart();
+
+ document.getElementById("shutdown").style.display="flex";
+
+ setTimeout(()=>{
+
+  document.querySelector(".shutdownText").textContent=
+   "It is now safe to close this browser tab.";
+
+ },2200);
+}
+
+/* ================= KEYBOARD ================= */
+
+document.addEventListener("keydown",e=>{
+
+ if(e.key==="Escape"){
+  closeStart();
+ }
+
+ if(e.key==="F1"){
+  e.preventDefault();
+  openWindow("about");
+ }
+
+ if(e.key==="Enter" &&
+    document.getElementById("login").style.display==="flex"){
+  enterDesktop();
+ }
+});
+
+/* ================= STARTUP ================= */
+
+document.getElementById("login").style.display="none";
+
+</script>
+
+</body>
+</html>
+```
