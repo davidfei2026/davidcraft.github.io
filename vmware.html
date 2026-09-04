@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Windows XP Simulator V2</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Tahoma,Arial,sans-serif;font-size:12px}
+button,input,textarea{font:inherit}button{cursor:pointer}
+.hidden{display:none!important}
+
+/* BOOT */
+#boot{position:fixed;inset:0;background:#050505;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.bootLogo{font:bold 42px Arial;letter-spacing:-2px}.bootLogo span{color:#5aa9ef}.bootSub{margin:8px 0 50px;color:#aaa}
+.bootBar{width:300px;height:22px;border:2px solid #777;background:#111;padding:2px}.bootProgress{height:100%;width:0;background:linear-gradient(90deg,#07378f,#35a8ff,#07378f);animation:boot 2.7s linear forwards}
+@keyframes boot{to{width:100%}}
+
+/* LOGIN */
+#login{position:fixed;inset:0;background:linear-gradient(#1f58a9,#5d9cda 52%,#245aa8);display:flex;align-items:center;justify-content:center}
+.loginBox{width:min(760px,92vw);border:1px solid #15437d;box-shadow:0 12px 35px #0018}
+.loginTop{height:70px;padding:14px 24px;color:#fff;background:linear-gradient(#176bc5,#0a4e9d)}.loginTop h1{margin:0;font-size:25px}.loginTop small{font-weight:normal}
+.loginBody{min-height:250px;background:#eee;display:flex;align-items:center;padding:35px;gap:20px;color:#222}
+.avatar{width:95px;height:95px;border:2px solid #777;border-radius:8px;background:linear-gradient(#fff,#bbb);display:grid;place-items:center;font-size:52px}
+.loginName{font-size:23px;color:#1559a4;font-weight:bold}.loginButton{margin-top:16px;padding:8px 24px;color:#fff;font-weight:bold;border:1px solid #205e13;border-radius:3px;background:linear-gradient(#67c94a,#268f1e)}
+.loginBottom{padding:12px 24px;height:55px;background:#16457f;color:#fff}
+
+/* DESKTOP */
+#desktop{position:fixed;inset:0;overflow:hidden;background:#65a64e}
+.wallpaperSky{position:absolute;inset:0 0 59% 0;background:linear-gradient(#1685d2,#71c7ef)}
+.hillA{position:absolute;left:-12%;bottom:38%;width:70%;height:35%;background:#71a947;border-radius:60% 60% 0 0;transform:rotate(-4deg)}
+.hillB{position:absolute;right:-10%;bottom:35%;width:65%;height:39%;background:#4b8a36;border-radius:60% 60% 0 0;transform:rotate(4deg)}
+.field{position:absolute;inset:62% 0 0;background:linear-gradient(#63a348,#2d6d29)}
+.desktopIcon{position:absolute;width:100px;text-align:center;color:#fff;text-shadow:1px 1px 3px #123;padding:6px;cursor:pointer}
+.desktopIcon:hover{background:#1764b866;outline:1px dotted #fff}.desktopIcon .ico{font-size:36px;height:43px}.desktopIcon .txt{font-size:11px}
+#iComputer{top:15px;left:12px}#iDocuments{top:105px;left:12px}#iBrowser{top:195px;left:12px}#iNotepad{top:285px;left:12px}#iPaint{top:375px;left:12px}#iRecycle{top:465px;left:12px}
+
+/* TASKBAR */
+#taskbar{position:absolute;left:0;right:0;bottom:0;height:40px;z-index:9000;display:flex;background:linear-gradient(#3e9bf0,#0d67c9 55%,#0755a8);border-top:1px solid #75c6ff}
+#start{width:112px;height:40px;border:0;border-right:2px solid #075616;color:#fff;font-weight:bold;font-style:italic;font-size:14px;background:linear-gradient(#59c941,#299c21 50%,#168319);box-shadow:inset 0 1px #caffc2}
+#taskbuttons{flex:1;display:flex;gap:3px;align-items:center;padding:0 4px;overflow:hidden}.task{height:30px;min-width:125px;max-width:190px;border:1px solid #064b96;color:#fff;text-align:left;padding:0 8px;background:linear-gradient(#3998e8,#1468b8);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.task.active{background:linear-gradient(#0c58a5,#073f80)}
+#tray{width:112px;height:40px;display:flex;align-items:center;justify-content:center;gap:7px;color:#fff;border-left:1px solid #62b8f5;background:linear-gradient(#0b5da8,#07467f)}
+
+/* START */
+#startMenu{position:absolute;z-index:9500;left:0;bottom:40px;width:410px;border:2px solid #19569e;box-shadow:4px 5px 12px #123;background:#fff}
+.startHead{height:64px;padding:8px 12px;color:#fff;display:flex;align-items:center;background:linear-gradient(#2e91e1,#0c56a9)}.startAvatar{width:48px;height:48px;display:grid;place-items:center;border:2px solid #fff;border-radius:5px;background:#eee;font-size:28px;margin-right:10px}.startUser{font-size:17px;font-weight:bold}
+.startMain{display:flex;min-height:370px}.startLeft{width:57%;padding:7px}.startRight{width:43%;padding:7px;background:#eaf2fb;border-left:1px solid #aac4df}
+.startItem{display:flex;align-items:center;gap:9px;padding:8px 6px;cursor:pointer}.startItem:hover{background:#2a73c8;color:#fff}.startItem .si{font-size:25px;width:31px;text-align:center}.startItem b{display:block}.startItem small{display:block;color:#666;font-size:10px}.startItem:hover small{color:#fff}.startBottom{height:43px;background:#2b74bd;padding:5px;text-align:right}.startBottom button{padding:6px 12px;border:1px solid #0b4c8e;background:linear-gradient(#fff,#ddd)}
+
+/* WINDOWS */
+.xpWindow{position:absolute;min-width:280px;min-height:180px;background:#ece9d8;border:2px solid #0a4e9c;box-shadow:4px 5px 12px #0008;z-index:100}
+.titlebar{height:28px;display:flex;align-items:center;padding:0 4px 0 7px;color:#fff;font-weight:bold;background:linear-gradient(#73b6ed,#1d61ad 55%,#0b4e9c);cursor:move}.titlebar.inactive{background:linear-gradient(#9aaec2,#6d8298)}
+.titleIcon{font-size:16px;margin-right:5px}.titleText{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.controls{display:flex;gap:2px}.ctrl{width:23px;height:21px;padding:0;border:1px solid #fff;background:linear-gradient(#fff,#bdd7ee);color:#174b7d;font-weight:bold}.ctrl.close{background:linear-gradient(#ff8d7d,#d82c1d);color:#fff}
+.windowBody{position:absolute;left:0;right:0;top:28px;bottom:0;overflow:auto;background:#fff}.menu{height:25px;padding:5px 8px;border-bottom:1px solid #aaa;background:#eee}.menu span{margin-right:18px}.toolbar{height:35px;padding:4px;border-bottom:1px solid #aaa;background:#eee;display:flex;gap:4px;align-items:center}.toolbar button{padding:3px 8px;border:1px solid #aaa;background:linear-gradient(#fff,#ddd)}
+.content{padding:15px;color:#222}.content h2{color:#1559a4}.explorer{display:flex;height:calc(100% - 95px)}.side{width:190px;padding:12px;background:#eaf3fb;border-right:1px solid #aac}.side h3{color:#1559a4}.side div{padding:7px;cursor:pointer}.side div:hover{background:#d6e8fa}.mainFiles{padding:15px;flex:1}.drive{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid #ccc;margin-bottom:9px;background:#fafafa;cursor:pointer}.drive:hover{background:#e2f0ff}.drive .big{font-size:35px}.fileGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.file{padding:12px;border:1px solid transparent;cursor:pointer}.file:hover{background:#dcecff;border-color:#9bbce0}
+
+/* NOTEPAD */
+#noteText{width:100%;height:100%;border:0;outline:0;resize:none;padding:7px;font:14px "Courier New",monospace}.noteWrap{position:absolute;inset:63px 0 0}
+
+/* PAINT */
+.paint{height:100%;display:flex;background:#d5d2c9}.paintTools{width:120px;padding:8px;background:#eee;border-right:1px solid #aaa}.paintTools button{width:47%;height:35px;margin:1%;font-size:18px}.paintTools input{width:100%;margin:6px 0}.canvasWrap{flex:1;overflow:auto;padding:10px;background:#aaa}.canvasWrap canvas{display:block;background:#fff;cursor:crosshair}
+
+/* CALCULATOR */
+.calc{width:300px;margin:auto;padding:14px}.calcDisplay{width:100%;height:50px;margin-bottom:8px;text-align:right;font-size:23px;padding:5px;background:#fff;border:2px inset #aaa}.calcGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.calcGrid button{height:44px;font-size:16px;border:1px solid #888;background:linear-gradient(#fff,#ddd)}.calcGrid .op{background:linear-gradient(#e8f3ff,#bdd8f4)}.calcGrid .eq{background:linear-gradient(#6eafe9,#3278bd);color:#fff}
+
+/* BROWSER */
+.browserTools{padding:4px;background:#eee;border-bottom:1px solid #aaa}.browserRow{display:flex;gap:4px}.browserRow button{padding:3px 9px}.address{flex:1;padding:4px;border:1px solid #888}.webpage{padding:24px;font-family:Arial}.webpage h1{font-size:31px;color:#1559a4}.searchbox{height:30px;width:75%;padding:5px}
+
+/* CONTROL / SETTINGS */
+.cp{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.cpBox{padding:14px;border:1px solid #ccc;background:#fafafa;cursor:pointer}.cpBox:hover{background:#e5f1ff}.cpIcon{font-size:32px}.themeRow{display:flex;gap:12px;flex-wrap:wrap}.themeBtn{width:160px;height:90px;color:#fff;font-weight:bold;border:2px solid #777;cursor:pointer}.themeBtn.xp{background:linear-gradient(#3f9be8,#176bc1,#5a9d4d)}.themeBtn.silver{background:linear-gradient(#bbb,#777,#aaa)}.themeBtn.olive{background:linear-gradient(#a0a36a,#686c3d,#777d4d)}
+
+/* GAMES */
+.gameCenter{text-align:center;padding:14px}.gameBoard{display:grid;grid-template-columns:repeat(9,32px);gap:2px;width:max-content;margin:12px auto}.mineCell{width:32px;height:32px;border:2px outset #eee;background:#ccc;font-weight:bold}.mineCell.open{border:1px solid #999;background:#eee}.mineCell.mine{background:#f88}.cards{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:25px}.card{width:82px;height:115px;border:1px solid #555;border-radius:5px;background:#fff;display:grid;place-items:center;font-size:24px;cursor:pointer}.card.back{color:#fff;background:repeating-linear-gradient(45deg,#145bb0 0 5px,#2d79ca 5px 10px)}
+
+/* DIALOG / SHUTDOWN */
+#dialog{position:fixed;z-index:30000;left:50%;top:50%;transform:translate(-50%,-50%);width:370px;border:2px solid #1755a0;box-shadow:5px 7px 20px #0008;background:#eee}.dialogTitle{height:29px;padding:6px;color:#fff;font-weight:bold;background:linear-gradient(#73b6ed,#1d61ad)}.dialogBody{padding:20px;background:#fff}.dialogButtons{text-align:right;padding:10px;background:#eee}.dialogButtons button{padding:5px 20px}
+#shutdown{position:fixed;inset:0;z-index:40000;background:#000;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.shutdownLogo{font-size:48px;font-weight:bold;font-style:italic}.shutdownLogo span{color:#58a8ee}.shutdownText{font-size:20px;margin:20px}
+@media(max-width:700px){#startMenu{width:100%;bottom:40px}.task{min-width:100px}.cp{grid-template-columns:repeat(2,1fr)}.desktopIcon{left:5px!important}.xpWindow{left:6px!important;top:6px!important;width:calc(100vw - 12px)!important;height:calc(100vh - 52px)!important}}
+</style>
+</head>
+<body>
+
+<div id="boot">
+  <div class="bootLogo">Windows <span>XP</span></div>
+  <div class="bootSub">WinXP Simulator V2</div>
+  <div class="bootBar"><div class="bootProgress"></div></div>
+</div>
+
+<div id="login" class="hidden">
+  <div class="loginBox">
+    <div class="loginTop"><h1>Windows XP Simulator</h1><small>To begin, click your user name</small></div>
+    <div class="loginBody">
+      <div class="avatar">👤</div>
+      <div><div class="loginName">User</div><div>Windows XP Simulator V2</div><button class="loginButton" onclick="enterDesktop()">Log On →</button></div>
+    </div>
+    <div class="loginBottom">After you log on, you can explore the Windows XP-style desktop and applications.</div>
+  </div>
+</div>
+
+<div id="desktop" class="hidden">
+  <div class="wallpaperSky"></div><div class="hillA"></div><div class="hillB"></div><div class="field"></div>
+
+  <div id="iComputer" class="desktopIcon" ondblclick="openWindow('computer')"><div class="ico">🖥️</div><div class="txt">My Computer</div></div>
+  <div id="iDocuments" class="desktopIcon" ondblclick="openWindow('documents')"><div class="ico">📁</div><div class="txt">My Documents</div></div>
+  <div id="iBrowser" class="desktopIcon" ondblclick="openWindow('browser')"><div class="ico">🌐</div><div class="txt">Internet Explorer</div></div>
+  <div id="iNotepad" class="desktopIcon" ondblclick="openWindow('notepad')"><div class="ico">📝</div><div class="txt">Notepad</div></div>
+  <div id="iPaint" class="desktopIcon" ondblclick="openWindow('paint')"><div class="ico">🎨</div><div class="txt">Paint</div></div>
+  <div id="iRecycle" class="desktopIcon" ondblclick="openWindow('recycle')"><div class="ico">🗑️</div><div class="txt">Recycle Bin</div></div>
+
+  <div id="windows"></div>
+
+  <div id="startMenu" class="hidden">
+    <div class="startHead"><div class="startAvatar">👤</div><div class="startUser">User</div></div>
+    <div class="startMain">
+      <div class="startLeft">
+        <div class="startItem" onclick="openWindow('browser')"><div class="si">🌐</div><div><b>Internet Explorer</b><small>Internet</small></div></div>
+        <div class="startItem" onclick="openWindow('notepad')"><div class="si">📝</div><div><b>Notepad</b><small>Text editor</small></div></div>
+        <div class="startItem" onclick="openWindow('paint')"><div class="si">🎨</div><div><b>Paint</b><small>Drawing program</small></div></div>
+        <div class="startItem" onclick="openWindow('calculator')"><div class="si">🧮</div><div><b>Calculator</b><small>Calculate numbers</small></div></div>
+        <div class="startItem" onclick="openWindow('computer')"><div class="si">🖥️</div><div><b>My Computer</b><small>Files and drives</small></div></div>
+        <div class="startItem" onclick="openWindow('documents')"><div class="si">📁</div><div><b>My Documents</b><small>Personal files</small></div></div>
+      </div>
+      <div class="startRight">
+        <div class="startItem" onclick="openWindow('control')"><div class="si">⚙️</div><div><b>Control Panel</b></div></div>
+        <div class="startItem" onclick="openWindow('minesweeper')"><div class="si">💣</div><div><b>Minesweeper</b></div></div>
+        <div class="startItem" onclick="openWindow('solitaire')"><div class="si">🃏</div><div><b>Solitaire</b></div></div>
+        <div class="startItem" onclick="openWindow('recycle')"><div class="si">🗑️</div><div><b>Recycle Bin</b></div></div>
+        <div class="startItem" onclick="openWindow('settings')"><div class="si">🎨</div><div><b>Display Properties</b></div></div>
+        <div class="startItem" onclick="openWindow('about')"><div class="si">ℹ️</div><div><b>About</b></div></div>
+      </div>
+    </div>
+    <div class="startBottom"><button onclick="showShutdown()">⏻ Turn Off Computer</button></div>
+  </div>
+
+  <div id="taskbar"><button id="start" onclick="toggleStart()">⊞ start</button><div id="taskbuttons"></div><div id="tray">🔊 🔒 <span id="clock"></span></div></div>
+</div>
+
+<div id="dialog" class="hidden"><div class="dialogTitle" id="dialogTitle">Windows XP</div><div class="dialogBody" id="dialogBody"></div><div class="dialogButtons"><button onclick="closeDialog()">OK</button></div></div>
+
+<div id="shutdown" class="hidden"><div class="shutdownLogo">Windows <span>XP</span></div><div class="shutdownText">Windows XP Simulator is shutting down...</div><div><button onclick="location.reload()">Restart</button> <button onclick="hideShutdown()">Cancel</button></div></div>
+
+<script>
+const apps={
+ computer:{title:"My Computer",icon:"🖥️",w:730,h:470},
+ documents:{title:"My Documents",icon:"📁",w:700,h:450},
+ browser:{title:"Internet Explorer",icon:"🌐",w:760,h:510},
+ notepad:{title:"Notepad",icon:"📝",w:700,h:470},
+ paint:{title:"Paint",icon:"🎨",w:820,h:550},
+ calculator:{title:"Calculator",icon:"🧮",w:330,h:420},
+ control:{title:"Control Panel",icon:"⚙️",w:720,h:470},
+ settings:{title:"Display Properties",icon:"🎨",w:620,h:430},
+ recycle:{title:"Recycle Bin",icon:"🗑️",w:650,h:420},
+ minesweeper:{title:"Minesweeper",icon:"💣",w:450,h:465},
+ solitaire:{title:"Solitaire",icon:"🃏",w:650,h:470},
+ about:{title:"About Windows XP Simulator",icon:"ℹ️",w:600,h:430}
+};
+let z=100,states={},calc="",mine=[],mineOpen=[],cards=[],cardBack=[];
+const savedNote=localStorage.getItem("xp_note")||"Welcome to Windows XP Notepad!\\n\\nThis is Windows XP Simulator V2.\\n\\nType something here and use File → Save to save it in your browser.";
+
+setTimeout(()=>{boot.classList.add("hidden");login.classList.remove("hidden")},2800);
+
+function enterDesktop(){login.classList.add("hidden");desktop.classList.remove("hidden");applyTheme(localStorage.getItem("xp_theme")||"xp");toast("Welcome to Windows XP Simulator V2!")}
+function toggleStart(){startMenu.classList.toggle("hidden")}
+function closeStart(){startMenu.classList.add("hidden")}
+function toast(msg){showDialog("Windows XP",msg);setTimeout(closeDialog,1400)}
+function showDialog(title,msg){dialogTitle.textContent=title;dialogBody.innerHTML=msg;dialog.classList.remove("hidden")}
+function closeDialog(){dialog.classList.add("hidden")}
+
+function openWindow(id){
+ closeStart();
+ if(states[id]){states[id].minimized=false;states[id].el.style.display="block";focusWindow(id);return}
+ const a=apps[id],el=document.createElement("div");
+ el.className="xpWindow";el.id="win_"+id;
+ const dw=desktop.clientWidth,dh=desktop.clientHeight-40;
+ const w=Math.min(a.w,Math.max(280,dw-16)),h=Math.min(a.h,Math.max(200,dh-12));
+ const count=Object.keys(states).length;
+ el.style.width=w+"px";el.style.height=h+"px";el.style.left=Math.max(5,Math.min(dw-w-5,90+(count*25)%180))+"px";el.style.top=Math.max(5,Math.min(dh-h-5,40+(count*22)%120))+"px";
+ el.innerHTML=`<div class="titlebar"><span class="titleIcon">${a.icon}</span><span class="titleText">${a.title}</span><div class="controls"><button class="ctrl" onclick="minimize('${id}');event.stopPropagation()">—</button><button class="ctrl" onclick="maximize('${id}');event.stopPropagation()">□</button><button class="ctrl close" onclick="closeWindow('${id}');event.stopPropagation()">×</button></div></div><div class="windowBody">${content(id)}</div>`;
+ windows.appendChild(el);states[id]={el,minimized:false,maximized:false,old:null};makeDraggable(el,id);focusWindow(id);setup(id,el);
+}
+function content(id){
+ if(id==="computer")return `<div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Tools</span><span>Help</span></div><div class="toolbar"><button>← Back</button><button>→</button><button>🔍 Search</button><span>My Computer</span></div><div class="explorer"><div class="side"><h3>System Tasks</h3><div onclick="showDialog('System Information','Windows XP Simulator V2')">🖥️ View system information</div><div onclick="showDialog('Programs','No real programs can be installed in this simulator.')">📦 Add or remove programs</div><h3>Other Places</h3><div onclick="openWindow('documents')">📁 My Documents</div><div onclick="openWindow('control')">⚙️ Control Panel</div></div><div class="mainFiles"><h2>My Computer</h2><div class="drive" onclick="showDialog('Local Disk (C:)','This is a simulated system drive.')"><div class="big">💽</div><div><b>Local Disk (C:)</b><br>System drive</div></div><div class="drive" onclick="openWindow('documents')"><div class="big">📁</div><div><b>My Documents</b><br>Personal documents</div></div></div></div>`;
+ if(id==="documents")return `<div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Tools</span><span>Help</span></div><div class="content"><h2>My Documents</h2><div class="fileGrid"><div class="file" ondblclick="openWindow('notepad')">📝<br>Notes.txt</div><div class="file" ondblclick="openWindow('paint')">🎨<br>My Picture.bmp</div><div class="file">📄<br>Welcome.doc</div></div></div>`;
+ if(id==="notepad")return `<div class="menu"><span>File</span><span>Edit</span><span>Format</span><span>View</span><span>Help</span></div><div class="toolbar"><button onclick="newNote()">New</button><button onclick="saveNote()">Save</button><button onclick="downloadNote()">Save As...</button></div><div class="noteWrap"><textarea id="noteText" spellcheck="false"></textarea></div>`;
+ if(id==="paint")return `<div class="toolbar"><button onclick="clearPaint()">🗑 Clear</button><button onclick="savePaint()">💾 Save Image</button><label> Color <input id="paintColor" type="color" value="#000000"></label><label> Size <input id="paintSize" type="range" min="1" max="30" value="5"></label></div><div class="paint"><div class="paintTools"><button onclick="setPaintMode('pencil')">✏️</button><button onclick="setPaintMode('line')">╱</button><p>Paint Tools</p><p>Draw with your mouse.</p></div><div class="canvasWrap"><canvas id="canvas" width="700" height="420"></canvas></div></div>`;
+ if(id==="calculator")return `<div class="calc"><input id="calcDisplay" class="calcDisplay" value="0" readonly><div class="calcGrid">${["7","8","9","÷","4","5","6","×","1","2","3","−","0",".","C","+","(",")","⌫","="].map(x=>`<button class="${"÷×−+".includes(x)?"op":""} ${x==="="?"eq":""}" onclick="calcPress('${x}')">${x}</button>`).join("")}</div></div>`;
+ if(id==="browser")return `<div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Tools</span><span>Help</span></div><div class="browserTools"><div class="browserRow"><button>←</button><button>→</button><button onclick="browserHome()">🏠</button><input id="address" class="address" value="about:home" onkeydown="if(event.key==='Enter')browserGo()"><button onclick="browserGo()">Go</button></div></div><div class="webpage" id="webpage"></div>`;
+ if(id==="control")return `<div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Help</span></div><div class="content"><h2>Control Panel</h2><div class="cp"><div class="cpBox" onclick="openWindow('settings')"><div class="cpIcon">🖥️</div><b>Display</b><p>Change appearance</p></div><div class="cpBox" onclick="showDialog('Network','Network settings are simulated.')"><div class="cpIcon">🌐</div><b>Network</b><p>Network connections</p></div><div class="cpBox" onclick="showDialog('Sounds','System sounds are simulated.')"><div class="cpIcon">🔊</div><b>Sounds</b><p>Change sounds</p></div><div class="cpBox" onclick="showDialog('Mouse','Mouse settings are simulated.')"><div class="cpIcon">🖱️</div><b>Mouse</b><p>Mouse settings</p></div><div class="cpBox" onclick="showDialog('Keyboard','Keyboard settings are simulated.')"><div class="cpIcon">⌨️</div><b>Keyboard</b><p>Keyboard settings</p></div><div class="cpBox" onclick="openWindow('about')"><div class="cpIcon">ℹ️</div><b>System</b><p>About the simulator</p></div></div></div>`;
+ if(id==="settings")return `<div class="menu"><span>Themes</span><span>Desktop</span><span>Appearance</span><span>Settings</span></div><div class="content"><h2>Desktop Themes</h2><p>Select a simulated desktop theme:</p><div class="themeRow"><button class="themeBtn xp" onclick="applyTheme('xp')">Windows XP</button><button class="themeBtn silver" onclick="applyTheme('silver')">Windows XP Silver</button><button class="themeBtn olive" onclick="applyTheme('olive')">Windows XP Olive</button></div></div>`;
+ if(id==="recycle")return `<div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Help</span></div><div class="content"><h2>Recycle Bin</h2><p>The Recycle Bin is empty.</p><div style="font-size:80px;text-align:center;margin-top:40px">🗑️</div></div>`;
+ if(id==="minesweeper")return `<div class="menu"><span>Game</span><span>Help</span></div><div class="gameCenter"><h2>💣 Minesweeper</h2><p>Click squares. Avoid the hidden mines!</p><div id="mineBoard" class="gameBoard"></div><button onclick="newMines()">New Game</button><p id="mineStatus"></p></div>`;
+ if(id==="solitaire")return `<div class="menu"><span>Game</span><span>Help</span></div><div class="gameCenter"><h2>🃏 Solitaire</h2><p>Simple card-game demo</p><div class="cards" id="cards"></div><button onclick="dealCards()">Deal Cards</button><p id="cardStatus">Click Deal Cards to begin.</p></div>`;
+ if(id==="about")return `<div class="content" style="padding:30px"><h1 style="color:#1559a4">Windows XP Simulator V2</h1><h2>Version 2.0</h2><p>A browser-based Windows XP-style simulator.</p><hr><h3>V2 Features</h3><ul><li>Boot screen</li><li>Login screen</li><li>XP-style desktop</li><li>Start Menu</li><li>Taskbar</li><li>Draggable windows</li><li>My Computer</li><li>My Documents</li><li>Notepad saving</li><li>Paint</li><li>Calculator</li><li>Internet Explorer simulation</li><li>Control Panel</li><li>Games</li><li>Desktop themes</li></ul></div>`;
+}
+function setup(id,el){
+ if(id==="notepad")noteText.value=savedNote.replace(/\\n/g,"\n");
+ if(id==="paint")setupPaint();
+ if(id==="browser")browserHome();
+ if(id==="minesweeper")newMines();
+ if(id==="solitaire")dealCards();
+}
+function focusWindow(id){const s=states[id];if(!s)return;s.el.style.zIndex=++z;document.querySelectorAll(".titlebar").forEach(x=>x.classList.add("inactive"));s.el.querySelector(".titlebar").classList.remove("inactive");renderTasks()}
+function closeWindow(id){if(states[id]){states[id].el.remove();delete states[id];renderTasks()}}
+function minimize(id){states[id].minimized=true;states[id].el.style.display="none";renderTasks()}
+function maximize(id){const s=states[id],d=desktop;if(!s.maximized){s.old={l:s.el.offsetLeft,t:s.el.offsetTop,w:s.el.offsetWidth,h:s.el.offsetHeight};s.el.style.left="0";s.el.style.top="0";s.el.style.width=d.clientWidth+"px";s.el.style.height=d.clientHeight-40+"px";s.maximized=true}else{s.el.style.left=s.old.l+"px";s.el.style.top=s.old.t+"px";s.el.style.width=s.old.w+"px";s.el.style.height=s.old.h+"px";s.maximized=false}focusWindow(id)}
+function makeDraggable(el,id){const bar=el.querySelector(".titlebar");let drag=false,sx,sy,ox,oy;bar.onmousedown=e=>{if(e.target.closest("button"))return;focusWindow(id);drag=true;sx=e.clientX;sy=e.clientY;ox=el.offsetLeft;oy=el.offsetTop};window.onmousemove=e=>{if(!drag)return;let x=ox+e.clientX-sx,y=oy+e.clientY-sy;x=Math.max(0,Math.min(desktop.clientWidth-el.offsetWidth,x));y=Math.max(0,Math.min(desktop.clientHeight-40-el.offsetHeight,y));el.style.left=x+"px";el.style.top=y+"px"};window.onmouseup=()=>drag=false;el.onmousedown=()=>focusWindow(id)}
+function renderTasks(){taskbuttons.innerHTML="";Object.values(states).forEach(s=>{const b=document.createElement("button");b.className="task"+(s.minimized?"":" active");b.textContent=apps[s.id]?.icon+" "+apps[s.id]?.title;b.onclick=()=>{s.minimized=false;s.el.style.display="block";focusWindow(s.id)};taskbuttons.appendChild(b)})}
+setInterval(()=>clock.textContent=new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}),1000);
+
+/* Notepad */
+function newNote(){noteText.value=""}
+function saveNote(){localStorage.setItem("xp_note",noteText.value);showDialog("Notepad","Your notes have been saved in this browser.")}
+function downloadNote(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([noteText.value],{type:"text/plain"}));a.download="Notes.txt";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
+
+/* Paint */
+let painting=false,px=0,py=0;
+function setupPaint(){const c=document.getElementById("canvas"),ctx=c.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,c.width,c.height);c.onmousedown=e=>{painting=true;const r=c.getBoundingClientRect();px=e.clientX-r.left;py=e.clientY-r.top};c.onmousemove=e=>{if(!painting)return;const r=c.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;ctx.strokeStyle=paintColor.value;ctx.lineWidth=+paintSize.value;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(x,y);ctx.stroke();px=x;py=y};c.onmouseup=()=>painting=false;c.onmouseleave=()=>painting=false}
+function setPaintMode(m){showDialog("Paint",m==="line"?"Line tool selected.":"Pencil selected.")}
+function clearPaint(){const c=document.getElementById("canvas");if(c){const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height)}}
+function savePaint(){const c=document.getElementById("canvas");if(c){const a=document.createElement("a");a.href=c.toDataURL("image/png");a.download="My Picture.png";a.click()}}
+
+/* Calculator */
+function calcPress(x){const d=document.getElementById("calcDisplay");if(x==="C"){calc="";d.value="0";return}if(x==="⌫"){calc=calc.slice(0,-1);d.value=calc||"0";return}if(x==="="){try{let e=calc.replace(/÷/g,"/").replace(/×/g,"*").replace(/−/g,"-");if(!/^[0-9+*/().\s-]+$/.test(e))throw 0;calc=String(Function('"use strict";return ('+e+')')());d.value=calc}catch{calc="";d.value="Error"}return}calc+=x;d.value=calc}
+
+/* Browser */
+function browserHome(){const p=document.getElementById("webpage");if(!p)return;address.value="about:home";p.innerHTML=`<h1>Internet Explorer</h1><p>Welcome to WinXP Simulator V2.</p><hr><h2>Windows XP Simulator</h2><p>This is a simulated Internet Explorer environment.</p><input id="fakeSearch" class="searchbox" placeholder="Search this simulated web"><button onclick="fakeSearchGo()">Search</button><p style="color:#0645ad;text-decoration:underline;cursor:pointer" onclick="showDialog('Internet Explorer','This browser is simulated. It does not directly browse the Internet.')">Learn more</p>`}
+function fakeSearchGo(){const q=document.getElementById("fakeSearch").value||"Windows XP";webpage.innerHTML=`<h1>Search</h1><p>Simulated results for <b>${escapeHTML(q)}</b></p><hr><h2>Windows XP Simulator</h2><p>This V2 browser works offline.</p>`}
+function browserGo(){const v=address.value.trim();if(!v||v==="about:home")browserHome();else webpage.innerHTML=`<h1>Internet Explorer</h1><p>Address: <b>${escapeHTML(v)}</b></p><p>This browser is an offline simulation, so external websites are not loaded.</p>`}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+/* Minesweeper */
+function neighbors(i){let x=i%9,y=Math.floor(i/9),r=[];for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){if(!dx&&!dy)continue;let nx=x+dx,ny=y+dy;if(nx>=0&&nx<9&&ny>=0&&ny<9)r.push(ny*9+nx)}return r}
+function newMines(){const b=document.getElementById("mineBoard");if(!b)return;mine=Array(81).fill(false);mineOpen=Array(81).fill(false);let n=0;while(n<12){let i=Math.floor(Math.random()*81);if(!mine[i]){mine[i]=true;n++}}b.innerHTML="";for(let i=0;i<81;i++){let x=document.createElement("button");x.className="mineCell";x.onclick=()=>openMine(i,x);b.appendChild(x)}mineStatus.textContent="12 mines hidden"}
+function openMine(i,b){if(mineOpen[i])return;mineOpen[i]=true;b.classList.add("open");if(mine[i]){b.textContent="💣";b.classList.add("mine");mineStatus.textContent="Game over — press New Game.";return}let n=neighbors(i).filter(j=>mine[j]).length;b.textContent=n||""}
+
+/* Solitaire demo */
+function dealCards(){const box=document.getElementById("cards");if(!box)return;const suits=["♥","♦","♣","♠"],vals=["A","2","3","4","5","6","7","8","9","10","J","Q","K"];cards=[];for(let i=0;i<5;i++)cards.push(vals[Math.floor(Math.random()*13)]+suits[Math.floor(Math.random()*4)]);cardBack=Array(5).fill(true);box.innerHTML="";cards.forEach((c,i)=>{let el=document.createElement("div");el.className="card back";el.textContent="★";el.onclick=()=>{cardBack[i]=!cardBack[i];el.className="card"+(cardBack[i]?" back":"");el.textContent=cardBack[i]?"★":c};box.appendChild(el)});cardStatus.textContent="Click a card to flip it."}
+
+/* Themes */
+function applyTheme(t){localStorage.setItem("xp_theme",t);if(t==="silver"){desktop.style.background="linear-gradient(#a8b0b8 0,#c9ced2 48%,#888 48%,#666)";document.querySelector(".wallpaperSky").style.background="linear-gradient(#8c98a4,#c8d0d5)";document.querySelector(".hillA").style.background="#888";document.querySelector(".hillB").style.background="#666";document.querySelector(".field").style.background="#777";taskbar.style.background="linear-gradient(#bbb,#777,#999)";start.style.background="linear-gradient(#bbb,#777,#888)"}else if(t==="olive"){desktop.style.background="linear-gradient(#a4aa72 0,#c0c495 48%,#777d4d 48%,#4f5a2e)";document.querySelector(".wallpaperSky").style.background="linear-gradient(#8f9b62,#c5cb8e)";document.querySelector(".hillA").style.background="#798148";document.querySelector(".hillB").style.background="#626a38";document.querySelector(".field").style.background="#58652d";taskbar.style.background="linear-gradient(#7d8954,#586538,#4a552f)";start.style.background="linear-gradient(#89955d,#65743c,#50612e)"}else{desktop.style.background="linear-gradient(#4e9bd7 0,#72b5e4 40%,#6caa5b 40%,#397c31)";document.querySelector(".wallpaperSky").style.background="linear-gradient(#1685d2,#71c7ef)";document.querySelector(".hillA").style.background="#71a947";document.querySelector(".hillB").style.background="#4b8a36";document.querySelector(".field").style.background="linear-gradient(#63a348,#2d6d29)";taskbar.style.background="linear-gradient(#3e9bf0,#0d67c9 55%,#0755a8)";start.style.background="linear-gradient(#59c941,#299c21 50%,#168319)"}}
+
+/* Shutdown + keyboard */
+function showShutdown(){closeStart();shutdown.classList.remove("hidden")}
+function hideShutdown(){shutdown.classList.add("hidden")}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeStart();closeDialog()};if(e.key==="Enter"&&!login.classList.contains("hidden"))enterDesktop()});
+window.addEventListener("resize",()=>Object.values(states).forEach(s=>{if(s.maximized){s.el.style.width=desktop.clientWidth+"px";s.el.style.height=desktop.clientHeight-40+"px"}}));
+</script>
+</body>
+</html>
