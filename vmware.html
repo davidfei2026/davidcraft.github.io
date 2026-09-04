@@ -128,7 +128,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}
         <div class="startItem" onclick="openWindow('about')"><div class="si">ℹ️</div><div><b>About</b></div></div>
       </div>
     </div>
-    <div class="startBottom"><button onclick="showShutdown()">⏻ Turn Off Computer</button></div>
+    <div class="startBottom"><button onclick="logOff()">🚪 Log Off</button> <button onclick="showShutdown()">⏻ Turn Off Computer</button></div>
   </div>
 
   <div id="taskbar"><button id="start" onclick="toggleStart()">⊞ start</button><div id="taskbuttons"></div><div id="tray">🔊 🔒 <span id="clock"></span></div></div>
@@ -136,7 +136,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 
 <div id="dialog" class="hidden"><div class="dialogTitle" id="dialogTitle">Windows XP</div><div class="dialogBody" id="dialogBody"></div><div class="dialogButtons"><button onclick="closeDialog()">OK</button></div></div>
 
-<div id="shutdown" class="hidden"><div class="shutdownLogo">Windows <span>XP</span></div><div class="shutdownText">Windows XP Simulator is shutting down...</div><div><button onclick="location.reload()">Restart</button> <button onclick="hideShutdown()">Cancel</button></div></div>
+<div id="shutdown" class="hidden"><div class="shutdownLogo">Windows <span>XP</span></div><div class="shutdownText">Windows XP Simulator is shutting down...</div><div><button onclick="restartSimulator()">Restart</button> <button onclick="hideShutdown()">Cancel</button></div></div>
 
 <script>
 const apps={
@@ -161,6 +161,7 @@ setTimeout(()=>{boot.classList.add("hidden");login.classList.remove("hidden")},2
 function enterDesktop(){login.classList.add("hidden");desktop.classList.remove("hidden");applyTheme(localStorage.getItem("xp_theme")||"xp");toast("Welcome to Windows XP Simulator V2!")}
 function toggleStart(){startMenu.classList.toggle("hidden")}
 function closeStart(){startMenu.classList.add("hidden")}
+desktop?.addEventListener("mousedown",e=>{if(!e.target.closest("#startMenu")&&!e.target.closest("#start"))closeStart()});
 function toast(msg){showDialog("Windows XP",msg);setTimeout(closeDialog,1400)}
 function showDialog(title,msg){dialogTitle.textContent=title;dialogBody.innerHTML=msg;dialog.classList.remove("hidden")}
 function closeDialog(){dialog.classList.add("hidden")}
@@ -175,13 +176,13 @@ function openWindow(id){
  const count=Object.keys(states).length;
  el.style.width=w+"px";el.style.height=h+"px";el.style.left=Math.max(5,Math.min(dw-w-5,90+(count*25)%180))+"px";el.style.top=Math.max(5,Math.min(dh-h-5,40+(count*22)%120))+"px";
  el.innerHTML=`<div class="titlebar"><span class="titleIcon">${a.icon}</span><span class="titleText">${a.title}</span><div class="controls"><button class="ctrl" onclick="minimize('${id}');event.stopPropagation()">—</button><button class="ctrl" onclick="maximize('${id}');event.stopPropagation()">□</button><button class="ctrl close" onclick="closeWindow('${id}');event.stopPropagation()">×</button></div></div><div class="windowBody">${content(id)}</div>`;
- windows.appendChild(el);states[id]={el,minimized:false,maximized:false,old:null};makeDraggable(el,id);focusWindow(id);setup(id,el);
+ windows.appendChild(el);states[id]={id,el,minimized:false,maximized:false,old:null};makeDraggable(el,id);focusWindow(id);setup(id,el);
 }
 function content(id){
- if(id==="computer")return `<div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Tools</span><span>Help</span></div><div class="toolbar"><button>← Back</button><button>→</button><button>🔍 Search</button><span>My Computer</span></div><div class="explorer"><div class="side"><h3>System Tasks</h3><div onclick="showDialog('System Information','Windows XP Simulator V2')">🖥️ View system information</div><div onclick="showDialog('Programs','No real programs can be installed in this simulator.')">📦 Add or remove programs</div><h3>Other Places</h3><div onclick="openWindow('documents')">📁 My Documents</div><div onclick="openWindow('control')">⚙️ Control Panel</div></div><div class="mainFiles"><h2>My Computer</h2><div class="drive" onclick="showDialog('Local Disk (C:)','This is a simulated system drive.')"><div class="big">💽</div><div><b>Local Disk (C:)</b><br>System drive</div></div><div class="drive" onclick="openWindow('documents')"><div class="big">📁</div><div><b>My Documents</b><br>Personal documents</div></div></div></div>`;
+ if(id==="computer")return `<div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Tools</span><span>Help</span></div><div class="toolbar"><button onclick="showDialog('Back','You are already at My Computer.')">← Back</button><button onclick="showDialog('Forward','There is no next folder.')">→</button><button onclick="showDialog('Search','Search is simulated in this version.')">🔍 Search</button><span>My Computer</span></div><div class="explorer"><div class="side"><h3>System Tasks</h3><div onclick="showDialog('System Information','Windows XP Simulator V2')">🖥️ View system information</div><div onclick="showDialog('Programs','No real programs can be installed in this simulator.')">📦 Add or remove programs</div><h3>Other Places</h3><div onclick="openWindow('documents')">📁 My Documents</div><div onclick="openWindow('control')">⚙️ Control Panel</div></div><div class="mainFiles"><h2>My Computer</h2><div class="drive" onclick="showDialog('Local Disk (C:)','This is a simulated system drive.')"><div class="big">💽</div><div><b>Local Disk (C:)</b><br>System drive</div></div><div class="drive" onclick="openWindow('documents')"><div class="big">📁</div><div><b>My Documents</b><br>Personal documents</div></div></div></div>`;
  if(id==="documents")return `<div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Tools</span><span>Help</span></div><div class="content"><h2>My Documents</h2><div class="fileGrid"><div class="file" ondblclick="openWindow('notepad')">📝<br>Notes.txt</div><div class="file" ondblclick="openWindow('paint')">🎨<br>My Picture.bmp</div><div class="file">📄<br>Welcome.doc</div></div></div>`;
  if(id==="notepad")return `<div class="menu"><span>File</span><span>Edit</span><span>Format</span><span>View</span><span>Help</span></div><div class="toolbar"><button onclick="newNote()">New</button><button onclick="saveNote()">Save</button><button onclick="downloadNote()">Save As...</button></div><div class="noteWrap"><textarea id="noteText" spellcheck="false"></textarea></div>`;
- if(id==="paint")return `<div class="toolbar"><button onclick="clearPaint()">🗑 Clear</button><button onclick="savePaint()">💾 Save Image</button><label> Color <input id="paintColor" type="color" value="#000000"></label><label> Size <input id="paintSize" type="range" min="1" max="30" value="5"></label></div><div class="paint"><div class="paintTools"><button onclick="setPaintMode('pencil')">✏️</button><button onclick="setPaintMode('line')">╱</button><p>Paint Tools</p><p>Draw with your mouse.</p></div><div class="canvasWrap"><canvas id="canvas" width="700" height="420"></canvas></div></div>`;
+ if(id==="paint")return `<div class="toolbar"><button onclick="clearPaint()">🗑 Clear</button><button onclick="savePaint()">💾 Save Image</button><label> Color <input id="paintColor" type="color" value="#000000"></label><label> Size <input id="paintSize" type="range" min="1" max="30" value="5"></label></div><div class="paint"><div class="paintTools"><button onclick="setPaintMode('pencil')">✏️</button><button onclick="setPaintMode('eraser')">🧽</button><p>Paint Tools</p><p>Draw with your mouse.</p></div><div class="canvasWrap"><canvas id="canvas" width="700" height="420"></canvas></div></div>`;
  if(id==="calculator")return `<div class="calc"><input id="calcDisplay" class="calcDisplay" value="0" readonly><div class="calcGrid">${["7","8","9","÷","4","5","6","×","1","2","3","−","0",".","C","+","(",")","⌫","="].map(x=>`<button class="${"÷×−+".includes(x)?"op":""} ${x==="="?"eq":""}" onclick="calcPress('${x}')">${x}</button>`).join("")}</div></div>`;
  if(id==="browser")return `<div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Tools</span><span>Help</span></div><div class="browserTools"><div class="browserRow"><button>←</button><button>→</button><button onclick="browserHome()">🏠</button><input id="address" class="address" value="about:home" onkeydown="if(event.key==='Enter')browserGo()"><button onclick="browserGo()">Go</button></div></div><div class="webpage" id="webpage"></div>`;
  if(id==="control")return `<div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Help</span></div><div class="content"><h2>Control Panel</h2><div class="cp"><div class="cpBox" onclick="openWindow('settings')"><div class="cpIcon">🖥️</div><b>Display</b><p>Change appearance</p></div><div class="cpBox" onclick="showDialog('Network','Network settings are simulated.')"><div class="cpIcon">🌐</div><b>Network</b><p>Network connections</p></div><div class="cpBox" onclick="showDialog('Sounds','System sounds are simulated.')"><div class="cpIcon">🔊</div><b>Sounds</b><p>Change sounds</p></div><div class="cpBox" onclick="showDialog('Mouse','Mouse settings are simulated.')"><div class="cpIcon">🖱️</div><b>Mouse</b><p>Mouse settings</p></div><div class="cpBox" onclick="showDialog('Keyboard','Keyboard settings are simulated.')"><div class="cpIcon">⌨️</div><b>Keyboard</b><p>Keyboard settings</p></div><div class="cpBox" onclick="openWindow('about')"><div class="cpIcon">ℹ️</div><b>System</b><p>About the simulator</p></div></div></div>`;
@@ -192,19 +193,80 @@ function content(id){
  if(id==="about")return `<div class="content" style="padding:30px"><h1 style="color:#1559a4">Windows XP Simulator V2</h1><h2>Version 2.0</h2><p>A browser-based Windows XP-style simulator.</p><hr><h3>V2 Features</h3><ul><li>Boot screen</li><li>Login screen</li><li>XP-style desktop</li><li>Start Menu</li><li>Taskbar</li><li>Draggable windows</li><li>My Computer</li><li>My Documents</li><li>Notepad saving</li><li>Paint</li><li>Calculator</li><li>Internet Explorer simulation</li><li>Control Panel</li><li>Games</li><li>Desktop themes</li></ul></div>`;
 }
 function setup(id,el){
- if(id==="notepad")noteText.value=savedNote.replace(/\\n/g,"\n");
+ if(id==="notepad"){
+   const n=el.querySelector("#noteText");
+   n.value=localStorage.getItem("xp_note")||"Welcome to Windows XP Notepad!\n\nThis is Windows XP Simulator V2.\n\nType something here and use File → Save to save it in your browser.";
+   n.focus();
+ }
  if(id==="paint")setupPaint();
- if(id==="browser")browserHome();
+ if(id==="browser"){browserHome();setupBrowserHistory(el)}
  if(id==="minesweeper")newMines();
  if(id==="solitaire")dealCards();
+
+ // Make XP-style menu labels functional instead of decorative.
+ el.querySelectorAll(".menu span").forEach(span=>{
+   const name=span.textContent.trim();
+   span.style.cursor="pointer";
+   span.title=name;
+   span.onclick=()=>menuAction(id,name);
+ });
 }
-function focusWindow(id){const s=states[id];if(!s)return;s.el.style.zIndex=++z;document.querySelectorAll(".titlebar").forEach(x=>x.classList.add("inactive"));s.el.querySelector(".titlebar").classList.remove("inactive");renderTasks()}
-function closeWindow(id){if(states[id]){states[id].el.remove();delete states[id];renderTasks()}}
-function minimize(id){states[id].minimized=true;states[id].el.style.display="none";renderTasks()}
-function maximize(id){const s=states[id],d=desktop;if(!s.maximized){s.old={l:s.el.offsetLeft,t:s.el.offsetTop,w:s.el.offsetWidth,h:s.el.offsetHeight};s.el.style.left="0";s.el.style.top="0";s.el.style.width=d.clientWidth+"px";s.el.style.height=d.clientHeight-40+"px";s.maximized=true}else{s.el.style.left=s.old.l+"px";s.el.style.top=s.old.t+"px";s.el.style.width=s.old.w+"px";s.el.style.height=s.old.h+"px";s.maximized=false}focusWindow(id)}
-function makeDraggable(el,id){const bar=el.querySelector(".titlebar");let drag=false,sx,sy,ox,oy;bar.onmousedown=e=>{if(e.target.closest("button"))return;focusWindow(id);drag=true;sx=e.clientX;sy=e.clientY;ox=el.offsetLeft;oy=el.offsetTop};window.onmousemove=e=>{if(!drag)return;let x=ox+e.clientX-sx,y=oy+e.clientY-sy;x=Math.max(0,Math.min(desktop.clientWidth-el.offsetWidth,x));y=Math.max(0,Math.min(desktop.clientHeight-40-el.offsetHeight,y));el.style.left=x+"px";el.style.top=y+"px"};window.onmouseup=()=>drag=false;el.onmousedown=()=>focusWindow(id)}
-function renderTasks(){taskbuttons.innerHTML="";Object.values(states).forEach(s=>{const b=document.createElement("button");b.className="task"+(s.minimized?"":" active");b.textContent=apps[s.id]?.icon+" "+apps[s.id]?.title;b.onclick=()=>{s.minimized=false;s.el.style.display="block";focusWindow(s.id)};taskbuttons.appendChild(b)})}
-setInterval(()=>clock.textContent=new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}),1000);
+
+function menuAction(id,name){
+ if(id==="notepad"){
+   if(name==="File") showDialog("Notepad — File","<button onclick=\"newNote();closeDialog()\">New</button> &nbsp; <button onclick=\"saveNote();closeDialog()\">Save</button> &nbsp; <button onclick=\"downloadNote();closeDialog()\">Save As...</button>");
+   else if(name==="Edit") showDialog("Notepad — Edit","Use the text area to edit your document. Keyboard shortcuts such as Ctrl+A, Ctrl+C and Ctrl+V work normally.");
+   else if(name==="Format") showDialog("Notepad — Format","Word Wrap is always enabled for this simulator.");
+   else showDialog("Notepad — "+name,"Windows XP Simulator V2");
+   return;
+ }
+ if(id==="browser"){
+   if(name==="File") showDialog("Internet Explorer — File","Use the address bar and Go button to navigate the simulated web.");
+   else if(name==="View") browserHome();
+   else if(name==="Favorites") showDialog("Favorites","No favorites have been saved yet.");
+   else if(name==="Tools") showDialog("Internet Options","Browser settings are simulated in this offline version.");
+   else showDialog("Internet Explorer — Help","Type an address into the address bar and press Enter or Go.");
+   return;
+ }
+ if(id==="computer"||id==="documents"){
+   if(name==="File") showDialog("File","Open an item by clicking it. Double-click supported files to open them.");
+   else if(name==="Edit") showDialog("Edit","Cut, Copy and Paste are simulated.");
+   else if(name==="View") showDialog("View","This simulator uses icon/list views automatically.");
+   else if(name==="Help") showDialog("Help","Click folders, drives, and applications to explore Windows XP Simulator.");
+   else showDialog(name,name+" is simulated in this version.");
+   return;
+ }
+ if(id==="paint"){
+   if(name==="File") showDialog("Paint — File","Use Save Image to export your picture as a PNG.");
+   else if(name==="Edit") showDialog("Paint — Edit","Use Clear to erase the canvas.");
+   else if(name==="Colors") document.getElementById("paintColor")?.click();
+   else if(name==="Image") showDialog("Paint — Image","Image operations are simulated. You can draw directly on the canvas.");
+   else showDialog("Paint — "+name,"Paint controls are available in the toolbar.");
+   return;
+ }
+ if(id==="control"){
+   if(name==="View") openWindow("settings");
+   else showDialog("Control Panel",name+" settings are simulated.");
+   return;
+ }
+ if(id==="settings"){
+   if(name==="Themes"||name==="Appearance") showDialog("Display Properties","Choose a theme below.");
+   else if(name==="Desktop") applyTheme(localStorage.getItem("xp_theme")||"xp");
+   else showDialog("Display Properties",name+" settings are simulated.");
+   return;
+ }
+ if(id==="minesweeper"){
+   if(name==="Game") newMines();
+   else showDialog("Minesweeper","Click a square to reveal it. Avoid the mines.");
+   return;
+ }
+ if(id==="solitaire"){
+   if(name==="Game") dealCards();
+   else showDialog("Solitaire","This is a simple playable card-flipping demo.");
+   return;
+ }
+ showDialog(name,"This Windows XP menu command is simulated.");
+}
 
 /* Notepad */
 function newNote(){noteText.value=""}
@@ -212,19 +274,111 @@ function saveNote(){localStorage.setItem("xp_note",noteText.value);showDialog("N
 function downloadNote(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([noteText.value],{type:"text/plain"}));a.download="Notes.txt";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
 
 /* Paint */
-let painting=false,px=0,py=0;
-function setupPaint(){const c=document.getElementById("canvas"),ctx=c.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,c.width,c.height);c.onmousedown=e=>{painting=true;const r=c.getBoundingClientRect();px=e.clientX-r.left;py=e.clientY-r.top};c.onmousemove=e=>{if(!painting)return;const r=c.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;ctx.strokeStyle=paintColor.value;ctx.lineWidth=+paintSize.value;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(x,y);ctx.stroke();px=x;py=y};c.onmouseup=()=>painting=false;c.onmouseleave=()=>painting=false}
-function setPaintMode(m){showDialog("Paint",m==="line"?"Line tool selected.":"Pencil selected.")}
+let painting=false,px=0,py=0,paintMode="pencil";
+function setupPaint(){
+ const c=document.getElementById("canvas"),ctx=c?.getContext("2d");if(!c||!ctx)return;
+ ctx.fillStyle="#fff";ctx.fillRect(0,0,c.width,c.height);
+ c.onmousedown=e=>{painting=true;const r=c.getBoundingClientRect();px=e.clientX-r.left;py=e.clientY-r.top};
+ c.onmousemove=e=>{
+   if(!painting)return;
+   const r=c.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+   ctx.strokeStyle=paintMode==="eraser"?"#fff":paintColor.value;
+   ctx.lineWidth=+paintSize.value;ctx.lineCap="round";
+   ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(x,y);ctx.stroke();px=x;py=y;
+ };
+ c.onmouseup=()=>painting=false;c.onmouseleave=()=>painting=false;
+}
+function setPaintMode(m){paintMode=m;showDialog("Paint",m==="eraser"?"Eraser selected.":"Pencil selected.")}
 function clearPaint(){const c=document.getElementById("canvas");if(c){const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height)}}
-function savePaint(){const c=document.getElementById("canvas");if(c){const a=document.createElement("a");a.href=c.toDataURL("image/png");a.download="My Picture.png";a.click()}}
-
+function savePaint(){
+ const c=document.getElementById("canvas");if(!c)return;
+ const a=document.createElement("a");a.href=c.toDataURL("image/png");a.download="My Picture.png";a.click();
+}
 /* Calculator */
-function calcPress(x){const d=document.getElementById("calcDisplay");if(x==="C"){calc="";d.value="0";return}if(x==="⌫"){calc=calc.slice(0,-1);d.value=calc||"0";return}if(x==="="){try{let e=calc.replace(/÷/g,"/").replace(/×/g,"*").replace(/−/g,"-");if(!/^[0-9+*/().\s-]+$/.test(e))throw 0;calc=String(Function('"use strict";return ('+e+')')());d.value=calc}catch{calc="";d.value="Error"}return}calc+=x;d.value=calc}
+function calcPress(x){
+ const d=document.getElementById("calcDisplay");if(!d)return;
+ if(x==="C"){calc="";d.value="0";return}
+ if(x==="⌫"){calc=calc.slice(0,-1);d.value=calc||"0";return}
+ if(x==="="){
+   try{
+     let e=calc.replace(/÷/g,"/").replace(/×/g,"*").replace(/−/g,"-");
+     if(!/^[0-9+*/().\s-]+$/.test(e)||!e.trim())throw 0;
+     const result=Function('"use strict";return ('+e+')')();
+     if(!Number.isFinite(result))throw 0;
+     calc=String(result);d.value=calc;
+   }catch{calc="";d.value="Error"}
+   return;
+ }
+ if(x==="." && /(?:^|[+\-*/])[^+\-*/.]*\.$/.test(calc))return;
+ calc+=x;d.value=calc;
+}
+function calcKeyboard(e){
+ const map={Enter:"=",Escape:"C",Backspace:"⌫","/":"÷","*":"×","-":"−","+":"+"};
+ if(/^[0-9.]$/.test(e.key))calcPress(e.key);
+ else if(map[e.key]){e.preventDefault();calcPress(map[e.key]);}
+}
+document.addEventListener("keydown",e=>{if(document.activeElement?.id==="calcDisplay")calcKeyboard(e)});
+
 
 /* Browser */
-function browserHome(){const p=document.getElementById("webpage");if(!p)return;address.value="about:home";p.innerHTML=`<h1>Internet Explorer</h1><p>Welcome to WinXP Simulator V2.</p><hr><h2>Windows XP Simulator</h2><p>This is a simulated Internet Explorer environment.</p><input id="fakeSearch" class="searchbox" placeholder="Search this simulated web"><button onclick="fakeSearchGo()">Search</button><p style="color:#0645ad;text-decoration:underline;cursor:pointer" onclick="showDialog('Internet Explorer','This browser is simulated. It does not directly browse the Internet.')">Learn more</p>`}
-function fakeSearchGo(){const q=document.getElementById("fakeSearch").value||"Windows XP";webpage.innerHTML=`<h1>Search</h1><p>Simulated results for <b>${escapeHTML(q)}</b></p><hr><h2>Windows XP Simulator</h2><p>This V2 browser works offline.</p>`}
-function browserGo(){const v=address.value.trim();if(!v||v==="about:home")browserHome();else webpage.innerHTML=`<h1>Internet Explorer</h1><p>Address: <b>${escapeHTML(v)}</b></p><p>This browser is an offline simulation, so external websites are not loaded.</p>`}
+let browserHistory=["about:home"],browserPos=0;
+function setupBrowserHistory(el){
+ const buttons=el.querySelectorAll(".browserRow button");
+ if(buttons[0])buttons[0].onclick=browserBack;
+ if(buttons[1])buttons[1].onclick=browserForward;
+ if(buttons[2])buttons[2].onclick=browserRefresh;
+ const input=el.querySelector("#address");
+ if(input)input.onkeydown=e=>{if(e.key==="Enter")browserGo()};
+}
+function browserHome(){
+ const p=document.getElementById("webpage");if(!p)return;
+ address.value="about:home";
+ p.innerHTML=`<h1>Internet Explorer</h1><p>Welcome to WinXP Simulator V2.</p><hr>
+ <h2>Windows XP Simulator</h2><p>This is a simulated Internet Explorer environment.</p>
+ <input id="fakeSearch" class="searchbox" placeholder="Search this simulated web">
+ <button onclick="fakeSearchGo()">Search</button>
+ <p><button onclick="showDialog('Internet Explorer','This browser is simulated. It works without loading external websites.')">Learn more</button></p>`;
+}
+function fakeSearchGo(){
+ const q=document.getElementById("fakeSearch")?.value.trim()||"Windows XP";
+ webpage.innerHTML=`<h1>Search</h1><p>Simulated results for <b>${escapeHTML(q)}</b></p><hr>
+ <h2>Windows XP Simulator</h2><p>This V2 browser works offline.</p>
+ <button onclick="browserHome()">Back to Home</button>`;
+ browserRemember("search:"+q);
+}
+function browserGo(){
+ const v=address.value.trim();
+ if(!v||v==="about:home"){browserHome();browserRemember("about:home");return}
+ webpage.innerHTML=`<h1>Internet Explorer</h1><p>Address: <b>${escapeHTML(v)}</b></p>
+ <p>This browser is an offline simulation, so external websites are not loaded.</p>
+ <button onclick="browserHome()">Home</button>`;
+ browserRemember(v);
+}
+function browserRemember(v){
+ if(browserPos<browserHistory.length-1)browserHistory=browserHistory.slice(0,browserPos+1);
+ if(browserHistory[browserPos]!==v)browserHistory.push(v),browserPos++;
+}
+function browserBack(){
+ if(browserPos>0){browserPos--;loadBrowserHistory();}
+ else showDialog("Internet Explorer","There are no previous pages.");
+}
+function browserForward(){
+ if(browserPos<browserHistory.length-1){browserPos++;loadBrowserHistory();}
+ else showDialog("Internet Explorer","There are no next pages.");
+}
+function browserRefresh(){
+ const v=browserHistory[browserPos]||"about:home";
+ address.value=v;
+ if(v==="about:home")browserHome();else browserGo();
+}
+function loadBrowserHistory(){
+ const v=browserHistory[browserPos];
+ address.value=v;
+ if(v==="about:home")browserHome();else{
+   webpage.innerHTML=`<h1>Internet Explorer</h1><p>Address: <b>${escapeHTML(v)}</b></p>
+   <p>This is a simulated offline page.</p><button onclick="browserHome()">Home</button>`;
+ }
+}
 function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 
 /* Minesweeper */
@@ -241,8 +395,43 @@ function applyTheme(t){localStorage.setItem("xp_theme",t);if(t==="silver"){deskt
 /* Shutdown + keyboard */
 function showShutdown(){closeStart();shutdown.classList.remove("hidden")}
 function hideShutdown(){shutdown.classList.add("hidden")}
+function logOff(){
+ Object.keys(states).forEach(id=>closeWindow(id));
+ shutdown.classList.add("hidden");desktop.classList.add("hidden");login.classList.remove("hidden");
+}
+function restartSimulator(){location.reload()}
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeStart();closeDialog()};if(e.key==="Enter"&&!login.classList.contains("hidden"))enterDesktop()});
 window.addEventListener("resize",()=>Object.values(states).forEach(s=>{if(s.maximized){s.el.style.width=desktop.clientWidth+"px";s.el.style.height=desktop.clientHeight-40+"px"}}));
+
+// Desktop context menu — functional XP-style shortcuts.
+const contextMenu=document.createElement("div");
+contextMenu.style.cssText="position:fixed;display:none;z-index:50000;background:#fff;border:1px solid #777;box-shadow:3px 3px 8px #0006;min-width:180px";
+contextMenu.innerHTML=`<div class="ctx" data-a="settings">🖥️ Display Properties</div>
+<div class="ctx" data-a="computer">🖥️ My Computer</div>
+<div class="ctx" data-a="documents">📁 My Documents</div>
+<div class="ctx" data-a="about">ℹ️ About</div>
+<hr style="margin:2px">
+<div class="ctx" data-a="refresh">🔄 Refresh</div>`;
+document.body.appendChild(contextMenu);
+const ctxStyle=document.createElement("style");ctxStyle.textContent=".ctx{padding:7px 10px;cursor:pointer}.ctx:hover{background:#2a73c8;color:#fff}";document.head.appendChild(ctxStyle);
+desktop.addEventListener("contextmenu",e=>{
+ if(e.target.closest(".xpWindow")||e.target.closest("#taskbar")||e.target.closest("#startMenu"))return;
+ e.preventDefault();contextMenu.style.left=e.clientX+"px";contextMenu.style.top=e.clientY+"px";contextMenu.style.display="block";
+});
+contextMenu.addEventListener("click",e=>{
+ const a=e.target.closest(".ctx")?.dataset.a;if(!a)return;
+ contextMenu.style.display="none";
+ if(a==="refresh"){showDialog("Refresh","Desktop refreshed.");return}
+ openWindow(a);
+});
+document.addEventListener("click",e=>{if(!e.target.closest("#contextMenu"))contextMenu.style.display="none"});
+
+// Keyboard shortcuts for common XP actions.
+document.addEventListener("keydown",e=>{
+ if(e.ctrlKey&&e.altKey&&e.key.toLowerCase()==="n"){e.preventDefault();openWindow("notepad")}
+ if(e.ctrlKey&&e.altKey&&e.key.toLowerCase()==="c"){e.preventDefault();openWindow("calculator")}
+ if(e.key==="F5"&&!desktop.classList.contains("hidden")){e.preventDefault();showDialog("Refresh","Desktop refreshed.")}
+});
 </script>
 </body>
 </html>
