@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JS/HTML 3D Minecraft Clone</title>
+    <title>Three.js Minecraft Clone</title>
     <style>
         body, html {
             margin: 0;
@@ -14,11 +14,6 @@
             background-color: #78a7ff;
             font-family: sans-serif;
         }
-        canvas {
-            display: block;
-            width: 100vw;
-            height: 100vh;
-        }
         #crosshair {
             position: absolute;
             top: 50%;
@@ -27,11 +22,12 @@
             height: 10px;
             transform: translate(-50%, -50%);
             pointer-events: none;
+            z-index: 10;
         }
         #crosshair::before, #crosshair::after {
             content: '';
             position: absolute;
-            background: white;
+            background: rgba(255, 255, 255, 0.7);
         }
         #crosshair::before { top: 4px; left: 0; width: 10px; height: 2px; }
         #crosshair::after { top: 0; left: 4px; width: 2px; height: 10px; }
@@ -40,172 +36,199 @@
             top: 10px;
             left: 10px;
             color: white;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
             padding: 15px;
             border-radius: 5px;
             pointer-events: none;
             font-size: 14px;
             line-height: 1.5;
+            z-index: 10;
         }
     </style>
+    <!-- Load Three.js and PointerLockControls from CDN -->
+    <script src="https://cloudflare.com"></script>
+    <script src="https://jsdelivr.net"></script>
 </head>
 <body>
 
     <div id="crosshair"></div>
     <div id="instructions">
-        <strong>Controls:</strong><br>
-        • Click on screen to lock mouse cursor<br>
+        <strong>Three.js Minecraft Controls:</strong><br>
+        • Click anywhere to lock mouse and play<br>
         • Move Mouse to look around<br>
-        • W, A, S, D to move<br>
-        • Space to jump / Shift to go down<br>
-        • Left Click to destroy blocks<br>
+        • W, A, S, D to move horizontally<br>
+        • Space to fly up / Shift to fly down<br>
+        • Left Click to break blocks<br>
         • Right Click to place blocks
     </div>
-    <canvas id="gameCanvas"></canvas>
 
     <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
+        // 1. Setup Scene, Camera, and Renderer
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x78a7ff); // Sky color
+        scene.fog = new THREE.FogExp2(0x78a7ff, 0.03);
 
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        document.body.appendChild(renderer.domElement);
 
-        // Lock pointer on click
-        canvas.addEventListener('click', () => {
-            canvas.requestPointerLock();
+        // 2. Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.position.set(20, 40, 20);
+        scene.add(directionalLight);
+
+        // 3. Controls (Pointer Lock for first-person view)
+        const controls = new THREE.PointerLockControls(camera, document.body);
+        
+        document.body.addEventListener('click', () => {
+            controls.lock();
         });
 
-        // Game State
-        const player = {
-            x: 2, y: 3, z: 5,
-            yaw: 0, pitch: 0,
-            speed: 0.1
+        controls.addEventListener('lock', () => {
+            document.getElementById('instructions').style.display = 'none';
+        });
+
+        controls.addEventListener('unlock', () => {
+            document.getElementById('instructions').style.display = 'block';
+        });
+
+        // 4. Block Materials and Geometry
+        const cubeGeo = new THREE.BoxGeometry(1, 1, 1);
+        
+        // Colors representing basic block types
+        const materials = {
+            grass: new THREE.MeshLambertMaterial({ color: 0x557a2b }),
+            dirt: new THREE.MeshLambertMaterial({ color: 0x866043 }),
+            stone: new THREE.MeshLambertMaterial({ color: 0x808080 })
         };
 
-        // Simple 3D Block World Matrix (4x4x4 for demonstration starter grid)
-        const worldSize = 8;
-        const blocks = [];
-        
-        // Generate a basic flat ground terrain
-        for(let x=0; x<worldSize; x++) {
-            for(let z=0; z<worldSize; z++) {
-                blocks.push({x, y:0, z, color: '#557a2b'}); // Grass layer
-                if(x === 3 && z === 3) blocks.push({x:3, y:1, z:3, color: '#866043'}); // Single dirt block
+        // Raycaster for block interactions (breaking/building)
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2(0, 0); // Center of the screen
+
+        // 5. Generate World (16x16 chunk)
+        const worldSize = 16;
+        const blocksArray = [];
+
+        function createBlock(x, y, z, type) {
+            const mesh = new THREE.Mesh(cubeGeo, materials[type]);
+            mesh.position.set(x, y, z);
+            scene.add(mesh);
+            blocksArray.push(mesh);
+        }
+
+        // Generate flat terrain with a few layers
+        for (let x = -worldSize/2; x < worldSize/2; x++) {
+            for (let z = -worldSize/2; z < worldSize/2; z++) {
+                createBlock(x, 0, z, 'grass');
+                createBlock(x, -1, z, 'dirt');
+                createBlock(x, -2, z, 'stone');
             }
         }
 
-        // Input Tracking
-        const keys = {};
-        window.addEventListener('keydown', e => keys[e.code] = true);
-        window.addEventListener('keyup', e => keys[e.code] = false);
+        // Set initial player position
+        camera.position.set(0, 2, 5);
+
+        // 6. Input Movement Tracking
+        const keys = { w: false, a: false, s: false, d: false, space: false, shift: false };
         
-        window.addEventListener('mousemove', e => {
-            if (document.pointerLockElement === canvas) {
-                player.yaw -= e.movementX * 0.003;
-                player.pitch -= e.movementY * 0.003;
-                player.pitch = Math.max(-Math.PI/2.5, Math.min(Math.PI/2.5, player.pitch));
-            }
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'KeyW') keys.w = true;
+            if (e.code === 'KeyA') keys.a = true;
+            if (e.code === 'KeyS') keys.s = true;
+            if (e.code === 'KeyD') keys.d = true;
+            if (e.code === 'Space') keys.space = true;
+            if (e.code === 'ShiftLeft') keys.shift = true;
         });
 
-        // Building / Breaking interaction
-        window.addEventListener('mousedown', e => {
-            if (document.pointerLockElement !== canvas) return;
-            // Simple interaction logic: target block directly ahead
-            let targetX = Math.floor(player.x + Math.sin(player.yaw) * 2);
-            let targetZ = Math.floor(player.z - Math.cos(player.yaw) * 2);
-            let targetY = Math.floor(player.y);
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'KeyW') keys.w = false;
+            if (e.code === 'KeyA') keys.a = false;
+            if (e.code === 'KeyS') keys.s = false;
+            if (e.code === 'KeyD') keys.d = false;
+            if (e.code === 'Space') keys.space = false;
+            if (e.code === 'ShiftLeft') keys.shift = false;
+        });
 
-            if (e.button === 0) { // Left Click: Break
-                const idx = blocks.findIndex(b => b.x === targetX && b.y === targetY && b.z === targetZ);
-                if(idx !== -1 && targetY > 0) blocks.splice(idx, 1);
-            } else if (e.button === 2) { // Right Click: Place
-                // Put block on top of target or in front
-                const existing = blocks.some(b => b.x === targetX && b.y === targetY+1 && b.z === targetZ);
-                if(!existing) {
-                    blocks.push({x: targetX, y: targetY + 1, z: targetZ, color: '#aaaaaa'}); // Stone block
+        // 7. Mouse Interaction (Place and Break Blocks)
+        window.addEventListener('mousedown', (e) => {
+            if (!controls.isLocked) return;
+
+            // Update the raycaster pointing from the center of the camera screen
+            raycaster.setFromCamera(mouse, camera);
+            // Limit interaction range to 6 blocks away
+            raycaster.far = 6; 
+            const intersects = raycaster.intersectObjects(blocksArray);
+
+            if (intersects.length > 0) {
+                const intersect = intersects[0];
+
+                if (e.button === 0) { // Left Click: Destroy Block
+                    scene.remove(intersect.object);
+                    const index = blocksArray.indexOf(intersect.object);
+                    if (index > -1) blocksArray.splice(index, 1);
+                } 
+                else if (e.button === 2) { // Right Click: Place Block
+                    // Calculate the position of the new block based on the face that was hit
+                    const position = new THREE.Vector3();
+                    position.copy(intersect.point).add(intersect.face.normal);
+                    
+                    // Snap coordinates to integers grid
+                    const targetX = Math.floor(position.x + 0.5);
+                    const targetY = Math.floor(position.y + 0.5);
+                    const targetZ = Math.floor(position.z + 0.5);
+
+                    createBlock(targetX, targetY, targetZ, 'stone');
                 }
             }
         });
-        // Prevent right click menu
+
+        // Prevent right-click context menu popping up
         window.addEventListener('contextmenu', e => e.preventDefault());
 
-        // Simple 3D Projection Engine Architecture
-        function project(x, y, z) {
-            // Translate relative to player position
-            let rx = x - player.x;
-            let ry = y - player.y;
-            let rz = z - player.z;
+        // 8. Game Animation Loop
+        const moveSpeed = 0.1;
+        
+        function animate() {
+            requestAnimationFrame(animate);
 
-            // Rotate around Y axis (Yaw)
-            let cosY = Math.cos(player.yaw), sinY = Math.sin(player.yaw);
-            let tx = rx * cosY - rz * sinY;
-            let tz = rx * sinY + rz * cosY;
+            if (controls.isLocked) {
+                // Directional Vectors relative to camera orientation
+                const direction = new THREE.Vector3();
+                const frontVector = new THREE.Vector3();
+                const sideVector = new THREE.Vector3();
 
-            // Rotate around X axis (Pitch)
-            let cosP = Math.cos(player.pitch), sinP = Math.sin(player.pitch);
-            let ty = ry * cosP - tz * sinP;
-            let fz = ry * sinP + tz * cosP;
+                // Calculate forward/backward movement vector
+                frontVector.set(0, 0, Number(keys.s) - Number(keys.w));
+                // Calculate side-to-side strafing vector
+                sideVector.set(Number(keys.d) - Number(keys.a), 0, 0);
 
-            if (fz <= 0.1) return null; // Behind camera clipping
+                // Combine vectors, account for camera direction, and move
+                direction.subVectors(frontVector, sideVector).normalize().multiplyScalar(moveSpeed);
+                controls.moveRight(direction.x);
+                controls.moveForward(direction.z);
 
-            // Perspective math scaling
-            const fov = Math.min(canvas.width, canvas.height);
-            return {
-                x: (tx / fz) * fov + canvas.width / 2,
-                y: -(ty / fz) * fov + canvas.height / 2,
-                size: (fov / fz)
-            };
-        }
-
-        // Main Loop
-        function loop() {
-            // Movement Mechanics
-            let moveX = 0, moveZ = 0;
-            if (keys['KeyW']) { moveX += Math.sin(player.yaw); moveZ -= Math.cos(player.yaw); }
-            if (keys['KeyS']) { moveX -= Math.sin(player.yaw); moveZ += Math.cos(player.yaw); }
-            if (keys['KeyA']) { moveX -= Math.cos(player.yaw); moveZ -= Math.sin(player.yaw); }
-            if (keys['KeyD']) { moveX += Math.cos(player.yaw); moveZ += Math.sin(player.yaw); }
-            if (keys['Space']) player.y += player.speed;
-            if (keys['ShiftLeft']) player.y -= player.speed;
-
-            if(moveX !== 0 || moveZ !== 0) {
-                let length = Math.sqrt(moveX*moveX + moveZ*moveZ);
-                player.x += (moveX / length) * player.speed;
-                player.z += (moveZ / length) * player.speed;
+                // Vertical flying controls
+                if (keys.space) camera.position.y += moveSpeed;
+                if (keys.shift) camera.position.y -= moveSpeed;
             }
 
-            // Clear Screen Frame
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Sort blocks back-to-front (Painters Algorithm to avoid rendering overlaps)
-            blocks.sort((a, b) => {
-                let distA = Math.pow(a.x - player.x, 2) + Math.pow(a.y - player.y, 2) + Math.pow(a.z - player.z, 2);
-                let distB = Math.pow(b.x - player.x, 2) + Math.pow(b.y - player.y, 2) + Math.pow(b.z - player.z, 2);
-                return distB - distA;
-            });
-
-            // Draw Blocks
-            blocks.forEach(b => {
-                const proj = project(b.x + 0.5, b.y + 0.5, b.z + 0.5);
-                if (!proj) return;
-
-                const sz = proj.size * 0.4; // Scaled cube bounding constraints
-                ctx.fillStyle = b.color;
-                
-                // Draw a mock 3D pseudo-cube profile 
-                ctx.fillRect(proj.x - sz/2, proj.y - sz/2, sz, sz);
-                ctx.strokeStyle = 'rgba(0,0,0,0.2)';
-                ctx.strokeRect(proj.x - sz/2, proj.y - sz/2, sz, sz);
-            });
-
-            requestAnimationFrame(loop);
+            renderer.render(scene, camera);
         }
 
-        loop();
+        // Handle browser window resizing dynamically
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
     </script>
 </body>
 </html>
