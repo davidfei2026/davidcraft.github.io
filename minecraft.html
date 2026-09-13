@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS/HTML 3D Minecraft Clone</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            background-color: #78a7ff;
+            font-family: sans-serif;
+        }
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+        #crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        #crosshair::before, #crosshair::after {
+            content: '';
+            position: absolute;
+            background: white;
+        }
+        #crosshair::before { top: 4px; left: 0; width: 10px; height: 2px; }
+        #crosshair::after { top: 0; left: 4px; width: 2px; height: 10px; }
+        #instructions {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 5px;
+            pointer-events: none;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="crosshair"></div>
+    <div id="instructions">
+        <strong>Controls:</strong><br>
+        • Click on screen to lock mouse cursor<br>
+        • Move Mouse to look around<br>
+        • W, A, S, D to move<br>
+        • Space to jump / Shift to go down<br>
+        • Left Click to destroy blocks<br>
+        • Right Click to place blocks
+    </div>
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Lock pointer on click
+        canvas.addEventListener('click', () => {
+            canvas.requestPointerLock();
+        });
+
+        // Game State
+        const player = {
+            x: 2, y: 3, z: 5,
+            yaw: 0, pitch: 0,
+            speed: 0.1
+        };
+
+        // Simple 3D Block World Matrix (4x4x4 for demonstration starter grid)
+        const worldSize = 8;
+        const blocks = [];
+        
+        // Generate a basic flat ground terrain
+        for(let x=0; x<worldSize; x++) {
+            for(let z=0; z<worldSize; z++) {
+                blocks.push({x, y:0, z, color: '#557a2b'}); // Grass layer
+                if(x === 3 && z === 3) blocks.push({x:3, y:1, z:3, color: '#866043'}); // Single dirt block
+            }
+        }
+
+        // Input Tracking
+        const keys = {};
+        window.addEventListener('keydown', e => keys[e.code] = true);
+        window.addEventListener('keyup', e => keys[e.code] = false);
+        
+        window.addEventListener('mousemove', e => {
+            if (document.pointerLockElement === canvas) {
+                player.yaw -= e.movementX * 0.003;
+                player.pitch -= e.movementY * 0.003;
+                player.pitch = Math.max(-Math.PI/2.5, Math.min(Math.PI/2.5, player.pitch));
+            }
+        });
+
+        // Building / Breaking interaction
+        window.addEventListener('mousedown', e => {
+            if (document.pointerLockElement !== canvas) return;
+            // Simple interaction logic: target block directly ahead
+            let targetX = Math.floor(player.x + Math.sin(player.yaw) * 2);
+            let targetZ = Math.floor(player.z - Math.cos(player.yaw) * 2);
+            let targetY = Math.floor(player.y);
+
+            if (e.button === 0) { // Left Click: Break
+                const idx = blocks.findIndex(b => b.x === targetX && b.y === targetY && b.z === targetZ);
+                if(idx !== -1 && targetY > 0) blocks.splice(idx, 1);
+            } else if (e.button === 2) { // Right Click: Place
+                // Put block on top of target or in front
+                const existing = blocks.some(b => b.x === targetX && b.y === targetY+1 && b.z === targetZ);
+                if(!existing) {
+                    blocks.push({x: targetX, y: targetY + 1, z: targetZ, color: '#aaaaaa'}); // Stone block
+                }
+            }
+        });
+        // Prevent right click menu
+        window.addEventListener('contextmenu', e => e.preventDefault());
+
+        // Simple 3D Projection Engine Architecture
+        function project(x, y, z) {
+            // Translate relative to player position
+            let rx = x - player.x;
+            let ry = y - player.y;
+            let rz = z - player.z;
+
+            // Rotate around Y axis (Yaw)
+            let cosY = Math.cos(player.yaw), sinY = Math.sin(player.yaw);
+            let tx = rx * cosY - rz * sinY;
+            let tz = rx * sinY + rz * cosY;
+
+            // Rotate around X axis (Pitch)
+            let cosP = Math.cos(player.pitch), sinP = Math.sin(player.pitch);
+            let ty = ry * cosP - tz * sinP;
+            let fz = ry * sinP + tz * cosP;
+
+            if (fz <= 0.1) return null; // Behind camera clipping
+
+            // Perspective math scaling
+            const fov = Math.min(canvas.width, canvas.height);
+            return {
+                x: (tx / fz) * fov + canvas.width / 2,
+                y: -(ty / fz) * fov + canvas.height / 2,
+                size: (fov / fz)
+            };
+        }
+
+        // Main Loop
+        function loop() {
+            // Movement Mechanics
+            let moveX = 0, moveZ = 0;
+            if (keys['KeyW']) { moveX += Math.sin(player.yaw); moveZ -= Math.cos(player.yaw); }
+            if (keys['KeyS']) { moveX -= Math.sin(player.yaw); moveZ += Math.cos(player.yaw); }
+            if (keys['KeyA']) { moveX -= Math.cos(player.yaw); moveZ -= Math.sin(player.yaw); }
+            if (keys['KeyD']) { moveX += Math.cos(player.yaw); moveZ += Math.sin(player.yaw); }
+            if (keys['Space']) player.y += player.speed;
+            if (keys['ShiftLeft']) player.y -= player.speed;
+
+            if(moveX !== 0 || moveZ !== 0) {
+                let length = Math.sqrt(moveX*moveX + moveZ*moveZ);
+                player.x += (moveX / length) * player.speed;
+                player.z += (moveZ / length) * player.speed;
+            }
+
+            // Clear Screen Frame
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Sort blocks back-to-front (Painters Algorithm to avoid rendering overlaps)
+            blocks.sort((a, b) => {
+                let distA = Math.pow(a.x - player.x, 2) + Math.pow(a.y - player.y, 2) + Math.pow(a.z - player.z, 2);
+                let distB = Math.pow(b.x - player.x, 2) + Math.pow(b.y - player.y, 2) + Math.pow(b.z - player.z, 2);
+                return distB - distA;
+            });
+
+            // Draw Blocks
+            blocks.forEach(b => {
+                const proj = project(b.x + 0.5, b.y + 0.5, b.z + 0.5);
+                if (!proj) return;
+
+                const sz = proj.size * 0.4; // Scaled cube bounding constraints
+                ctx.fillStyle = b.color;
+                
+                // Draw a mock 3D pseudo-cube profile 
+                ctx.fillRect(proj.x - sz/2, proj.y - sz/2, sz, sz);
+                ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+                ctx.strokeRect(proj.x - sz/2, proj.y - sz/2, sz, sz);
+            });
+
+            requestAnimationFrame(loop);
+        }
+
+        loop();
+    </script>
+</body>
+</html>
