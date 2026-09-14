@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Minecraft Voxel Engine</title>
+    <title>Advanced 3D Voxel Sandbox</title>
     <style>
         body, html {
             margin: 0;
@@ -31,27 +31,31 @@
             background: rgba(255, 255, 255, 0.8);
         }
         #crosshair::before { top: 5px; left: 0; width: 12px; height: 2px; }
-        #crosshair::after { top: 0; left: 5px; width: 2px; height: 12px; }
+        #crosshair::after { top: 0; left: 4px; width: 2px; height: 12px; }
         
         #ui-container {
             position: absolute;
             top: 15px;
             left: 15px;
             color: white;
-            background: rgba(16, 16, 20, 0.75);
-            padding: 20px;
+            background: rgba(16, 16, 20, 0.8);
+            padding: 15px;
             border-radius: 8px;
             pointer-events: none;
-            font-size: 14px;
-            line-height: 1.6;
+            font-size: 13px;
+            line-height: 1.5;
             z-index: 10;
             backdrop-filter: blur(4px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             max-width: 280px;
         }
-        .highlight { color: #55ff55; font-weight: bold; }
+        .save-indicator {
+            color: #55ff55;
+            font-weight: bold;
+            display: none;
+            margin-top: 5px;
+        }
 
-        /* Hotbar Styles */
         #hotbar {
             position: absolute;
             bottom: 20px;
@@ -63,7 +67,6 @@
             border-radius: 4px;
             border: 2px solid #3c3c3c;
             z-index: 10;
-            pointer-events: auto;
         }
         .hotbar-slot {
             width: 50px;
@@ -88,7 +91,6 @@
             width: 24px;
             height: 24px;
             border-radius: 2px;
-            box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
         }
         .slot-num {
             position: absolute;
@@ -112,17 +114,16 @@
 <body>
 
     <div id="crosshair"></div>
-    <div id="ui-container" id="instructions">
-        <span style="font-size: 16px; font-weight: bold; display: block; margin-bottom: 8px;">Voxel World Core</span>
-        • <strong>Click screen</strong> to lock cursor & play<br>
-        • <strong>W, A, S, D</strong> to walk / run around<br>
-        • <strong>Spacebar</strong> to jump upwards<br>
-        • <strong>Left-Click</strong> to break target block<br>
-        • <strong>Right-Click</strong> to place selected block<br>
-        • <strong>Keys 1 - 6</strong> to cycle through hotbar slots
+    <div id="ui-container">
+        <span style="font-size: 15px; font-weight: bold; display: block; margin-bottom: 5px;">Voxel Sandbox Pro</span>
+        • <strong>W, A, S, D</strong> to Walk / <strong>Space</strong> to Jump<br>
+        • <strong>Left-Click</strong>: Break / <strong>Right-Click</strong>: Place<br>
+        • <strong>Keys 1 - 6</strong>: Choose Hotbar Materials<br>
+        • <span style="color:#ffb84d; font-weight:bold;">Day/Night Orbit Active</span><br>
+        • <span style="color:#55ccff; font-weight:bold;">Auto-Saving to LocalStorage</span>
+        <div id="save-msg" class="save-indicator">World Saved!</div>
     </div>
 
-    <!-- Hotbar UI -->
     <div id="hotbar">
         <div class="hotbar-slot active" data-index="0" data-type="grass"><div class="slot-num">1</div><div class="block-preview" style="background:#557a2b;"></div><div class="slot-label">Grass</div></div>
         <div class="hotbar-slot" data-index="1" data-type="dirt"><div class="slot-num">2</div><div class="block-preview" style="background:#866043;"></div><div class="slot-label">Dirt</div></div>
@@ -133,35 +134,29 @@
     </div>
 
     <script>
-        // 1. Core Engine Initialization
+        // 1. Engine Core setup
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x78a7ff);
-        scene.fog = new THREE.FogExp2(0x78a7ff, 0.015);
-
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMap.enabled = true;
         document.body.appendChild(renderer.domElement);
 
-        // Lights Setup
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+        // Environment Lights Configuration
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
         scene.add(ambientLight);
-        const sunLight = new THREE.DirectionalLight(0xffffff, 0.4);
-        sunLight.position.set(40, 80, 40);
+        const sunLight = new THREE.DirectionalLight(0xffffff, 0.6);
         scene.add(sunLight);
 
-        // Controls Setup
         const controls = new THREE.PointerLockControls(camera, document.body);
         document.body.addEventListener('click', () => { if(!controls.isLocked) controls.lock(); });
 
-        // 2. Texture & Procedural Generation Architecture
-        function generateNoiseTex(baseHex, noiseAmt, size = 16) {
-            const canvas = document.createElement('canvas'); canvas.width = size; canvas.height = size;
+        // 2. Procedural Canvas Texture Generation
+        function generateNoiseTex(baseHex, noiseAmt) {
+            const canvas = document.createElement('canvas'); canvas.width = 16; canvas.height = 16;
             const ctx = canvas.getContext('2d');
             const r = (baseHex >> 16) & 255, g = (baseHex >> 8) & 255, b = baseHex & 255;
-            for (let x = 0; x < size; x++) {
-                for (let y = 0; y < size; y++) {
+            for (let x = 0; x < 16; x++) {
+                for (let y = 0; y < 16; y++) {
                     let n = (Math.random() - 0.5) * noiseAmt;
                     ctx.fillStyle = `rgb(${Math.floor(Math.min(255,Math.max(0,r+n)))},${Math.floor(Math.min(255,Math.max(0,g+n)))},${Math.floor(Math.min(255,Math.max(0,b+n)))})`;
                     ctx.fillRect(x, y, 1, 1);
@@ -179,7 +174,7 @@
                 for (let y = 0; y < 16; y++) {
                     let isGrass = y < 4 + Math.sin(x * 1.5) * 1.2;
                     let r = isGrass ? 85 : 134, g = isGrass ? 122 : 96, b = isGrass ? 43 : 67;
-                    let n = (Math.random() - 0.5) * 25;
+                    let n = (Math.random() - 0.5) * 20;
                     ctx.fillStyle = `rgb(${Math.floor(r+n)},${Math.floor(g+n)},${Math.floor(b+n)})`;
                     ctx.fillRect(x, y, 1, 1);
                 }
@@ -205,20 +200,25 @@
             dirt: Array(6).fill(new THREE.MeshLambertMaterial({ map: texDirt })),
             stone: Array(6).fill(new THREE.MeshLambertMaterial({ map: texStone })),
             wood: Array(6).fill(new THREE.MeshLambertMaterial({ map: texWood })),
-            leaves: Array(6).fill(new THREE.MeshLambertMaterial({ map: texLeaves, transparent: true, opacity: 0.95 })),
-            glass: Array(6).fill(new THREE.MeshLambertMaterial({ color: 0xffffff, transparent: true, opacity: 0.4, wireframe: false }))
+            leaves: Array(6).fill(new THREE.MeshLambertMaterial({ map: texLeaves, transparent: true, opacity: 0.9 })),
+            glass: Array(6).fill(new THREE.MeshLambertMaterial({ color: 0xffffff, transparent: true, opacity: 0.3 }))
         };
 
-        // 3. Grid Environment Management & Map Array Map Lookup Dictionary
+        // 3. Grid Environment Management & Map Storage
         const cubeGeo = new THREE.BoxGeometry(1, 1, 1);
         const worldMap = {}; 
-        const chunkRadius = 24;
+        const chunkRadius = 20;
+        const storageKey = "MINECRAFT_THREEJS_SAVE_DATA";
 
         function getBlockKey(x, y, z) { return `${Math.floor(x)},${Math.floor(y)},${Math.floor(z)}`; }
 
-        function createBlock(x, y, z, type) {
+        function createBlock(x, y, z, type, triggerSave = false) {
             const key = getBlockKey(x, y, z);
             if(worldMap[key]) return; 
 
             const mesh = new THREE.Mesh(cubeGeo, materials[type]);
             mesh.position.set(x, y, z);
+            scene.add(mesh);
+            worldMap[key] = { mesh: mesh, type: type };
+
+Use code with caution.if(triggerSave) saveWorldData();}function removeBlock(x, y, z, triggerSave = false) {const key = getBlockKey(x, y, z);if(worldMap[key]) {scene.remove(worldMap[key].mesh);delete worldMap[key];if(triggerSave) saveWorldData();}}// Dynamic Tree Spawning Scriptfunction growTree(trunkX, startY, trunkZ) {let treeHeight = 4 + Math.floor(Math.random() * 2);// Build Wood Trunk Corefor (let i = 0; i < treeHeight; i++) {createBlock(trunkX, startY + i, trunkZ, 'wood');}// Grow Leaves Canopy Layerlet leafTop = startY + treeHeight;for (let lx = -2; lx <= 2; lx++) {for (let lz = -2; lz <= 2; lz++) {for (let ly = -2; ly <= 1; ly++) {// Distribute leaves rounder toward top profile edge structuresif (Math.abs(lx) + Math.abs(ly) + Math.abs(lz) <= 4) {createBlock(trunkX + lx, leafTop + ly, trunkZ + lz, 'leaves');}}}}}// 4. Persistence Load / Generation Sequencefunction saveWorldData() {const dataToSave = {};Object.keys(worldMap).forEach(key => {dataToSave[key] = worldMap[key].type;});localStorage.setItem(storageKey, JSON.stringify(dataToSave));const msg = document.getElementById("save-msg");msg.style.display = "block";setTimeout(() => msg.style.display = "none", 1200);}function initWorld() {const saved = localStorage.getItem(storageKey);if (saved) {// Restore Map Layout from Serialized storage Dataconst parsed = JSON.parse(saved);Object.keys(parsed).forEach(key => {const [x, y, z] = key.split(',').map(Number);createBlock(x, y, z, parsed[key]);});} else {// Fresh Procedural Generation Matrixfor (let x = -chunkRadius; x <= chunkRadius; x++) {for (let z = -chunkRadius; z <= chunkRadius; z++) {let height = Math.floor(Math.sin(x * 0.12) * 3 + Math.cos(z * 0.12) * 3);createBlock(x, height, z, 'grass');createBlock(x, height - 1, z, 'dirt');createBlock(x, height - 2, z, 'stone');// Dynamic tree placement chance conditionsif (x % 7 === 0 && z % 7 === 0 && Math.random() < 0.35) {growTree(x, height + 1, z);}}}saveWorldData(); // Cache initial build layer}}initWorld();// 5. Physics Movement Loopsconst player = { velocity: new THREE.Vector3(), height: 1.8, radius: 0.35, onGround: false };camera.position.set(0, 10, 0);function checkCollision(pos) {const minX = Math.floor(pos.x - player.radius), maxX = Math.floor(pos.x + player.radius);const minZ = Math.floor(pos.z - player.radius), maxZ = Math.floor(pos.z + player.radius);const minY = Math.floor(pos.y - player.height), maxY = Math.floor(pos.y);for (let x = minX; x <= maxX; x++) {for (let y = minY; y <= maxY; y++) {for (let z = minZ; z <= maxZ; z++) {if (worldMap[getBlockKey(x, y, z)]) return true;}}}return false;}// Hotbar Slot Controllerlet activeBlockType = 'grass';const slots = document.querySelectorAll('.hotbar-slot');function selectSlot(index) {slots.forEach(s => s.classList.remove('active'));slots[index].classList.add('active');activeBlockType = slots[index].getAttribute('data-type');}slots.forEach(slot => {slot.addEventListener('click', (e) => {selectSlot(parseInt(slot.getAttribute('data-index'))); e.stopPropagation();});});// Inputs Listener Matrixconst keys = { w: false, a: false, s: false, d: false };window.addEventListener('keydown', (e) => {if (e.code === 'KeyW') keys.w = true; if (e.code === 'KeyA') keys.a = true;if (e.code === 'KeyS') keys.s = true; if (e.code === 'KeyD') keys.d = true;if (e.code === 'Space' && player.onGround) { player.velocity.y = 0.21; player.onGround = false; }if (e.key >= '1' && e.key <= '6') selectSlot(parseInt(e.key) - 1);});window.addEventListener('keyup', (e) => {if (e.code === 'KeyW') keys.w = false; if (e.code === 'KeyA') keys.a = false;if (e.code === 'KeyS') keys.s = false; if (e.code === 'KeyD') keys.d = false;});// 6. Raycast Tool Interactivityconst raycaster = new THREE.Raycaster();window.addEventListener('mousedown', (e) => {if (!controls.isLocked) return;raycaster.setFromCamera(new THREE.Vector2(0, 0), camera); raycaster.far = 7;const meshes = Object.values(worldMap).map(b => b.mesh);const intersects = raycaster.intersectObjects(meshes);if (intersects.length > 0) {const hit = intersects[0];if (e.button === 0) {removeBlock(hit.object.position.x, hit.object.position.y, hit.object.position.z, true);} else if (e.button === 2) {const p = new THREE.Vector3().copy(hit.point).add(hit.face.normal);const bx = Math.floor(p.x + 0.5), by = Math.floor(p.y + 0.5), bz = Math.floor(p.z + 0.5);createBlock(bx, by, bz, activeBlockType, true);}}});window.addEventListener('contextmenu', e => e.preventDefault());// 7. Day/Night Orbital Cycle Engine Variableslet timeOfDay = 0.0; // Cycles infinitely from 0 to 2*PIconst dayDurationSpeed = 0.0005; // Adjust parameters to accelerate or decelerate orbit durations// 8. Main Frame Animation Frame Loopconst gravity = 0.0098, walkSpeed = 0.08;function animate() {requestAnimationFrame(animate);// --- Day/Night Orbit Calculations ---timeOfDay += dayDurationSpeed;let sunY = Math.sin(timeOfDay);let sunX = Math.cos(timeOfDay);sunLight.position.set(sunX * 60, sunY * 60, 20);// Dynamic sky gradient and lighting colors morph based on orbital heightslet intensityFactor = Math.max(0, Math.min(1, sunY * 2 + 0.2)); // Normalizes sunlight scaling curvesambientLight.intensity = 0.15 + (intensityFactor * 0.55);sunLight.intensity = intensityFactor * 0.5;// Interpolate colors smoothly between Sky Blue and Dark Midnight Bluelet skyColor = new THREE.Color().lerpColors(new THREE.Color(0x0a0a18), new THREE.Color(0x78a7ff), intensityFactor);renderer.setClearColor(skyColor);scene.background = skyColor;scene.fog = new THREE.FogExp2(skyColor, 0.015);// Move Player and update boundaries when cursor is lockedif (controls.isLocked) {player.velocity.y -= gravity;const frontVec = new THREE.Vector3(0, 0, Number(keys.s) - Number(keys.w));const sideVec = new THREE.Vector3(Number(keys.d) - Number(keys.a), 0, 0);const camDir = new THREE.Vector3(); camera.getWorldDirection(camDir); camDir.y = 0; camDir.normalize();const camSide = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 0); camSide.y = 0; camSide.normalize();const finalMove = new THREE.Vector3().addScaledVector(camDir, -frontVec.z).addScaledVector(camSide, sideVec.x).normalize().multiplyScalar(walkSpeed);camera.position.x += finalMove.x; if (checkCollision(camera.position)) camera.position.x -= finalMove.x;camera.position.z += finalMove.z; if (checkCollision(camera.position)) camera.position.z -= finalMove.z;camera.position.y += player.velocity.y; player.onGround = false;if (checkCollision(camera.position)) {if (player.velocity.y < 0) {camera.position.y = Math.floor(camera.position.y) + player.height;while(checkCollision(camera.position)) camera.position.y += 0.01;player.onGround = true;} else {camera.position.y = Math.floor(camera.position.y - 0.01);}player.velocity.y = 0;}if(camera.position.y < -30) { camera.position.set(0, 12, 0); player.velocity.set(0,0,0); }}renderer.render(scene, camera);}window.addEventListener('resize', () => {camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();renderer.setSize(window.innerWidth, window.innerHeight);});animate();
